@@ -1,0 +1,89 @@
+<section id="featured-products" class="product-showcase section-{{ section.id }}-padding">
+  <div class="container">
+    {% if section.settings.title != blank %}
+      <h2 class="section-title" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
+    {% endif %}
+    
+    <div class="product-grid">
+      {%- assign collection = section.settings.collection -%}
+      {%- assign products_to_show = section.settings.products_to_show -%}
+
+      {% for product in collection.products limit: products_to_show %}
+        <div class="product-card">
+          <div class="product-image">
+            <a href="{{ product.url | within: collection }}">
+              {% if product.featured_image %}
+                <img src="{{ product.featured_image | image_url: width: 300, height: 250, crop: 'center' }}" 
+                     alt="{{ product.featured_image.alt | escape }}"
+                     loading="lazy"
+                     width="300" height="250">
+              {% else %}
+                {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }} {% endif %}
+            </a>
+          </div>
+          <div class="product-info">
+            <h3 class="product-name"><a href="{{ product.url | within: collection }}">{{ product.title }}</a></h3>
+            {% comment %}
+            <p class="product-spec">
+              {{ product.tags | first }} 
+            </p>
+            {% endcomment %}
+            <p class="product-price">{{ product.price | money }}</p>
+            <a href="{{ product.url | within: collection }}" class="product-button">[ANALYZE_ITEM]</a>
+          </div>
+        </div>
+      {% else %}
+        {% if collection.products_count == 0 %}
+          <p>//:NO_PRODUCTS_IN_SELECTED_DATASTREAM (COLLECTION)//</p>
+        {% endif %}
+        {% for i in (1..products_to_show) %}
+          <div class="product-card placeholder">
+            <div class="product-image">
+              {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">ITEM_SLOT_{{ i }}</h3>
+              <p class="product-price">€$ ---</p>
+              <a href="#" class="product-button">[OFFLINE]</a>
+            </div>
+          </div>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured Products",
+  "tag": "section",
+  "class": "section-featured-products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "// FEATURED_ITEMS //"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "label": "Products to Show",
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Products"
+    }
+  ]
+}
+{% endschema %}

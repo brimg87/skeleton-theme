@@ -1,23 +1,80 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="{{ request.locale.iso_code }}">
-  <head>
-    {% # Inlined CSS Variables %}
-    {% render 'css-variables' %}
+<head>
+    <meta charset="UTF-DPR">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    {% # Load and preload the critical CSS %}
-    {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
+    <title>
+      {{ page_title }}
+      {%- if current_tags %}{% assign meta_tags = current_tags | join: ', ' %} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags }}{% endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
 
-    {% # Social, title, etc. %}
-    {% render 'meta-tags' %}
+    {%- if page_description %}<meta name="description" content="{{ page_description | escape }}">{% endif -%}
 
-    {{ content_for_header }}
-  </head>
+    <link rel="canonical" href="{{ canonical_url }}">
 
-  <body>
-    {% sections 'header-group' %}
+    <link rel="stylesheet" href="{{ 'style.css' | asset_url }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous" defer></script>
 
-    {{ content_for_layout }}
+    {{ content_for_header }} </head>
+<body class="template-{{ request.page_type | handle }}"> <div class="scanlines"></div>
+    <div class="crt-effect"></div>
 
-    {% sections 'footer-group' %}
-  </body>
+    <header class="site-header">
+        <div class="logo">
+          <a href="{{ routes.root_url }}"> STARSIDE_ARMORY
+            <span class="glitch" data-text="STARSIDE_ARMORY"></span>
+          </a>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                {%- for link in linklists.main-menu.links -%}
+                  <li><a href="{{ link.url }}">{{ link.title | upcase | replace: ' ', '_' | prepend: '//:' }}</a></li>
+                {%- else -%}
+                  <li><a href="{{ routes.collections_url }}/weaponry">//:WEAPONRY</a></li>
+                  <li><a href="{{ routes.collections_url }}/armor-systems">//:ARMOR_SYSTEMS</a></li>
+                  <li><a href="{{ routes.collections_url }}/cybernetics">//:CYBERNETICS</a></li>
+                {%- endfor -%}
+            </ul>
+        </nav>
+        <div class="user-interface">
+            {%- if shop.customer_accounts_enabled -%}
+              {%- if customer -%}
+                <a href="{{ routes.account_url }}">[USER: {{ customer.first_name | default: 'AGENT' }}]</a>
+              {%- else -%}
+                <a href="{{ routes.account_login_url }}">[LOGIN_TERMINAL]</a>
+              {%- endif -%}
+            {%- endif -%}
+            <a href="{{ routes.cart_url }}">
+              <span>[CREDITS: <i class="fas fa-shopping-cart"></i> {{ cart.item_count }} // {{ cart.total_price | money }}]</span>
+            </a>
+        </div>
+    </header>
+
+    <main role="main" id="MainContent" class="site-main">
+        {{ content_for_layout }} </main>
+
+    <footer class="site-footer-terminal">
+        <div class="footer-content">
+            <p>[SYSTEM_STATUS: ONLINE // ALL_SYSTEMS_NOMINAL // SECURE_CONNECTION_ESTABLISHED]</p>
+            <p>&copy; {{ 'now' | date: "%Y" }} {{ shop.name | link_to: routes.root_url }} // ALL RIGHTS RESERVED IN THIS SECTOR</p>
+            <div class="social-links">
+                {%- if settings.social_twitter_link != blank -%}
+                    <a href="{{ settings.social_twitter_link }}" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                {%- endif -%}
+                {%- if settings.social_instagram_link != blank -%}
+                    <a href="{{ settings.social_instagram_link }}" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                {%- endif -%}
+                </div>
+            <p><a href="{{ routes.root_url }}?section_id=footer">[LEGAL_PROTOCOLS]</a> | <a href="{{ routes.root_url }}?section_id=footer">[CONTACT_FIXER]</a></p>
+             </div>
+    </footer>
+
+    <script src="{{ 'script.js' | asset_url }}" defer="defer"></script>
+</body>
 </html>

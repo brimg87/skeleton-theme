@@ -1,0 +1,72 @@
+{% comment %} --- sections/index-hero-banner.liquid --- {% endcomment %}
+{%- assign bg_image = section.settings.background_image -%}
+<section class="hero-section" {% if bg_image != blank %}style="background-image: url('{{ bg_image | image_url: width: 1920, height: 1080 }}');"{% endif %}>
+
+    {% comment %} --- BEGIN: Loader Overlay --- {% endcomment %}
+    <div id="hero-loader-overlay">
+        <div class="loader-text-container">
+            <p class="loader-text">CONNECTING_TO_JORMUNGANDR_ORBITAL...</p>
+            <p class="loader-text">ACCESSING_STARSIDE_ARMORY_NET...</p>
+            <p class="loader-text loader-text-final">SYSTEMS_ONLINE</p>
+        </div>
+    </div>
+    {% comment %} --- END: Loader Overlay --- {% endcomment %}
+
+    <div class="hero-overlay"></div>
+    
+    <div class="hero-content initially-hidden"> 
+        {% if section.settings.main_heading != blank %}
+            <h1 class="glitch-hero" data-text="{{ section.settings.main_heading | escape }}">{{ section.settings.main_heading | escape }}</h1>
+        {% endif %}
+        {% if section.settings.sub_heading != blank %}
+            <p class="sub-hero-text">{{ section.settings.sub_heading | escape }}</p>
+        {% endif %}
+        {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+            <a href="{{ section.settings.button_link }}" class="cta-button">{{ section.settings.button_label | escape }}</a>
+        {% endif %}
+    </div>
+</section>
+
+{% comment %} Schema remains the same as before... {% endcomment %}
+{% schema %}
+{
+  "name": "Hero Banner",
+  "tag": "section",
+  "class": "section-hero-banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "text",
+      "id": "main_heading",
+      "label": "Main Heading",
+      "default": "ACCESSING ARMORY DATA..."
+    },
+    {
+      "type": "text",
+      "id": "sub_heading",
+      "label": "Sub Heading",
+      "default": "Welcome, Edgerunner. Your next upgrade awaits."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "[BROWSE_WAREZ]"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Banner"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,182 @@
+{% comment %} --- sections/main-collection.liquid --- {% endcomment %}
+{%- liquid
+  assign products_per_page = section.settings.products_per_page
+-%}
+
+<div class="collection-page cyberpunk-container section-{{ section.id }}-padding">
+  <header class="collection-header data-box">
+    <div class="data-box-header">//: COLLECTION_DATABANK: {{ collection.title | upcase }} ://</div>
+    <div style="padding: 1.5em;">
+      <h1 class="collection-title glitch" data-text="{{ collection.title | escape }}">{{ collection.title | escape }}</h1>
+      {% if section.settings.show_collection_description and collection.description != blank %}
+        <div class="collection-description rte">
+          {{ collection.description }}
+        </div>
+      {% endif %}
+      {% if section.settings.show_collection_image and collection.image %}
+        <img src="{{ collection.image | image_url: width: 800 }}" alt="{{ collection.image.alt | default: collection.title | escape }}" loading="lazy" style="margin-top: 1em; max-width: 100%; height: auto;">
+      {% endif %}
+    </div>
+  </header>
+
+  <div class="collection-content-wrapper">
+    {% if section.settings.enable_filtering and collection.filters.size > 0 %}
+      <aside class="collection-filters-sidebar data-box" id="CollectionFiltersForm">
+        <div class="data-box-header">//: FILTER_PROTOCOL ://</div>
+        {%- form 'collection_filters', id: 'collection-filters-form' -%}
+          <div class="collection-filters-content">
+            {%- for filter in collection.filters -%}
+              <div class="collection-filter-group">
+                <h3 class="filter-group-title">{{ filter.label | escape }}</h3>
+                <ul class="filter-values-list">
+                  {%- case filter.type -%}
+                    {%- when 'list' -%}
+                      {%- for value in filter.values -%}
+                        <li class="filter-value">
+                          <input type="checkbox"
+                                 name="{{ value.param_name }}"
+                                 value="{{ value.value }}"
+                                 id="Filter-{{ filter.label | handleize }}-{{ forloop.index }}"
+                                 {% if value.active %}checked{% endif %}
+                                 {% if value.count == 0 and value.active == false %}disabled{% endif %}>
+                          <label for="Filter-{{ filter.label | handleize }}-{{ forloop.index }}">
+                            {{ value.label | escape }} ({{ value.count }})
+                          </label>
+                        </li>
+                      {%- endfor -%}
+                    {%- when 'price_range' -%}
+                      <li class="filter-value filter-price-range">
+                        <div class="price-range-inputs">
+                          <span class="currency">{{ cart.currency.symbol }}</span>
+                          <input name="{{ filter.min_value.param_name }}"
+                                 id="Filter-{{ filter.label | handleize }}-min"
+                                 {% if filter.min_value.value %}value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"{% endif %}
+                                 type="number"
+                                 placeholder="Min"
+                                 min="0"
+                                 max="{{ filter.range_max | money_without_currency | replace: ',', '' }}">
+                          <span class="currency">{{ cart.currency.symbol }}</span>
+                          <input name="{{ filter.max_value.param_name }}"
+                                 id="Filter-{{ filter.label | handleize }}-max"
+                                 {% if filter.max_value.value %}value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"{% endif %}
+                                 type="number"
+                                 placeholder="Max"
+                                 min="0"
+                                 max="{{ filter.range_max | money_without_currency | replace: ',', '' }}">
+                        </div>
+                      </li>
+                  {%- endcase -%}
+                </ul>
+              </div>
+            {%- endfor -%}
+            <button type="submit" class="cta-button filter-apply-button">[APPLY_FILTERS]</button>
+            <a href="{{ collection.url }}" class="filter-reset-button">[RESET_FILTERS]</a>
+          </div>
+        {%- endform -%}
+      </aside>
+    {% endif %}
+
+    <div class="collection-products-main">
+      <div class="collection-toolbar data-box">
+        <div class="data-box-header" style="justify-content: space-between; display: flex; align-items: center;">
+          <span>//: PRODUCT_MANIFEST ://</span>
+          {%- if section.settings.enable_sorting and collection.products.size > 0 -%}
+            <div class="collection-sort">
+              <label for="SortBy" class="visually-hidden">Sort by</label>
+              <select name="sort_by" id="SortBy" class="cyberpunk-select">
+                {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+                {%- for option in collection.sort_options -%}
+                  <option value="{{ option.value }}" {% if option.value == sort_by %}selected="selected"{% endif %}>{{ option.name }}</option>
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- endif -%}
+        </div>
+        <div class="collection-product-count" style="padding: 0.5em 1em; text-align: right; font-family: var(--font-secondary);">
+          {{ collection.products_count }} {{ collection.products_count | pluralize: 'item', 'items' }}
+        </div>
+      </div>
+
+      {% paginate collection.products by products_per_page %}
+        <div class="product-grid collection-product-grid">
+          {%- if collection.products.size > 0 -%}
+            {%- for product in collection.products -%}
+              {% comment %} Re-use product card HTML from homepage, or create a snippet {% endcomment %}
+              <div class="product-card">
+                <div class="product-image">
+                  <a href="{{ product.url | within: collection }}">
+                    {% if product.featured_image %}
+                      <img src="{{ product.featured_image | image_url: width: 300, height: 250, crop: 'center' }}"
+                           alt="{{ product.featured_image.alt | escape }}"
+                           loading="lazy"
+                           width="300" height="250">
+                    {% else %}
+                      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                    {% endif %}
+                  </a>
+                </div>
+                <div class="product-info">
+                  <h3 class="product-name"><a href="{{ product.url | within: collection }}">{{ product.title }}</a></h3>
+                  <p class="product-price">{{ product.price | money }}</p>
+                  <a href="{{ product.url | within: collection }}" class="product-button">[ANALYZE_ITEM]</a>
+                </div>
+              </div>
+            {%- endfor -%}
+          {%- else -%}
+            <p class="no-products-message">//: NO_ASSETS_MATCH_CURRENT_PARAMETERS_IN_COLLECTION: {{ collection.title }}. ://</p>
+          {%- endif -%}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination cyberpunk-pagination">
+            {{ paginate | default_pagination | replace: '&laquo; Previous', '[&laquo;_PREV_SCAN]' | replace: 'Next &raquo;', '[NEXT_SCAN_&raquo;]' }}
+          </nav>
+        {%- endif -%}
+      {% endpaginate %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Main Collection",
+  "tag": "section",
+  "class": "section-main-collection",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "label": "Products per page",
+      "default": 16
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_description",
+      "label": "Show collection description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_image",
+      "label": "Show collection image",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "Enable sorting",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "Enable filtering",
+      "default": true,
+      "info": "Ensure product filters are set up in Shopify Admin (Search & Discovery app)."
+    }
+  ]
+}
+{% endschema %}

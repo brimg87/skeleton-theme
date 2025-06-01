@@ -1,20 +1,50 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "main": {
-      "type": "hello-world",
-      "settings": {}
+      "type": "index-hero-banner",
+      "settings": {
+        "main_heading": "ACCESSING ARMORY DATA...",
+        "sub_heading": "Welcome, Edgerunner. Your next upgrade awaits.",
+        "button_label": "[BROWSE_WAREZ]",
+        "button_link": "shopify://collections/all"
+      }
+    },
+    "featured_products": {
+      "type": "index-featured-products",
+      "settings": {
+        "title": "// FEATURED_ITEMS //",
+        "collection": "frontpage",
+        "products_to_show": 4
+      }
+    },
+    "categories_banner": {
+      "type": "index-category-access",
+      "settings": {
+        "title": "// SYSTEM_CATEGORIES //"
+      }
+    },
+    "about_us": {
+      "type": "index-about-snippet",
+      "settings": {
+        "title": "// PROPRIETOR_PROFILE: [ARTIST_NAME] //",
+        "text": "<p>Forged in the neon glow...</p>",
+        "signature": "[Artist_Name] - Lead Fabricator, Starside Armory"
+      }
+    },
+    "newsletter": {
+      "type": "index-newsletter-signup", 
+      "settings": {
+      "title": "// SUBSCRIBE FOR INTEL_DROPS & NEW_SCHEMATICS //",
+      "placeholder_text": "[ENTER_YOUR_DATAPORT_ID (EMAIL)]",
+      "button_text": "[TRANSMIT_ID]"
     }
-  },
+  }
+},
   "order": [
-    "main"
+    "main",
+    "featured_products",
+    "categories_banner",
+    "about_us",
+    "newsletter"
   ]
 }

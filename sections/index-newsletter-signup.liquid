@@ -1,0 +1,59 @@
+<section class="newsletter-signup section-{{ section.id }}-padding">
+  <div class="container">
+    {% if section.settings.title != blank %}
+      <h2 class="section-title" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
+    {% endif %}
+    {%- form 'customer', class: 'signup-form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <input
+        type="email"
+        name="contact[email]"
+        class="newsletter-input"
+        placeholder="{{ section.settings.placeholder_text | default: '[ENTER_YOUR_DATAPORT_ID (EMAIL)]' }}"
+        aria-label="{{ section.settings.placeholder_text | default: '[ENTER_YOUR_DATAPORT_ID (EMAIL)]' }}"
+        autocorrect="off"
+        autocapitalize="off"
+        required
+      >
+      <button type="submit" class="cta-button" name="commit">
+        {{ section.settings.button_text | default: '[TRANSMIT_ID]' }}
+      </button>
+    {%- endform -%}
+
+    {%- if form.posted_successfully? -%}
+      <p class="form-success terminal-green-glow">//: TRANSMISSION_RECEIVED. WELCOME_TO_THE_NETWORK. ://</p>
+    {%- endif -%}
+    {%- if form.errors -%}
+      <p class="form-error terminal-red-glow">//: ERROR: {{ form.errors | default_errors }} ://</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter Signup",
+  "tag": "section",
+  "class": "section-newsletter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "// SUBSCRIBE FOR INTEL_DROPS & NEW_SCHEMATICS //"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_text",
+      "label": "Email Placeholder",
+      "default": "[ENTER_YOUR_DATAPORT_ID (EMAIL)]"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "[TRANSMIT_ID]"
+    }
+  ],
+  "presets": [{ "name": "Newsletter Signup" }]
+}
+{% endschema %}

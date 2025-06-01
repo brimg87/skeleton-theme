@@ -1,0 +1,51 @@
+<section id="about" class="proprietor-profile section-{{ section.id }}-padding">
+  <div class="container">
+    {% if section.settings.title != blank %}
+      <h2 class="section-title" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
+    {% endif %}
+    <div class="profile-content data-box">
+      <div class="data-box-header">//: DOSSIER_FRAGMENT ://</div>
+      <div style="padding: 1.5em;">
+        {% if section.settings.text != blank %}
+          <div class="rte">
+            {{ section.settings.text }}
+          </div>
+        {% endif %}
+        {% if section.settings.signature != blank %}
+          <p class="artist-signature">{{ section.settings.signature | escape }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About Snippet",
+  "tag": "section",
+  "class": "section-about-snippet",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "// PROPRIETOR_PROFILE: [ARTIST_NAME] //"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "About Text",
+      "default": "<p>Forged in the neon glow and digital rain of countless dystopian futures, Starside Armory is the culmination of [Artist_Name]'s passion for cyberpunk aesthetics and high-quality craftsmanship. Each piece is meticulously designed and created to bring a slice of those gritty, high-tech worlds into your hands. We specialize in cosplay items that don't just look the part, but feel like they've been pulled straight from your favorite game or neo-noir thriller. Gear up, choom. The street awaits.</p>"
+    },
+    {
+      "type": "text",
+      "id": "signature",
+      "label": "Signature",
+      "default": "[Artist_Name] - Lead Fabricator, Starside Armory"
+    }
+  ],
+  "presets": [{
+    "name": "About Snippet"
+  }]
+}
+{% endschema %}
