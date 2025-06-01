@@ -18,7 +18,8 @@
                      loading="lazy"
                      width="300" height="250">
               {% else %}
-                {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }} {% endif %}
+                {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              {% endif %}
             </a>
           </div>
           <div class="product-info">
@@ -29,12 +30,12 @@
             </p>
             {% endcomment %}
             <p class="product-price">{{ product.price | money }}</p>
-            <a href="{{ product.url | within: collection }}" class="product-button">[ANALYZE_ITEM]</a>
+            <a href="{{ product.url | within: collection }}" class="btn btn-cta btn-product">[ANALYZE_ITEM]</a> {# MODIFIED CLASS #}
           </div>
         </div>
       {% else %}
         {% if collection.products_count == 0 %}
-          <p>//:NO_PRODUCTS_IN_SELECTED_DATASTREAM (COLLECTION)//</p>
+          <p class="text-center my-lg">//:NO_PRODUCTS_IN_SELECTED_DATASTREAM (COLLECTION)//</p> {# Added utility classes #}
         {% endif %}
         {% for i in (1..products_to_show) %}
           <div class="product-card placeholder">
@@ -44,13 +45,12 @@
             <div class="product-info">
               <h3 class="product-name">ITEM_SLOT_{{ i }}</h3>
               <p class="product-price">€$ ---</p>
-              <a href="#" class="product-button">[OFFLINE]</a>
+              <a href="#" class="btn btn-cta btn-product disabled">[OFFLINE]</a> {# MODIFIED CLASS & ADDED DISABLED #}
             </div>
           </div>
         {% endfor %}
       {% endfor %}
     </div>
-  </div>
 </section>
 
 {% schema %}

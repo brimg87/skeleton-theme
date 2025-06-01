@@ -1,0 +1,106 @@
+{% comment %} --- sections/custom-message-block.liquid --- {% endcomment %}
+{%- liquid
+  assign section_bg_color = section.settings.background_color | default: 'var(--color-secondary-dark)'
+  assign text_align_class = section.settings.text_alignment | default: 'text-center'
+
+  assign title_text = section.settings.title | default: section.settings.heading_text
+  assign main_content = section.settings.content_text | default: section.settings.text
+-%}
+
+<section class="section-custom-message-block {{ text_align_class }}"
+         style="background-color: {{ section_bg_color }}; padding-top: var(--space-section-padding-y); padding-bottom: var(--space-section-padding-y);">
+  <div class="container">
+    {%- if title_text != blank -%}
+      <h2 class="section-title" data-text="{{ title_text | escape }}">{{ title_text | escape }}</h2>
+    {%- endif -%}
+    
+    <div class="custom-message-content data-box">
+      <div class="data-box-header">//: DATA_STREAM_ALPHA ://</div> 
+      <div> 
+        {%- if main_content != blank -%}
+          <div class="rte">
+            {{ main_content }}
+          </div>
+        {%- endif -%}
+        
+        {%- if section.settings.cta_label != blank and section.settings.cta_link != blank -%}
+          <div class="mt-lg {{ text_align_class }}"> {# Utility class for margin-top, and apply text-align for button block #}
+            <a href="{{ section.settings.cta_link }}" class="btn {{ section.settings.cta_style }}">
+              {{ section.settings.cta_label | escape }}
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Custom Message Block",
+  "tag": "section",
+  "class": "section-custom-message-block",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading (Optional)",
+      "default": "Custom Heading Title"
+    },
+    {
+      "type": "richtext",
+      "id": "content_text",
+      "label": "Main Content",
+      "default": "<p>Use this block to share an important message, highlight a feature, or provide detailed information. You can include formatted text, images, and links directly within this rich text editor.</p><p>This is a versatile section for various content needs across your site.</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button Label (Optional)",
+      "info": "Leave blank to hide button"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "select",
+      "id": "cta_style",
+      "label": "Button Style",
+      "options": [
+        { "value": "btn-cta", "label": "Primary Accent (e.g., Cyan)" },
+        { "value": "btn-cta-primary", "label": "Primary Action (e.g., Green)" },
+        { "value": "btn-secondary", "label": "Secondary" }
+      ],
+      "default": "btn-cta"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Content Text Alignment",
+      "options": [
+        { "value": "text-left", "label": "Left" },
+        { "value": "text-center", "label": "Center" },
+        { "value": "text-right", "label": "Right" }
+      ],
+      "default": "text-center",
+      "info": "Applies to main content and button block."
+    },
+    {
+        "type": "color",
+        "id": "background_color",
+        "label": "Section Background Color",
+        "default": "#1a1f2e" /* Defaulting to --color-secondary-dark */
+    }
+  ],
+  "presets": [{
+    "name": "Custom Message Block",
+    "settings": {
+        "title": "Your Engaging Headline",
+        "content_text": "<p>This is a great place to share details about a specific topic, announce something new, or provide instructions. Make it compelling!</p>",
+        "cta_label": "Discover More"
+    }
+  }]
+}
+{% endschema %}

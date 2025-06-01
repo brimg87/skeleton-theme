@@ -2,7 +2,6 @@
 {%- assign bg_image = section.settings.background_image -%}
 <section class="hero-section" {% if bg_image != blank %}style="background-image: url('{{ bg_image | image_url: width: 1920, height: 1080 }}');"{% endif %}>
 
-    {% comment %} --- BEGIN: Loader Overlay --- {% endcomment %}
     <div id="hero-loader-overlay">
         <div class="loader-text-container">
             <p class="loader-text">CONNECTING_TO_JORMUNGANDR_ORBITAL...</p>
@@ -10,11 +9,10 @@
             <p class="loader-text loader-text-final">SYSTEMS_ONLINE</p>
         </div>
     </div>
-    {% comment %} --- END: Loader Overlay --- {% endcomment %}
 
     <div class="hero-overlay"></div>
     
-    <div class="hero-content initially-hidden"> 
+    <div class="hero-content initially-hidden">
         {% if section.settings.main_heading != blank %}
             <h1 class="glitch-hero" data-text="{{ section.settings.main_heading | escape }}">{{ section.settings.main_heading | escape }}</h1>
         {% endif %}
@@ -22,7 +20,9 @@
             <p class="sub-hero-text">{{ section.settings.sub_heading | escape }}</p>
         {% endif %}
         {% if section.settings.button_label != blank and section.settings.button_link != blank %}
-            <a href="{{ section.settings.button_link }}" class="cta-button">{{ section.settings.button_label | escape }}</a>
+            <a href="{{ section.settings.button_link }}" class="btn btn-cta btn-product">
+              {{ section.settings.button_label | escape }}
+            </a>
         {% endif %}
     </div>
 </section>

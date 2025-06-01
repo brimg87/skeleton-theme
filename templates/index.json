@@ -23,14 +23,14 @@
         "title": "// SYSTEM_CATEGORIES //"
       }
     },
-    "about_us": {
-      "type": "index-about-snippet",
-      "settings": {
-        "title": "// PROPRIETOR_PROFILE: [ARTIST_NAME] //",
-        "text": "<p>Forged in the neon glow...</p>",
-        "signature": "[Artist_Name] - Lead Fabricator, Starside Armory"
-      }
-    },
+    "about_us": { 
+  "type": "custom-message-block", 
+  "settings": {
+    "title": "// PROPRIETOR_PROFILE: PRESTON_YARGER //", 
+    "content_text": "<p>Your initial content here...</p>", 
+    "cta_label": "Learn More" 
+  }
+},
     "newsletter": {
       "type": "index-newsletter-signup", 
       "settings": {

@@ -1,39 +1,52 @@
-<section class="newsletter-signup section-{{ section.id }}-padding">
+{% comment %} --- sections/index-newsletter-signup.liquid --- {% endcomment %}
+{%- liquid
+  assign section_bg_color = section.settings.background_color | default: 'var(--color-secondary-dark)'
+  assign text_align_class = section.settings.text_alignment | default: 'text-center'
+-%}
+
+<section class="newsletter-signup {{ text_align_class }}" 
+         style="background-color: {{ section_bg_color }}; padding-top: var(--space-section-padding-y); padding-bottom: var(--space-section-padding-y);">
   <div class="container">
-    {% if section.settings.title != blank %}
+    {%- if section.settings.title != blank -%}
       <h2 class="section-title" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
-    {% endif %}
+    {%- endif -%}
+
     {%- form 'customer', class: 'signup-form' -%}
       <input type="hidden" name="contact[tags]" value="newsletter">
-      <input
-        type="email"
-        name="contact[email]"
-        class="newsletter-input"
-        placeholder="{{ section.settings.placeholder_text | default: '[ENTER_YOUR_DATAPORT_ID (EMAIL)]' }}"
-        aria-label="{{ section.settings.placeholder_text | default: '[ENTER_YOUR_DATAPORT_ID (EMAIL)]' }}"
-        autocorrect="off"
-        autocapitalize="off"
-        required
-      >
-      <button type="submit" class="cta-button" name="commit">
-        {{ section.settings.button_text | default: '[TRANSMIT_ID]' }}
-      </button>
-    {%- endform -%}
+      {%- if form.posted_successfully? -%}
+        <p class="form-success terminal-green-glow py-md">//: ACKNOWLEDGED. WELCOME_TO_THE_RESISTANCE. ://</p>
+      {%- endif -%}
+      {%- if form.errors -%}
+        <div class="form-errors data-box py-sm px-md mb-md text-accent-red">
+            <p class="font-family-secondary">//: TRANSMISSION_ERROR ://</p>
+            {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
 
-    {%- if form.posted_successfully? -%}
-      <p class="form-success terminal-green-glow">//: TRANSMISSION_RECEIVED. WELCOME_TO_THE_NETWORK. ://</p>
-    {%- endif -%}
-    {%- if form.errors -%}
-      <p class="form-error terminal-red-glow">//: ERROR: {{ form.errors | default_errors }} ://</p>
-    {%- endif -%}
+      <div class="signup-form-fields d-flex"> 
+        <input type="email"
+               name="contact[email]"
+               class="form-input flex-grow-1"
+               placeholder="{{ section.settings.placeholder_text | default: '[ENTER_YOUR_DATAPORT_ID (EMAIL)]' }}"
+               aria-label="{{ section.settings.placeholder_text | default: '[ENTER_YOUR_DATAPORT_ID (EMAIL)]' }}"
+               autocorrect="off"
+               autocapitalize="off"
+               required
+               >
+        <button type="submit" class="btn btn-cta flex-shrink-0" name="commit">
+          {{ section.settings.button_text | default: '[TRANSMIT_ID]' }}
+        </button>
+      </div>
+    {%- endform -%}
   </div>
 </section>
 
+{% comment %} --- Add section schema if it doesn't exist or update it --- {% endcomment %}
 {% schema %}
 {
   "name": "Newsletter Signup",
   "tag": "section",
-  "class": "section-newsletter",
+  "class": "section-newsletter-signup", // Class for the section tag
   "settings": [
     {
       "type": "text",
@@ -44,7 +57,7 @@
     {
       "type": "text",
       "id": "placeholder_text",
-      "label": "Email Placeholder",
+      "label": "Email Input Placeholder",
       "default": "[ENTER_YOUR_DATAPORT_ID (EMAIL)]"
     },
     {
@@ -52,8 +65,29 @@
       "id": "button_text",
       "label": "Button Text",
       "default": "[TRANSMIT_ID]"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section Background Color",
+      "default": "#1a1f2e" // --color-secondary-dark
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Content Text Alignment",
+      "options": [
+        { "value": "text-left", "label": "Left" },
+        { "value": "text-center", "label": "Center" },
+        { "value": "text-right", "label": "Right" }
+      ],
+      "default": "text-center"
     }
   ],
-  "presets": [{ "name": "Newsletter Signup" }]
+  "presets": [
+    {
+      "name": "Newsletter Signup"
+    }
+  ]
 }
 {% endschema %}
