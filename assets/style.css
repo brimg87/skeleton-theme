@@ -376,6 +376,7 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 
 .product-card .product-name a:hover {
     color: var(--color-accent-yellow);
+    text-shadow: none;
 }
 
 .product-card .product-price {
@@ -637,7 +638,7 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 }
 
 .data-box-content { 
-    padding: var(--space-lg); 
+    padding: var(--space-md); 
     background-color: var(--color-secondary-dark); 
 }
 
@@ -895,7 +896,12 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 .category-card:hover .category-icon { color: var(--color-accent-cyan); }
 .category-icon { font-size: 2.5rem; margin-bottom: var(--space-md); color: var(--color-accent-cyan); line-height: 1; transition: color var(--transition-duration-normal) var(--transition-easing); }
 .category-icon img { max-height: 40px; width: auto; margin-bottom: 0; }
-.category-card > span:not(.category-icon) { font-family: var(--font-family-secondary); font-size: var(--font-size-md); display: block; margin-top: var(--space-xs); }
+.category-card .category-title { 
+    font-family: var(--font-family-secondary); 
+    font-size: var(--font-size-md); 
+    display: block; 
+    margin-top: var(--space-xs); 
+}
 
 /* --- Newsletter Signup Section --- */
 .signup-form { 
@@ -967,6 +973,18 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
     text-shadow: none; /* Remove general link shadow if not desired here */
 }
 
+.site-footer-terminal .footer-content .footer-link { 
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color var(--transition-duration-normal) var(--transition-easing);
+}
+
+.site-footer-terminal .footer-content .footer-link:hover,
+.site-footer-terminal .footer-content .footer-link:focus {
+    color: var(--color-accent-cyan);
+    text-shadow: 0 0 5px var(--color-accent-cyan);
+}
+
 /* --- Product Detail Page Specifics (from product-detail.html styling) --- */
 .breadcrumb-trail { background-color: var(--color-secondary-dark); padding: var(--space-sm) 0; font-family: var(--font-family-secondary); font-size: var(--font-size-sm); border-bottom: var(--border-width-thin) solid var(--color-border-primary); margin-top: var(--header-height); color: var(--color-text-secondary); }
 .breadcrumb-trail .container { max-width: var(--container-max-width); } /* Uses global .container */
@@ -981,7 +999,9 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 .thumbnail-gallery { display: flex; gap: var(--space-sm); margin-top: var(--space-md); flex-wrap: wrap; }
 .thumbnail-gallery .thumbnail-img { width: 100px; height: 80px; object-fit: cover; border: var(--border-width-medium) solid var(--color-border-primary); cursor: pointer; opacity: 0.7; transition: opacity var(--transition-duration-normal) var(--transition-easing), border-color var(--transition-duration-normal) var(--transition-easing); clip-path: polygon(0 5px, 5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px)); }
 .thumbnail-gallery .thumbnail-img:hover, .thumbnail-gallery .thumbnail-img.active { opacity: 1; border-color: var(--color-accent-cyan); box-shadow: 0 0 8px var(--color-accent-cyan); }
-.product-data { /* This is a .data-box now effectively */ padding: 0; /* Padding handled by inner or .data-box > :not() */ }
+.product-data { 
+    padding: 0; 
+}
 .product-title-detail { font-size: var(--font-size-h1); /* Or specific product title size */ color: var(--color-accent-yellow); margin-bottom: var(--space-xs); line-height: var(--line-height-tight); }
 .system-diagnostic-line { font-family: var(--font-family-secondary); font-size: var(--font-size-sm); margin-bottom: var(--space-md); padding: var(--space-xs) var(--space-sm); background-color: rgba(0,0,0,0.2); border-left: 3px solid var(--color-accent-green); display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-md); align-items: center; }
 .diag-label { color: var(--color-text-secondary); opacity: 0.8; }
@@ -1326,6 +1346,7 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 
 .product-card .product-name a:hover {
     color: var(--color-accent-yellow);
+    text-shadow: none;
 }
 
 .product-card .product-price {
@@ -1412,4 +1433,21 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
     left: -2px;
     text-shadow: -1px 0 var(--color-accent-cyan), 1px 1px var(--color-accent-green);
     animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
+}
+
+.custom-message-content.data-box {
+    margin-bottom: var(--space-lg);
+}
+
+.custom-message-content.data-box > div:not(.data-box-header) {
+    padding: var(--space-lg);
+}
+
+.custom-message-content .rte {
+    padding: var(--space-lg);
+}
+
+.custom-message-content .rte p {
+    margin: 0;
+    padding: var(--space-md) 0;
 }
