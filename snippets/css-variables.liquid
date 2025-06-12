@@ -6,7 +6,7 @@
   {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
 
   :root {
-    /* Colors */
+    /* Base Colors */
     --color-primary-dark: {{ settings.color_primary_dark }};
     --color-secondary-dark: {{ settings.color_secondary_dark }};
     --color-accent-green: {{ settings.color_accent_green }};
@@ -19,7 +19,18 @@
     --color-background-card: var(--color-secondary-dark);
     --color-text-primary: var(--color-white);
     --color-text-secondary: rgba(255, 255, 255, 0.7);
-    --color-border: rgba(255, 255, 255, 0.1);
+    --color-text-highlight: var(--color-accent-green);
+    --color-text-headings-default: var(--color-accent-green);
+    --color-text-link: var(--color-accent-cyan);
+    --color-text-link-hover: var(--color-accent-green);
+    --color-text-on-accent: var(--color-primary-dark);
+    --color-border-primary: var(--color-accent-cyan);
+    --color-border-secondary: rgba(255, 255, 255, 0.1);
+
+    /* RGB Values for Opacity */
+    --color-accent-green-rgb: 0, 255, 0;
+    --color-accent-magenta-rgb: 255, 0, 255;
+    --color-accent-cyan-rgb: 0, 255, 255;
 
     /* Typography */
     --font-primary: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};

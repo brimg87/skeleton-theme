@@ -18,13 +18,13 @@
         "type": "color",
         "id": "color_primary_dark",
         "label": "Primary Dark",
-        "default": "#0a0f1f"
+        "default": "#1a1a1a"
       },
       {
         "type": "color",
         "id": "color_secondary_dark",
         "label": "Secondary Dark",
-        "default": "#1a1a1a"
+        "default": "#2a2a2a"
       },
       {
         "type": "header",
@@ -99,23 +99,6 @@
         "unit": "px",
         "label": "t:labels.page_margin",
         "default": 20
-      }
-    ]
-  },
-  {
-    "name": "t:general.colors",
-    "settings": [
-      {
-        "type": "color",
-        "id": "background_color",
-        "default": "#FFFFFF",
-        "label": "t:labels.background"
-      },
-      {
-        "type": "color",
-        "id": "foreground_color",
-        "default": "#333333",
-        "label": "t:labels.foreground"
       },
       {
         "type": "range",

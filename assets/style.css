@@ -1,27 +1,6 @@
 :root {
     /* === COLORS === */
-    /* Primary Colors */
-    --color-primary-dark: #0a0f1f; /* Dark Gray */
-    --color-secondary-dark: #1a1a1a; /* Black */
-    --color-accent-green: #00ff00; /* Lime Green */
-    --color-accent-magenta: #ff00ff; /* Magenta */
-    --color-accent-cyan: #00ffff; /* Cyan */
-    --color-white: #ffffff; /* White */
-    
-    /* Derived Colors */
-    --color-background-body: var(--color-primary-dark);
-    --color-background-card: var(--color-secondary-dark);
-    --color-text-primary: var(--color-white);
-    --color-text-secondary: rgba(255, 255, 255, 0.7);
-    --color-text-highlight: var(--color-accent-green);
-    --color-text-headings-default: var(--color-accent-green); /* Changed to lime green */
-    --color-border-primary: var(--color-accent-cyan); /* Changed to cyan */
-    --color-border-secondary: rgba(255, 255, 255, 0.1);
-    
-    /* RGB Values for Opacity */
-    --color-accent-green-rgb: 0, 255, 0;
-    --color-accent-magenta-rgb: 255, 0, 255;
-    --color-accent-cyan-rgb: 0, 255, 255;
+    /* All color variables are now defined in snippets/css-variables.liquid */
     
     /* === TYPOGRAPHY === */
     --font-family-primary: 'Orbitron', sans-serif;
@@ -100,6 +79,10 @@
     --clip-path-data-box: polygon(0 8px, 8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px));
     --clip-path-input: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
     --clip-path-qty-button: polygon(3px 0, calc(100% - 3px) 0, 100% 3px, 100% calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - 3px), 0 3px);
+
+    /* Debug Colors */
+    --debug-primary: #ff0000;
+    --debug-secondary: #00ff00;
 }
 
 /* === GLOBAL RESETS & BASE STYLES === */
@@ -286,7 +269,7 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 
 .product-card {
     width: 100%;
-    background-color: var(--color-secondary-dark);
+    background-color: var(--color-primary-dark);
     border: var(--border-width-thin) solid var(--color-border-primary);
     transition: all var(--transition-duration-normal) var(--transition-easing);
     position: relative;
@@ -373,6 +356,9 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
+    background-color: var(--color-secondary-dark);
+    border-top: var(--border-width-thin) solid var(--color-accent-cyan);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
 .product-card .product-name {
@@ -738,14 +724,14 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
     padding: 0;
     position: relative;
     top: 2px;
-    color: var(--color-text-primary);
+    color: var(--color-accent-green);
     transition: color var(--transition-duration-normal) var(--transition-easing),
                 text-shadow var(--transition-duration-normal) var(--transition-easing);
 }
 
 .site-header .main-nav a:hover {
-    color: var(--color-accent-cyan);
-    text-shadow: 0 0 5px var(--color-accent-cyan);
+    color: var(--color-accent-green);
+    text-shadow: 0 0 5px var(--color-accent-green);
 }
 
 .site-header .user-interface {
@@ -789,6 +775,48 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
     background-size: cover;
     overflow: hidden; /* Contains loader and overlay */
 }
+
+/* Section spacing */
+.section-title-container,
+.product-showcase,
+.section-custom-message-block,
+.section-category-access,
+.section-newsletter-signup,
+.related-showcase,
+.product-interface-section,
+.collection-page {
+    padding-top: var(--space-section-padding-y);
+    padding-bottom: var(--space-section-padding-y);
+    padding-left: var(--container-padding-x-md);
+    padding-right: var(--container-padding-x-md);
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-xl);
+}
+
+/* First section shouldn't have top margin */
+.section-title-container:first-child,
+.product-showcase:first-child,
+.section-custom-message-block:first-child,
+.section-category-access:first-child,
+.section-newsletter-signup:first-child,
+.related-showcase:first-child,
+.product-interface-section:first-child,
+.collection-page:first-child {
+    margin-top: 0;
+}
+
+/* Last section shouldn't have bottom margin */
+.section-title-container:last-child,
+.product-showcase:last-child,
+.section-custom-message-block:last-child,
+.section-category-access:last-child,
+.section-newsletter-signup:last-child,
+.related-showcase:last-child,
+.product-interface-section:last-child,
+.collection-page:last-child {
+    margin-bottom: 0;
+}
+
 .hero-overlay { /* This is the visual dark overlay, not the loader */
     position: absolute;
     top: 0;
@@ -836,70 +864,50 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 .loader-text:nth-child(2) { animation-delay: 0.7s; }
 .loader-text:nth-child(3) { animation-delay: 1.2s; }
 .loader-text-final { color: var(--color-accent-green); text-transform: uppercase; }
-#hero-loader-overlay.hidden { opacity: 0; visibility: hidden; transition: opacity 0.5s ease-out, visibility 0s linear 0.5s; }
+#hero-loader-overlay.hidden { opacity: 0; visibility: hidden; transition: opacity 0.5s ease-out, visibility 0s linear 0s; }
 .hero-content.initially-hidden { opacity: 0; transition: opacity 0.6s ease-in; }
 .hero-content.revealed { opacity: 1; }
 
 
-/* --- Section Title & Product Showcase/Grid (Homepage) --- */
-.section-title-container, /* If you wrap section titles for centering or max-width */
-.product-showcase,
-.section-custom-message-block, /* Was .proprietor-profile or .section-about-snippet */
-.section-category-access,
-.section-newsletter-signup,
-.related-showcase,
-.product-interface-section,
-.collection-page { /* General class for collection page content area */
-    padding-top: var(--space-section-padding-y);
-    padding-bottom: var(--space-section-padding-y);
-    padding-left: var(--container-padding-x-md);
-    padding-right: var(--container-padding-x-md);
-}
-/* Sections with inner .container will have horizontal padding from .container */
-/* Sections without inner .container need horizontal padding: */
-.product-showcase, /* Assuming these don't always have an inner .container for full-bleed potential */
-.section-category-access {
-    padding-left: var(--container-padding-x-md);
-    padding-right: var(--container-padding-x-md);
-}
-
-/* Specific background colors for sections */
-.product-showcase { background-color: var(--color-primary-dark); }
-.section-category-access { background-color: var(--color-secondary-dark); }
-.section-custom-message-block { background-color: var(--color-background-body); } /* Match body background */
-.section-newsletter-signup { background-color: var(--color-secondary-dark); }
-.related-showcase { background-color: var(--color-secondary-dark); border-top: 2px solid var(--color-accent-green); }
-.product-interface-section { background-color: var(--color-primary-dark); }
-.collection-page { background-color: var(--color-primary-dark); }
-
-
-h2.section-title {
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: var(--space-xl);
-    color: var(--color-accent-green);
-    font-size: var(--font-size-section-title);
-    position: relative;
-    text-shadow: 0 0 3px var(--color-primary-dark), 0 0 5px var(--color-accent-green);
-}
-h2.section-title::before, h2.section-title::after { content: ''; position: absolute; top: 50%; width: 15%; height: var(--border-width-thin); background: var(--color-border-primary); opacity: 0.5; }
-h2.section-title::before { left: 10%; }
-h2.section-title::after { right: 10%; }
-.section-title[data-text]::before { left: 2px; text-shadow: -1px 0 var(--color-accent-magenta); animation: glitch-anim-1 2.5s infinite linear alternate-reverse; }
-.section-title[data-text]::after { left: -2px; text-shadow: 1px 0 var(--color-accent-green); animation: glitch-anim-2 2.5s infinite linear alternate-reverse; }
-.section-title[data-text]::before, .section-title[data-text]::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; background: var(--color-background-body); /* Match section background if possible */ }
-
-
 .category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-lg); text-align: center; }
-.category-card { background-color: var(--color-primary-dark); padding: var(--space-xl) var(--space-md); border: var(--border-width-thin) solid var(--color-border-primary); display: flex; flex-direction: column; align-items: center; justify-content: center; clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px); color: var(--color-text-highlight); transition: background-color var(--transition-duration-normal) var(--transition-easing), border-color var(--transition-duration-normal) var(--transition-easing), transform var(--transition-duration-fast) var(--transition-easing); }
-.category-card:hover, .category-card:focus { background-color: var(--color-secondary-dark); border-color: var(--color-accent-cyan); transform: translateY(-3px); outline: none; color: var(--color-accent-cyan); }
+.category-card { 
+  background-color: var(--color-secondary-dark);
+  padding: var(--space-xl) var(--space-md);
+  border: var(--border-width-thin) solid var(--color-border-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px);
+  color: var(--color-text-highlight);
+  transition: all var(--transition-duration-normal) var(--transition-easing);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.category-card:hover, 
+.category-card:focus { 
+  background-color: var(--color-background-card);
+  border-color: var(--color-accent-cyan);
+  transform: translateY(-3px);
+  outline: none;
+  color: var(--color-accent-cyan);
+  box-shadow: 0 6px 16px rgba(0, 255, 255, 0.2);
+}
 .category-card:hover .category-icon { color: var(--color-accent-cyan); }
 .category-icon { font-size: 2.5rem; margin-bottom: var(--space-md); color: var(--color-accent-cyan); line-height: 1; transition: color var(--transition-duration-normal) var(--transition-easing); }
 .category-icon img { max-height: 40px; width: auto; margin-bottom: 0; }
 .category-card > span:not(.category-icon) { font-family: var(--font-family-secondary); font-size: var(--font-size-md); display: block; margin-top: var(--space-xs); }
 
 /* --- Newsletter Signup Section --- */
-.signup-form { max-width: 600px; margin-left: auto; margin-right: auto; }
+.signup-form { 
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: var(--color-secondary-dark);
+  padding: var(--space-xl);
+  border: var(--border-width-thin) solid var(--color-border-primary);
+  border-radius: var(--border-radius-subtle);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
 .signup-form-fields { display: flex; gap: var(--space-sm); }
 .signup-form .form-success { color: var(--color-accent-green); font-family: var(--font-family-secondary); }
 .signup-form .form-errors { color: var(--color-accent-red); font-family: var(--font-family-secondary); margin-bottom: var(--space-md); }
@@ -1203,4 +1211,205 @@ h2.section-title::after { right: 10%; }
   padding: var(--space-sm) var(--space-md);
   text-align: right;
   font-family: var(--font-family-secondary);
+}
+
+/* Debug Classes */
+.debug-primary { background-color: var(--debug-primary) !important; }
+.debug-secondary { background-color: var(--debug-secondary) !important; }
+
+.product-card {
+    width: 100%;
+    background-color: var(--color-primary-dark);
+    border: var(--border-width-thin) solid var(--color-border-primary);
+    transition: all var(--transition-duration-normal) var(--transition-easing);
+    position: relative;
+    clip-path: var(--clip-path-card);
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border-color: var(--color-accent-magenta);
+}
+
+.product-card .product-image {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1.2;
+    background-color: var(--color-primary-dark);
+}
+
+.product-card .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-duration-normal) var(--transition-easing);
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+/* Clean implementation of scan line effect */
+.product-card .product-image::before,
+.product-card .product-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-card:hover .product-image::before {
+    opacity: 0.1;
+    background: linear-gradient(
+        transparent 0%,
+        rgba(255, 0, 255, 0.1) 50%,
+        transparent 100%
+    );
+    animation: scanline 1s linear infinite;
+}
+
+.product-card:hover .product-image::after {
+    opacity: 0.1;
+    background: linear-gradient(
+        transparent 0%,
+        rgba(0, 255, 255, 0.1) 50%,
+        transparent 100%
+    );
+    animation: scanline 1s linear infinite reverse;
+}
+
+@keyframes scanline {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(100%);
+    }
+}
+
+/* Remove all default pseudo-elements */
+.product-card .product-image::before,
+.product-card .product-image::after {
+    display: none;
+}
+
+.product-card .product-info {
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    background-color: var(--color-secondary-dark);
+    border-top: var(--border-width-thin) solid var(--color-accent-cyan);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.product-card .product-name {
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-card-title);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.product-card .product-name a {
+    color: var(--color-text-highlight);
+    text-decoration: none;
+    transition: color var(--transition-duration-normal) var(--transition-easing);
+}
+
+.product-card .product-name a:hover {
+    color: var(--color-accent-yellow);
+}
+
+.product-card .product-price {
+    font-family: var(--font-family-secondary);
+    font-size: var(--font-size-md);
+    color: var(--color-accent-green);
+    margin: 0;
+}
+
+.product-card .product-button {
+    display: inline-block;
+    padding: var(--space-sm) var(--space-md);
+    background-color: transparent;
+    color: var(--color-accent-green);
+    text-decoration: none;
+    font-family: var(--font-family-secondary);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    border: var(--border-width-thin) solid var(--color-accent-green);
+    transition: all var(--transition-duration-normal) var(--transition-easing);
+    text-align: center;
+    width: 100%;
+    margin-top: var(--space-sm);
+}
+
+.product-card .product-button:hover {
+    background-color: var(--color-accent-green);
+    color: var(--color-darkest);
+    box-shadow: 0 0 15px rgba(var(--color-accent-magenta-rgb), 0.3);
+    border-color: var(--color-accent-magenta);
+}
+
+/* Section spacing */
+.section-padding {
+    padding-top: var(--space-section-padding-y);
+    padding-bottom: var(--space-section-padding-y);
+    padding-left: var(--container-padding-x-md);
+    padding-right: var(--container-padding-x-md);
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.section-padding:first-child {
+    margin-top: 0;
+}
+
+.section-padding:last-child {
+    margin-bottom: 0;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: var(--space-xxl);
+    position: relative;
+    font-family: var(--font-family-primary);
+    color: var(--color-accent-green);
+    text-shadow: 0 0 10px var(--color-accent-green);
+}
+
+.section-title[data-text] {
+    color: var(--color-accent-green);
+}
+
+.section-title[data-text]::before,
+.section-title[data-text]::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    overflow: hidden;
+    color: var(--color-accent-green);
+}
+
+.section-title[data-text]::before {
+    left: 2px;
+    text-shadow: -1px 0 var(--color-accent-magenta);
+    animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
+}
+
+.section-title[data-text]::after {
+    left: -2px;
+    text-shadow: -1px 0 var(--color-accent-cyan), 1px 1px var(--color-accent-green);
+    animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
 }
