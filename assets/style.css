@@ -72,7 +72,7 @@
     --space-lg:  calc(6 * var(--space-unit));  /* 24px */
     --space-xl:  calc(8 * var(--space-unit));  /* 32px */
     --space-xxl: calc(12 * var(--space-unit)); /* 48px */
-    --space-section-padding-y: var(--space-xl);
+    --space-section-padding-y: var(--space-xxl);
 
     /* === BORDERS === */
     --border-width-thin: 1px;
