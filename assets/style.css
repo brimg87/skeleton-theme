@@ -292,7 +292,7 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
     transform: scale(1.05);
 }
 
-/* Scan line effect - only on hover */
+/* Clean implementation of scan line effect */
 .product-card .product-image::before,
 .product-card .product-image::after {
     content: '';
@@ -951,9 +951,9 @@ h2.section-title::after { right: 10%; }
 
 /* === ANIMATIONS & EFFECTS === */
 /* --- CRT/Scanline Effects (from original) --- */
-.scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: var(--z-index-critical-overlay); background: repeating-linear-gradient( transparent, transparent 2px, rgba(0, 0, 0, 0.2) 3px, rgba(0, 0, 0, 0.2) 4px ); opacity: 0.6; }
-.crt-effect::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); z-index: calc(var(--z-index-critical-overlay) - 1); background-size: 100% 2px, 3px 100%; pointer-events: none; animation: flicker 0.15s infinite; opacity: 0.7; }
-@keyframes flicker { 0% { opacity: 0.2; } 20% { opacity: 0.8; } 40% { opacity: 0.3; } 60% { opacity: 0.9; } 80% { opacity: 0.2; } 100% { opacity: 0.7; } }
+.scanlines {
+    display: none; /* Temporarily disable global scan lines */
+}
 
 /* --- Glitch Text Animations (from original, ensure these are present) --- */
 @keyframes glitch-anim-1 { 0% { clip-path: inset(10% 0 80% 0); } 20% { clip-path: inset(50% 0 30% 0); } 40% { clip-path: inset(25% 0 60% 0); } 60% { clip-path: inset(70% 0 10% 0); } 80% { clip-path: inset(40% 0 45% 0); } 100% { clip-path: inset(85% 0 5% 0); } }
