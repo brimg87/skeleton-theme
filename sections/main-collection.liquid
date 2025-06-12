@@ -23,27 +23,23 @@
     {% if section.settings.enable_filtering and collection.filters.size > 0 %}
       <aside class="collection-filters-sidebar data-box" id="CollectionFiltersForm">
         <div class="data-box-header">//: FILTER_PROTOCOL ://</div>
-        {%- form 'collection_filters', id: 'collection-filters-form' -%}
-          <div class="collection-filters-content">
-            {%- for filter in collection.filters -%}
-              <div class="collection-filter-group">
-                <h3 class="filter-group-title">{{ filter.label | escape }}</h3>
-                <ul class="filter-values-list">
-                  {%- case filter.type -%}
-                    {%- when 'list' -%}
-                      {%- for value in filter.values -%}
-                        <li class="filter-value">
-                          <input type="checkbox"
-                                 name="{{ value.param_name }}"
-                                 value="{{ value.value }}"
-                                 id="Filter-{{ filter.label | handleize }}-{{ forloop.index }}"
-                                 {% if value.active %}checked{% endif %}
-                                 {% if value.count == 0 and value.active == false %}disabled{% endif %}>
-                          <label for="Filter-{{ filter.label | handleize }}-{{ forloop.index }}">
-                            {{ value.label | escape }} ({{ value.count }})
-                          </label>
-                        </li>
-                      {%- endfor -%}
+        <div class="collection-filters-content">
+          {%- for filter in collection.filters -%}
+            <div class="collection-filter-group">
+              <h3 class="filter-group-title">{{ filter.label | escape }}</h3>
+              <ul class="filter-values-list">
+                {%- case filter.type -%}
+                  {%- when 'list' -%}
+                    {%- for value in filter.values -%}
+                      <li class="filter-value">
+                        <a href="{{ value.url_to_remove | default: value.url_to_add }}" 
+                           class="filter-link {% if value.active %}active{% endif %}"
+                           {% if value.count == 0 and value.active == false %}disabled{% endif %}>
+                          {{ value.label | escape }} ({{ value.count }})
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  
                     {%- when 'price_range' -%}
                       <li class="filter-value filter-price-range">
                         <div class="price-range-inputs">
@@ -54,7 +50,8 @@
                                  type="number"
                                  placeholder="Min"
                                  min="0"
-                                 max="{{ filter.range_max | money_without_currency | replace: ',', '' }}">
+                                 max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                 onchange="updatePriceFilter(this)">
                           <span class="currency">{{ cart.currency.symbol }}</span>
                           <input name="{{ filter.max_value.param_name }}"
                                  id="Filter-{{ filter.label | handleize }}-max"
@@ -62,17 +59,16 @@
                                  type="number"
                                  placeholder="Max"
                                  min="0"
-                                 max="{{ filter.range_max | money_without_currency | replace: ',', '' }}">
+                                 max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                 onchange="updatePriceFilter(this)">
                         </div>
                       </li>
-                  {%- endcase -%}
-                </ul>
-              </div>
-            {%- endfor -%}
-            <button type="submit" class="cta-button filter-apply-button">[APPLY_FILTERS]</button>
-            <a href="{{ collection.url }}" class="filter-reset-button">[RESET_FILTERS]</a>
-          </div>
-        {%- endform -%}
+                {%- endcase -%}
+              </ul>
+            </div>
+          {%- endfor -%}
+          <a href="{{ collection.url }}" class="filter-reset-button">[RESET_FILTERS]</a>
+        </div>
       </aside>
     {% endif %}
 
@@ -180,3 +176,22 @@
   ]
 }
 {% endschema %}
+
+<script>
+  function updatePriceFilter(input) {
+    const minInput = document.querySelector('input[name="{{ filter.min_value.param_name }}"]');
+    const maxInput = document.querySelector('input[name="{{ filter.max_value.param_name }}"]');
+    
+    if (minInput && maxInput) {
+      const minValue = minInput.value;
+      const maxValue = maxInput.value;
+      
+      if (minValue || maxValue) {
+        const url = new URL(window.location.href);
+        if (minValue) url.searchParams.set(minInput.name, minValue);
+        if (maxValue) url.searchParams.set(maxInput.name, maxValue);
+        window.location.href = url.toString();
+      }
+    }
+  }
+</script>
