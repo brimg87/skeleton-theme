@@ -1,8 +1,5 @@
 {% comment %}
-  In a real OS 2.0 theme, this template would likely just be a JSON file
-  that references sections like 'product-main-image.liquid', 'product-info.liquid',
-  'product-recommendations.liquid'. For simplicity here, I'm putting more direct Liquid.
-  Consider this a starting point to be broken into sections.
+  Product page section with consistent styling and structure
 {% endcomment %}
 
 <section class="breadcrumb-trail">
@@ -16,109 +13,135 @@
 </section>
 
 <section class="product-interface-section section-{{ section.id }}-padding">
-  <div class="container product-layout">
-    <div class="product-visuals">
-      <div class="primary-image-container">
-        {%- if product.featured_image -%}
-          <img src="{{ product.featured_image | image_url: width: 600, height: 500, crop: 'center' }}" 
-               alt="{{ product.featured_image.alt | escape }}" 
-               id="primaryProductImage">
-        {%- else -%}
-          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg product-image-placeholder' }}
-        {%- endif -%}
-        <div class="image-overlay-data">SYS_IMG_DISPLAY_01</div>
-      </div>
-      {% if product.images.size > 1 %}
-      <div class="thumbnail-gallery">
-        {% for image in product.images %}
-          <img src="{{ image | image_url: width: 100, height: 80, crop: 'center' }}" 
-               alt="{{ image.alt | escape }}" 
-               class="thumbnail-img {% if image == product.featured_image %}active{% endif %}" 
-               data-src="{{ image | image_url: width: 600, height: 500, crop: 'center' }}">
-        {% endfor %}
-      </div>
-      {% endif %}
-    </div>
-
-    <div class="product-data">
-      <h1 class="product-title-detail glitch" data-text="{{ product.title | escape }}">{{ product.title | escape }}</h1>
-      
-      <div class="system-diagnostic-line">
-          <span class="diag-label">//:ITEM_IDENT:</span>
-          <span class="diag-value id-value">{{ product.variants.first.sku | default: 'N/A' }}</span>
-          <span class="diag-label">//:OP_STATUS:</span>
-          <span class="diag-value status-value {% if product.available %}status-operational{% else %}status-offline{% endif %}">
-            {% if product.available %}[AVAILABLE]{% else %}[OUT_OF_STOCK]{% endif %}
-          </span>
-      </div>
-
-      {% if product.description != blank %}
-        <div class="product-short-desc rte"> {{ product.description | split: '' | first }} comment -->
+  <div class="container">
+    <div class="product-layout">
+      <div class="product-visuals data-box">
+        <div class="data-box-header">//: VISUAL_DATA ://</div>
+        <div class="primary-image-container">
+          {%- if product.featured_image -%}
+            <img src="{{ product.featured_image | image_url: width: 600, height: 500, crop: 'center' }}" 
+                 alt="{{ product.featured_image.alt | escape }}" 
+                 id="primaryProductImage">
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg product-image-placeholder' }}
+          {%- endif -%}
+          <div class="image-overlay-data">SYS_IMG_DISPLAY_01</div>
         </div>
-      {% endif %}
-
-      <div class="price-block data-box">
-          <div class="data-box-header">//:TRANSACTION_MODULE://</div>
-          <div class="price-content">
-              <span class="price-label">ACQUISITION_COST:</span>
-              <span class="product-price-detail terminal-green-glow" id="ProductPrice-{{ section.id }}">
-                {{ product.price | money }}
-              </span>
-              {% if product.compare_at_price > product.price %}
-                <span class="compare-at-price">{{ product.compare_at_price | money }}</span>
-              {% endif %}
-              <span class="stock-indicator">//:STOCK_LEVEL: 
-                {% if product.selected_or_first_available_variant.inventory_management == "shopify" and product.selected_or_first_available_variant.inventory_quantity <= 0 %}
-                  [DEPLETED]
-                {% elsif product.selected_or_first_available_variant.inventory_quantity < 5 and product.selected_or_first_available_variant.inventory_quantity > 0 %}
-                  [LOW]
-                {% else %}
-                  [AVAILABLE]
-                {% endif %}
-              </span>
-          </div>
+        {% if product.images.size > 1 %}
+        <div class="thumbnail-gallery">
+          {% for image in product.images %}
+            <img src="{{ image | image_url: width: 100, height: 80, crop: 'center' }}" 
+                 alt="{{ image.alt | escape }}" 
+                 class="thumbnail-img {% if image == product.featured_image %}active{% endif %}" 
+                 data-src="{{ image | image_url: width: 600, height: 500, crop: 'center' }}">
+          {% endfor %}
+        </div>
+        {% endif %}
       </div>
 
-      {%- form 'product', product, id: "product-form-installment", class: "installment_form" -%}
-        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-        
-        <div class="actions-block data-box">
-            <div class="data-box-header">//:ENGAGEMENT_PROTOCOL://</div>
-            <div class="action-content">
-                <div class="quantity-selector">
-                    <label for="Quantity-{{ section.id }}" class="diag-label">QTY:</label>
-                    <button type="button" class="qty-btn" data-action="decrease">-</button>
-                    <input type="number" id="Quantity-{{ section.id }}" name="quantity" value="1" min="1" 
-                           {% if product.selected_or_first_available_variant.inventory_management == "shopify" and product.selected_or_first_available_variant.inventory_policy == "deny" %}
-                             max="{{ product.selected_or_first_available_variant.inventory_quantity }}"
-                           {% endif %}
-                           readonly>
-                    <button type="button" class="qty-btn" data-action="increase">+</button>
+      <div class="product-data">
+        <div class="data-box">
+          <div class="data-box-header">//: ITEM_SPECIFICATIONS ://</div>
+          <div class="product-info-content">
+            <h1 class="product-title-detail glitch" data-text="{{ product.title | escape }}">{{ product.title | escape }}</h1>
+            
+            <div class="system-diagnostic-line">
+                <span class="diag-label">//:ITEM_IDENT:</span>
+                <span class="diag-value id-value">{{ product.variants.first.sku | default: 'N/A' }}</span>
+                <span class="diag-label">//:OP_STATUS:</span>
+                <span class="diag-value status-value {% if product.available %}status-operational{% else %}status-offline{% endif %}">
+                  {% if product.available %}[AVAILABLE]{% else %}[OUT_OF_STOCK]{% endif %}
+                </span>
+            </div>
+
+            {% if product.description != blank %}
+              <div class="product-short-desc rte">{{ product.description }}</div>
+            {% endif %}
+
+            <div class="price-block data-box">
+                <div class="data-box-header">//:TRANSACTION_MODULE://</div>
+                <div class="price-content">
+                    <span class="price-label">ACQUISITION_COST:</span>
+                    <span class="product-price-detail terminal-green-glow" id="ProductPrice-{{ section.id }}">
+                      {{ product.price | money }}
+                    </span>
+                    {% if product.compare_at_price > product.price %}
+                      <span class="compare-at-price">{{ product.compare_at_price | money }}</span>
+                    {% endif %}
+                    <span class="stock-indicator">//:STOCK_LEVEL: 
+                      {% if product.selected_or_first_available_variant.inventory_management == "shopify" and product.selected_or_first_available_variant.inventory_quantity <= 0 %}
+                        [DEPLETED]
+                      {% elsif product.selected_or_first_available_variant.inventory_quantity < 5 and product.selected_or_first_available_variant.inventory_quantity > 0 %}
+                        [LOW]
+                      {% else %}
+                        [AVAILABLE]
+                      {% endif %}
+                    </span>
                 </div>
-                <button type="submit" name="add" class="cta-button product-page-cta primary-action" 
-                        {% unless product.selected_or_first_available_variant.available %}disabled="disabled"{% endunless %}>
-                  {% if product.selected_or_first_available_variant.available %}
-                    [ADD_TO_INVENTORY_CORE]
-                  {% else %}
-                    [ASSET_UNAVAILABLE]
-                  {% endif %}
-                </button>
             </div>
+
+            {%- form 'product', product, id: "product-form-installment", class: "installment_form" -%}
+              <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+              
+              <div class="actions-block data-box">
+                  <div class="data-box-header">//:ENGAGEMENT_PROTOCOL://</div>
+                  <div class="action-content">
+                      <div class="quantity-selector">
+                          <label for="Quantity-{{ section.id }}" class="diag-label">QTY:</label>
+                          <button type="button" class="qty-btn" data-action="decrease">-</button>
+                          <input type="number" id="Quantity-{{ section.id }}" name="quantity" value="1" min="1" 
+                                 {% if product.selected_or_first_available_variant.inventory_management == "shopify" and product.selected_or_first_available_variant.inventory_policy == "deny" %}
+                                   max="{{ product.selected_or_first_available_variant.inventory_quantity }}"
+                                 {% endif %}
+                                 readonly>
+                          <button type="button" class="qty-btn" data-action="increase">+</button>
+                      </div>
+                      <button type="submit" name="add" class="btn btn-cta-primary product-page-cta" 
+                              {% unless product.selected_or_first_available_variant.available %}disabled="disabled"{% endunless %}>
+                        {% if product.selected_or_first_available_variant.available %}
+                          [ADD_TO_INVENTORY_CORE]
+                        {% else %}
+                          [ASSET_UNAVAILABLE]
+                        {% endif %}
+                      </button>
+                  </div>
+              </div>
+            {%- endform -%}
+          </div>
         </div>
-      {%- endform -%}
-      
-      <div class="product-data-tabs data-box">
-        <div class="data-box-header">//:DATA_STREAMS://</div>
-        <div class="tab-headers">
-            <button class="tab-link active" data-tab="tab-desc">//_DESCRIPTION</button>
-            </div>
-        <div id="tab-desc" class="tab-content active rte">
-            {{ product.description }}
-        </div>
-        </div>
+      </div>
     </div>
   </div>
 </section>
+
+{% schema %}
+{
+  "name": "Product",
+  "tag": "section",
+  "class": "section-product",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quantity_selector",
+      "label": "Show quantity selector",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_payment_button",
+      "label": "Show dynamic checkout button",
+      "info": "Lets customers check out directly using their preferred payment method. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+      "default": true
+    }
+  ]
+}
+{% endschema %}
 
 {% comment %} Recommended products section would typically be its own section file {% endcomment %}
 {% section 'product-recommendations' %}

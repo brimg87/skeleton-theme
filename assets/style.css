@@ -270,13 +270,22 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    max-width: calc(280px * 4 + var(--space-lg) * 3); /* 4 columns + 3 gaps */
-    margin: 0 auto;
     gap: var(--space-lg);
     padding: var(--space-md) 0;
+    margin: 0 auto;
+    width: 100%;
+    justify-content: center;
+}
+
+/* When there are 3 or fewer items, ensure they don't stretch too wide */
+.product-grid:has(.product-card:nth-child(3):last-child),
+.product-grid:has(.product-card:nth-child(2):last-child),
+.product-grid:has(.product-card:nth-child(1):last-child) {
+    max-width: calc(280px * 3 + var(--space-lg) * 2);
 }
 
 .product-card {
+    width: 100%;
     background-color: var(--color-secondary-dark);
     border: var(--border-width-thin) solid var(--color-border-primary);
     transition: all var(--transition-duration-normal) var(--transition-easing);
@@ -444,19 +453,19 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 /* Responsive Adjustments */
 @media (max-width: 1200px) {
     .product-grid {
-        max-width: calc(280px * 3 + var(--space-lg) * 2); /* 3 columns + 2 gaps */
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
 }
 
 @media (max-width: 900px) {
     .product-grid {
-        max-width: calc(280px * 2 + var(--space-lg)); /* 2 columns + 1 gap */
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
 }
 
 @media (max-width: 768px) {
     .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: var(--space-md);
     }
     
@@ -623,10 +632,28 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 }
 
 /* --- Data Boxes --- */
-.data-box { border: var(--border-width-thin) solid var(--color-border-primary); background-color: var(--color-background-data-box); margin-bottom: var(--space-lg); clip-path: var(--clip-path-data-box); }
-.data-box-header { background-color: var(--color-primary-dark); color: var(--color-accent-green); padding: var(--space-sm) var(--space-md); font-family: var(--font-family-secondary); font-size: var(--font-size-sm); text-transform: uppercase; letter-spacing: 1px; border-bottom: var(--border-width-thin) solid var(--color-accent-green); }
-.data-box > :not(.data-box-header) { padding: var(--space-lg); }
-.collection-filters-content, .action-content { padding: var(--space-lg); } /* Confirm these are always direct children or adjust selector */
+.data-box { 
+    border: var(--border-width-thin) solid var(--color-border-primary); 
+    background-color: var(--color-secondary-dark); 
+    margin-bottom: var(--space-lg); 
+    clip-path: var(--clip-path-data-box); 
+}
+
+.data-box-header { 
+    background-color: var(--color-primary-dark); 
+    color: var(--color-accent-green); 
+    padding: var(--space-sm) var(--space-md); 
+    font-family: var(--font-family-secondary); 
+    font-size: var(--font-size-sm); 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+    border-bottom: var(--border-width-thin) solid var(--color-accent-green); 
+}
+
+.data-box-content { 
+    padding: var(--space-lg); 
+    background-color: var(--color-secondary-dark); 
+}
 
 /* --- Forms & Inputs --- */
 .form-input, .form-select, input[type="text"], input[type="email"], input[type="password"], input[type="search"], input[type="tel"], input[type="url"], input[type="number"], textarea, select { display: block; width: 100%; padding: var(--space-sm) var(--space-md); font-family: var(--font-family-secondary); font-size: var(--font-size-base); color: var(--color-text-highlight); background-color: var(--color-background-input); border: var(--border-width-thin) solid var(--color-border-primary); clip-path: var(--clip-path-input); transition: border-color var(--transition-duration-normal) var(--transition-easing), box-shadow var(--transition-duration-normal) var(--transition-easing); }
@@ -643,8 +670,9 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 
 /* === SITE HEADER === */
 .site-header {
-    background-color: var(--color-background-overlay);
-    backdrop-filter: blur(5px);
+    background-color: rgba(10, 15, 31, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     padding: 0 var(--container-padding-x-md);
     display: flex;
     justify-content: space-between;
@@ -657,6 +685,11 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
     z-index: var(--z-index-sticky);
     box-shadow: 0 2px 10px rgba(0, 255, 255, 0.1);
     height: var(--header-height);
+    transition: background-color var(--transition-duration-normal) var(--transition-easing);
+}
+
+.site-header:hover {
+    background-color: rgba(10, 15, 31, 0.95);
 }
 
 .site-header .logo a {
@@ -833,8 +866,8 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 /* Specific background colors for sections */
 .product-showcase { background-color: var(--color-primary-dark); }
 .section-category-access { background-color: var(--color-secondary-dark); }
-.section-custom-message-block { background-color: var(--color-primary-dark); } /* Example, can be set by schema */
-.section-newsletter-signup { background-color: var(--color-secondary-dark); } /* Example, can be set by schema */
+.section-custom-message-block { background-color: var(--color-background-body); } /* Match body background */
+.section-newsletter-signup { background-color: var(--color-secondary-dark); }
 .related-showcase { background-color: var(--color-secondary-dark); border-top: 2px solid var(--color-accent-green); }
 .product-interface-section { background-color: var(--color-primary-dark); }
 .collection-page { background-color: var(--color-primary-dark); }

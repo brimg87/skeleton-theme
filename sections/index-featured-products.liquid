@@ -33,11 +33,12 @@
             <a href="{{ product.url | within: collection }}" class="btn btn-cta btn-product">[ANALYZE_ITEM]</a> {# MODIFIED CLASS #}
           </div>
         </div>
-      {% else %}
-        {% if collection.products_count == 0 %}
-          <p class="text-center my-lg">//:NO_PRODUCTS_IN_SELECTED_DATASTREAM (COLLECTION)//</p> {# Added utility classes #}
-        {% endif %}
-        {% for i in (1..products_to_show) %}
+      {% endfor %}
+
+      {% if collection.products_count == 0 %}
+        <p class="text-center my-lg">//:NO_PRODUCTS_IN_SELECTED_DATASTREAM (COLLECTION)//</p> {# Added utility classes #}
+        {% comment %} Show minimum number of placeholder cards when no products exist {% endcomment %}
+        {% for i in (1..2) %}
           <div class="product-card placeholder">
             <div class="product-image">
               {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
@@ -49,7 +50,22 @@
             </div>
           </div>
         {% endfor %}
-      {% endfor %}
+      {% elsif collection.products_count < 2 %}
+        {% comment %} Show placeholder cards only if we have fewer than minimum products {% endcomment %}
+        {% assign remaining_slots = 2 | minus: collection.products_count %}
+        {% for i in (1..remaining_slots) %}
+          <div class="product-card placeholder">
+            <div class="product-image">
+              {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">ITEM_SLOT_{{ i }}</h3>
+              <p class="product-price">€$ ---</p>
+              <a href="#" class="btn btn-cta btn-product disabled">[OFFLINE]</a> {# MODIFIED CLASS & ADDED DISABLED #}
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
     </div>
 </section>
 

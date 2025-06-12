@@ -6,13 +6,29 @@
   {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
 
   :root {
-    --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
-    --font-primary--style: {{ settings.type_primary_font.style }};
-    --font-primary--weight: {{ settings.type_primary_font.weight }};
-    --page-width: {{ settings.max_page_width }};
+    /* Colors */
+    --color-primary-dark: {{ settings.color_primary_dark }};
+    --color-secondary-dark: {{ settings.color_secondary_dark }};
+    --color-accent-green: {{ settings.color_accent_green }};
+    --color-accent-magenta: {{ settings.color_accent_magenta }};
+    --color-accent-cyan: {{ settings.color_accent_cyan }};
+    --color-white: {{ settings.color_white }};
+
+    /* Derived Colors */
+    --color-background-body: var(--color-primary-dark);
+    --color-background-card: var(--color-secondary-dark);
+    --color-text-primary: var(--color-white);
+    --color-text-secondary: rgba(255, 255, 255, 0.7);
+    --color-border: rgba(255, 255, 255, 0.1);
+
+    /* Typography */
+    --font-primary: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
+    --font-weight-normal: {{ settings.type_primary_font.weight }};
+    --font-weight-bold: {{ settings.type_primary_font.weight | plus: 300 }};
+
+    /* Layout */
+    --max-width: {{ settings.max_page_width }};
     --page-margin: {{ settings.min_page_margin }}px;
-    --color-background: {{ settings.background_color }};
-    --color-foreground: {{ settings.foreground_color }};
     --style-border-radius-inputs: {{ settings.input_corner_radius }}px;
   }
 {% endstyle %}

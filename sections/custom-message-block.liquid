@@ -7,6 +7,20 @@
   assign main_content = section.settings.content_text | default: section.settings.text
 -%}
 
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
 <section class="section-custom-message-block {{ text_align_class }}"
          style="background-color: {{ section_bg_color }}; padding-top: var(--space-section-padding-y); padding-bottom: var(--space-section-padding-y);">
   <div class="container">
@@ -91,7 +105,27 @@
         "type": "color",
         "id": "background_color",
         "label": "Section Background Color",
-        "default": "#0a0f1f" /* Defaulting to --color-secondary-dark */
+        "default": "#1a1a1a" /* Changed to secondary dark color */
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
     }
   ],
   "presets": [{
