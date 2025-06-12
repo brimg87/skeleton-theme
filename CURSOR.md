@@ -1,12 +1,12 @@
 # Color System Documentation
 
 ## Overview
-Our theme uses a systematic approach to color management that allows for easy customization through the Shopify theme editor. All colors are defined in the theme settings and accessed through CSS variables.
+Our theme uses a systematic approach to color management that allows for easy customization through the Shopify theme editor. All colors are defined in the theme settings and accessed through CSS variables, with a clear hierarchy of base colors and derived colors.
 
 ## Color Structure
 
 ### 1. Theme Settings (`config/settings_schema.json`)
-Colors are defined in the theme settings under the "Colors" section:
+Base colors are defined in the theme settings under the "Colors" section:
 ```json
 {
   "name": "t:general.colors",
@@ -19,33 +19,76 @@ Colors are defined in the theme settings under the "Colors" section:
       "type": "color",
       "id": "color_primary_dark",
       "label": "Primary Dark",
-      "default": "#0a0f1f"
+      "default": "#1a1a1a"
     },
-    // ... other color settings
+    {
+      "type": "color",
+      "id": "color_secondary_dark",
+      "label": "Secondary Dark",
+      "default": "#2a2a2a"
+    },
+    {
+      "type": "header",
+      "content": "Accent Colors"
+    },
+    {
+      "type": "color",
+      "id": "color_accent_green",
+      "label": "Accent Green",
+      "default": "#00ff00"
+    },
+    {
+      "type": "color",
+      "id": "color_accent_magenta",
+      "label": "Accent Magenta",
+      "default": "#ff00ff"
+    },
+    {
+      "type": "color",
+      "id": "color_accent_cyan",
+      "label": "Accent Cyan",
+      "default": "#00ffff"
+    },
+    {
+      "type": "color",
+      "id": "color_white",
+      "label": "White",
+      "default": "#ffffff"
+    }
   ]
 }
 ```
 
 ### 2. CSS Variables (`snippets/css-variables.liquid`)
-Colors from theme settings are mapped to CSS variables:
+All color variables are centralized in this file, organized into three categories:
+
 ```liquid
 :root {
   /* Base Colors */
   --color-primary-dark: {{ settings.color_primary_dark }};
   --color-secondary-dark: {{ settings.color_secondary_dark }};
-  // ... other color variables
-}
-```
+  --color-accent-green: {{ settings.color_accent_green }};
+  --color-accent-magenta: {{ settings.color_accent_magenta }};
+  --color-accent-cyan: {{ settings.color_accent_cyan }};
+  --color-white: {{ settings.color_white }};
 
-### 3. Derived Colors
-Some colors are derived from base colors for consistency:
-```css
-:root {
   /* Derived Colors */
   --color-background-body: var(--color-primary-dark);
   --color-background-card: var(--color-secondary-dark);
   --color-text-primary: var(--color-white);
-  // ... other derived colors
+  --color-text-secondary: rgba(255, 255, 255, 0.7);
+  --color-text-highlight: var(--color-accent-green);
+  --color-text-headings-default: var(--color-accent-green);
+  --color-text-link: var(--color-accent-cyan);
+  --color-text-link-hover: var(--color-accent-green);
+  --color-text-on-accent: var(--color-primary-dark);
+  --color-border-primary: var(--color-accent-cyan);
+  --color-border-secondary: rgba(255, 255, 255, 0.1);
+
+  /* RGB Values for Opacity */
+  --color-accent-green-rgb: 0, 255, 0;
+  --color-accent-magenta-rgb: 255, 0, 255;
+  --color-accent-cyan-rgb: 0, 255, 255;
 }
 ```
 
@@ -54,13 +97,22 @@ Some colors are derived from base colors for consistency:
 1. **Never use hardcoded colors** in CSS or Liquid files
    ```css
    /* ❌ Don't do this */
-   .my-element { color: #0a0f1f; }
+   .my-element { color: #1a1a1a; }
    
    /* ✅ Do this instead */
    .my-element { color: var(--color-primary-dark); }
    ```
 
-2. **Add new colors to theme settings** if needed:
+2. **Use semantic color variables** for better maintainability:
+   ```css
+   /* ❌ Don't do this */
+   .card { background-color: var(--color-secondary-dark); }
+   
+   /* ✅ Do this instead */
+   .card { background-color: var(--color-background-card); }
+   ```
+
+3. **Add new colors to theme settings** if needed:
    ```json
    {
      "type": "color",
@@ -70,37 +122,41 @@ Some colors are derived from base colors for consistency:
    }
    ```
 
-3. **Use derived colors** for related elements:
-   ```css
-   /* ✅ Good: Using derived colors */
-   .card { background-color: var(--color-background-card); }
-   .text { color: var(--color-text-primary); }
-   ```
-
 4. **Maintain color relationships**:
    - Use `--color-background-body` for main background
    - Use `--color-background-card` for card/element backgrounds
    - Use `--color-text-primary` for main text
    - Use `--color-text-secondary` for secondary text
+   - Use `--color-text-link` and `--color-text-link-hover` for links
+   - Use `--color-text-on-accent` for text on accent-colored backgrounds
 
-## Common Color Variables
+## Color Variable Categories
 
 ### Base Colors
-- `--color-primary-dark`: Main dark color
-- `--color-secondary-dark`: Secondary dark color
-- `--color-accent-green`: Green accent
-- `--color-accent-magenta`: Magenta accent
-- `--color-accent-cyan`: Cyan accent
-- `--color-white`: White
+- `--color-primary-dark`: Main dark color (#1a1a1a)
+- `--color-secondary-dark`: Secondary dark color (#2a2a2a)
+- `--color-accent-green`: Green accent (#00ff00)
+- `--color-accent-magenta`: Magenta accent (#ff00ff)
+- `--color-accent-cyan`: Cyan accent (#00ffff)
+- `--color-white`: White (#ffffff)
 
 ### Derived Colors
-- `--color-background-body`: Main background
-- `--color-background-card`: Card/element background
-- `--color-text-primary`: Main text color
-- `--color-text-secondary`: Secondary text color
-- `--color-text-highlight`: Highlight text color
-- `--color-border-primary`: Primary border color
-- `--color-border-secondary`: Secondary border color
+- `--color-background-body`: Main background (uses primary dark)
+- `--color-background-card`: Card/element background (uses secondary dark)
+- `--color-text-primary`: Main text color (uses white)
+- `--color-text-secondary`: Secondary text color (70% white)
+- `--color-text-highlight`: Highlight text color (uses accent green)
+- `--color-text-headings-default`: Default heading color (uses accent green)
+- `--color-text-link`: Link color (uses accent cyan)
+- `--color-text-link-hover`: Link hover color (uses accent green)
+- `--color-text-on-accent`: Text color on accent backgrounds (uses primary dark)
+- `--color-border-primary`: Primary border color (uses accent cyan)
+- `--color-border-secondary`: Secondary border color (10% white)
+
+### RGB Values
+- `--color-accent-green-rgb`: RGB values for green accent
+- `--color-accent-magenta-rgb`: RGB values for magenta accent
+- `--color-accent-cyan-rgb`: RGB values for cyan accent
 
 ## Making Color Changes
 
@@ -109,7 +165,7 @@ When making color changes:
 1. First, check if the color already exists in theme settings
 2. If not, add it to `config/settings_schema.json`
 3. Add the corresponding CSS variable in `snippets/css-variables.liquid`
-4. Use the CSS variable in your styles
+4. Use semantic CSS variables in your styles
 
 Example of adding a new color:
 ```json
@@ -126,13 +182,14 @@ Example of adding a new color:
 // In snippets/css-variables.liquid
 :root {
   --color-new-accent: {{ settings.color_new_accent }};
+  --color-text-new-accent: var(--color-new-accent);
 }
 ```
 
 ```css
 // In your CSS
 .new-element {
-  color: var(--color-new-accent);
+  color: var(--color-text-new-accent);
 }
 ```
 
@@ -141,8 +198,10 @@ Example of adding a new color:
 1. **Client Control**: Colors can be changed through the Shopify theme editor
 2. **Consistency**: Colors are managed in one place
 3. **Maintainability**: Easy to update colors across the entire theme
-4. **Dark/Light Mode Ready**: System can be extended to support theme modes
-5. **Performance**: CSS variables are efficient and widely supported 
+4. **Semantic Usage**: Colors are used based on their purpose, not their value
+5. **Performance**: CSS variables are efficient and widely supported
+6. **Accessibility**: Clear contrast between text and background colors
+7. **Flexibility**: Easy to add new colors while maintaining consistency
 
 # Theme Development Guidelines
 

@@ -4,8 +4,25 @@
   assign text_align_class = section.settings.text_alignment | default: 'text-center'
 -%}
 
-<section class="newsletter-signup {{ text_align_class }}" 
-         style="background-color: {{ section_bg_color }}; padding-top: var(--space-section-padding-y); padding-bottom: var(--space-section-padding-y);">
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<section class="{{ text_align_class }} section-padding"
+  {% if section.settings.background_color != blank %}
+    style="background-color: {{ section.settings.background_color }};"
+  {% endif %}
+>
   <div class="container">
     {%- if section.settings.title != blank -%}
       <h2 class="section-title" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
@@ -82,6 +99,22 @@
         { "value": "text-right", "label": "Right" }
       ],
       "default": "text-center"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 100,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "default": 50
     }
   ],
   "presets": [

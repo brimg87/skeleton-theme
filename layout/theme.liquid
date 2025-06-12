@@ -16,12 +16,14 @@
 
     <link rel="canonical" href="{{ canonical_url }}">
 
+    {% render 'css-variables' %}
     <link rel="stylesheet" href="{{ 'style.css' | asset_url }}">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
     
     <script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous" defer></script>
 
-    {{ content_for_header }} </head>
+    {{ content_for_header }}
+</head>
 <body class="template-{{ request.page_type | handle }}">
   <div class="crt-effect"></div>
 
@@ -71,7 +73,7 @@
                     <a href="{{ settings.social_instagram_link }}" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                 {%- endif -%}
                 </div>
-            <p><a href="{{ routes.root_url }}?section_id=footer">[LEGAL_PROTOCOLS]</a> | <a href="{{ routes.root_url }}?section_id=footer">[CONTACT_FIXER]</a></p>
+            <p><a href="{{ routes.root_url }}?section_id=footer" class="footer-link">[LEGAL_PROTOCOLS]</a> | <a href="{{ routes.root_url }}?section_id=footer" class="footer-link">[CONTACT_FIXER]</a></p>
              </div>
     </footer>
 

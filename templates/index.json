@@ -27,7 +27,7 @@
   "type": "custom-message-block", 
   "settings": {
     "title": "// PROPRIETOR_PROFILE: PRESTON_YARGER //", 
-    "content_text": "<p>Your initial content here...</p>", 
+    "content_text": "<p>Hello! I'm Curtis, also known as Crater in some circles. I was born on Earth, but left as soon as possible to sail the stars. Alas, my corrected organic eyesight made spaceflight academy tricky, ultimately earning me a nickname, expulsion, and a pile of debt. It turns out it costs A LOT to re-establish the orbit of a moon.</p>", 
     "cta_label": "Learn More" 
   }
 },

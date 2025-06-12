@@ -21,8 +21,11 @@
   }
 {%- endstyle -%}
 
-<section class="section-custom-message-block {{ text_align_class }}"
-         style="background-color: {{ section_bg_color }}; padding-top: var(--space-section-padding-y); padding-bottom: var(--space-section-padding-y);">
+<section class="{{ text_align_class }} section-padding"
+  {% if section.settings.background_color != blank %}
+    style="background-color: {{ section.settings.background_color }};"
+  {% endif %}
+>
   <div class="container">
     {%- if title_text != blank -%}
       <h2 class="section-title" data-text="{{ title_text | escape }}">{{ title_text | escape }}</h2>
@@ -38,7 +41,7 @@
         {%- endif -%}
         
         {%- if section.settings.cta_label != blank and section.settings.cta_link != blank -%}
-          <div class="mt-lg {{ text_align_class }}"> {# Utility class for margin-top, and apply text-align for button block #}
+          <div class="mt-lg {{ text_align_class }}">
             <a href="{{ section.settings.cta_link }}" class="btn {{ section.settings.cta_style }}">
               {{ section.settings.cta_label | escape }}
             </a>
