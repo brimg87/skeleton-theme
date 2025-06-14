@@ -33,7 +33,7 @@
                     {%- when 'list' -%}
                       {%- for value in filter.values -%}
                         <li class="filter-value">
-                          <a href="{{ value.url_to_remove | default: value.url_to_add }}" 
+                          <a href="{{ value.url_to_add | default: value.url_to_remove }}" 
                              class="filter-link {% if value.active %}active{% endif %}"
                              {% if value.count == 0 and value.active == false %}disabled{% endif %}>
                             {{ value.label | escape }} ({{ value.count }})
@@ -177,6 +177,8 @@
   ]
 }
 {% endschema %}
+
+{{ 'collection.js' | asset_url | script_tag }}
 
 <script>
   function updatePriceFilter(input) {
