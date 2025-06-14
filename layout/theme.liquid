@@ -34,14 +34,36 @@
           </a>
         </div>
         <nav class="main-nav">
-            <ul>
-                {%- for link in linklists.main-menu.links -%}
-                  <li><a href="{{ link.url }}">{{ link.title | upcase | replace: ' ', '_' | prepend: '//:' }}</a></li>
+            <ul class="d-flex align-items-center">
+              {%- for link in linklists['main-menu'].links -%}
+                {%- if link.links != blank -%}
+                  <li class="nav-item has-dropdown">
+                    <a href="{{ link.url }}" class="nav-link">
+                      //:{{ link.title | upcase }}_
+                      <i class="fas fa-chevron-down dropdown-indicator"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                      {%- for child_link in link.links -%}
+                        <li><a href="{{ child_link.url }}" class="dropdown-link">{{ child_link.title }}</a></li>
+                      {%- endfor -%}
+                    </ul>
+                  </li>
                 {%- else -%}
-                  <li><a href="{{ routes.collections_url }}/weaponry">//:WEAPONRY</a></li>
-                  <li><a href="{{ routes.collections_url }}/armor-systems">//:ARMOR_SYSTEMS</a></li>
-                  <li><a href="{{ routes.collections_url }}/cybernetics">//:CYBERNETICS</a></li>
-                {%- endfor -%}
+                  <li class="nav-item">
+                    <a href="{{ link.url }}" class="nav-link">//:{{ link.title | upcase }}_</a>
+                  </li>
+                {%- endif -%}
+              {%- else -%}
+                <li class="nav-item">
+                  <a href="{{ routes.collections_url }}/weaponry" class="nav-link">//:WEAPONRY_</a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ routes.collections_url }}/armor-systems" class="nav-link">//:ARMOR_SYSTEMS_</a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ routes.collections_url }}/cybernetics" class="nav-link">//:CYBERNETICS_</a>
+                </li>
+              {%- endfor -%}
             </ul>
         </nav>
         <div class="user-interface">
