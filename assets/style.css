@@ -765,7 +765,15 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 .has-dropdown:hover .dropdown-indicator { transform: rotate(180deg); }
 .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; list-style: none; padding: var(--space-xs) 0; margin: var(--space-xs) 0 0 0; background-color: var(--color-background-overlay); backdrop-filter: blur(8px); border: var(--border-width-thin) solid var(--color-border-primary); min-width: 200px; z-index: var(--z-index-dropdown); clip-path: var(--clip-path-data-box); }
 .has-dropdown:hover .dropdown-menu { display: block; }
-.dropdown-link { display: block; padding: var(--space-sm) var(--space-md); color: var(--color-text-primary); font-family: var(--font-family-secondary); font-size: var(--font-size-sm); text-transform: uppercase; letter-spacing: 0.5px; }
+.dropdown-link { 
+  display: block; 
+  padding: var(--space-sm) var(--space-md); 
+  color: var(--color-text-primary); 
+  font-family: var(--font-family-primary); 
+  font-size: var(--font-size-sm); 
+  text-transform: uppercase; 
+  letter-spacing: 0.5px; 
+}
 .dropdown-link:hover { background-color: var(--color-accent-cyan); color: var(--color-text-on-accent); text-shadow: none; }
 
 /* === SECTION-SPECIFIC STYLES === */
@@ -940,6 +948,12 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
   box-shadow: 0 -3px 10px rgba(0, 255, 0, 0.15); 
 }
 
+.footer-content {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding-x-md);
+}
+
 .footer-grid { 
   display: grid; 
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
@@ -952,9 +966,11 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 .footer-heading { 
   font-family: var(--font-family-primary); 
   font-size: var(--font-size-md); 
+  font-weight: var(--font-weight-bold);
   color: var(--color-accent-cyan); 
   margin-bottom: var(--space-md); 
   text-transform: uppercase; 
+  letter-spacing: 1px;
 }
 
 .footer-links { 
@@ -967,6 +983,8 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
   display: block; 
   padding: var(--space-xs) 0; 
   color: var(--color-text-primary); 
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-sm);
   text-decoration: none; 
   transition: color var(--transition-duration-fast) linear, transform var(--transition-duration-fast) linear; 
 }
@@ -1005,6 +1023,7 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 .footer-copyright p { 
   margin: 0; 
   font-size: var(--font-size-xs); 
+  font-family: var(--font-family-secondary);
   color: var(--color-text-secondary); 
   letter-spacing: 1px; 
 }
