@@ -84,19 +84,52 @@
         {{ content_for_layout }} </main>
 
     <footer class="site-footer-terminal">
-        <div class="footer-content">
-            <p>[SYSTEM_STATUS: ONLINE // ALL_SYSTEMS_NOMINAL // SECURE_CONNECTION_ESTABLISHED]</p>
-            <p>&copy; {{ 'now' | date: "%Y" }} {{ shop.name | link_to: routes.root_url }} // ALL RIGHTS RESERVED IN THIS SECTOR</p>
+      <div class="footer-content cyberpunk-container">
+        <div class="footer-grid">
+          <div class="footer-column">
+            <h4 class="footer-heading">//: SUPPORT_GRID ://</h4>
+            <ul class="footer-links" role="list">
+              {%- for link in linklists['footer-support'].links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- else -%}
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Shipping Info</a></li>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Policies & Privacy</a></li>
+              {%- endfor -%}
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h4 class="footer-heading">//: ARMORY_DATABANK ://</h4>
+            <ul class="footer-links" role="list">
+              {%- for link in linklists['footer-armory'].links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- else -%}
+                <li><a href="#">The Proprietor (About)</a></li>
+                <li><a href="#">Update Log (Blog)</a></li>
+                <li><a href="#">Affiliate Links</a></li>
+              {%- endfor -%}
+            </ul>
+          </div>
+          <div class="footer-column footer-social-column">
+            <h4 class="footer-heading">//: COMMS_GRID ://</h4>
             <div class="social-links">
-                {%- if settings.social_twitter_link != blank -%}
-                    <a href="{{ settings.social_twitter_link }}" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                {%- endif -%}
-                {%- if settings.social_instagram_link != blank -%}
-                    <a href="{{ settings.social_instagram_link }}" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                {%- endif -%}
-                </div>
-            <p><a href="{{ routes.root_url }}?section_id=footer" class="footer-link">[LEGAL_PROTOCOLS]</a> | <a href="{{ routes.root_url }}?section_id=footer" class="footer-link">[CONTACT_FIXER]</a></p>
-             </div>
+                <a href="#" aria-label="Social Link 1"><i class="fab fa-twitter"></i></a>
+                <a href="#" aria-label="Social Link 2"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="Social Link 3"><i class="fab fa-artstation"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <div class="footer-lore-text">
+            <p>MARKET: SOL_3</p>
+            <p>HXC_SATCOM 1234ASDF</p>
+          </div>
+          <div class="footer-copyright">
+            <p>&copy; {{ 'now' | date: "%Y" }} {{ shop.name | link_to: routes.root_url }}</p>
+          </div>
+        </div>
+      </div>
     </footer>
 
     <script src="{{ 'script.js' | asset_url }}" defer="defer"></script>
