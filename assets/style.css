@@ -163,7 +163,7 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 .btn-secondary { color: var(--color-text-secondary); border-color: var(--color-border-primary); padding: var(--space-xs) var(--space-md); font-size: var(--font-size-sm); }
 .btn-secondary:hover, .btn-secondary:focus { color: var(--color-accent-yellow); border-color: var(--color-accent-yellow); box-shadow: 0 0 8px var(--color-accent-yellow); outline: none; }
 .btn-secondary i { margin-left: var(--space-xs); color: var(--color-accent-yellow); }
-.btn-product { padding: var(--space-xs) var(--space-md); font-size: var(--font-size-sm); align-self: flex-start; }
+.btn-product { padding: var(--space-xs) var(--space-md); font-size: var(--font-size-sm); }
 .btn-qty { background-color: var(--color-background-input); border: var(--border-width-thin) solid var(--color-border-primary); color: var(--color-accent-cyan); font-family: var(--font-family-primary); font-size: var(--font-size-lg); width: 30px; height: 30px; padding: 0; line-height: 28px; text-align: center; clip-path: var(--clip-path-qty-button); }
 .btn-qty:hover, .btn-qty:focus { background-color: var(--color-accent-cyan); color: var(--color-text-on-accent); border-color: var(--color-accent-cyan); outline: none; }
 .btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.6s ease; }
@@ -197,6 +197,9 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
     position: relative;
     clip-path: var(--clip-path-card);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .product-card:hover {
@@ -273,10 +276,23 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
     padding: var(--space-md);
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
     background-color: var(--color-secondary-dark);
     border-top: var(--border-width-thin) solid var(--color-accent-cyan);
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+    flex-grow: 1;
+}
+
+.product-card .product-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    flex-grow: 1;
+}
+
+.product-card .product-actions {
+    margin-top: var(--space-md);
+    display: flex;
+    justify-content: center;
 }
 
 .product-card .product-name {
@@ -316,8 +332,7 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
     border: var(--border-width-thin) solid var(--color-accent-green);
     transition: all var(--transition-duration-normal) var(--transition-easing);
     text-align: center;
-    width: 100%;
-    margin-top: var(--space-sm);
+    min-width: 140px;
 }
 
 .product-card .product-button:hover {

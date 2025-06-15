@@ -23,14 +23,18 @@
             </a>
           </div>
           <div class="product-info">
-            <h3 class="product-name"><a href="{{ product.url | within: collection }}">{{ product.title }}</a></h3>
-            {% comment %}
-            <p class="product-spec">
-              {{ product.tags | first }} 
-            </p>
-            {% endcomment %}
-            <p class="product-price">{{ product.price | money }}</p>
-            <a href="{{ product.url | within: collection }}" class="btn btn-cta btn-product">[ANALYZE_ITEM]</a> {% comment %} MODIFIED CLASS {% endcomment %}
+            <div class="product-content">
+              <h3 class="product-name"><a href="{{ product.url | within: collection }}">{{ product.title }}</a></h3>
+              {% comment %}
+              <p class="product-spec">
+                {{ product.tags | first }} 
+              </p>
+              {% endcomment %}
+              <p class="product-price">{{ product.price | money }}</p>
+            </div>
+            <div class="product-actions">
+              <a href="{{ product.url | within: collection }}" class="btn btn-cta btn-product">[ANALYZE_ITEM]</a> {% comment %} MODIFIED CLASS {% endcomment %}
+            </div>
           </div>
         </div>
       {% endfor %}
@@ -44,9 +48,13 @@
               {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
             </div>
             <div class="product-info">
-              <h3 class="product-name">ITEM_SLOT_{{ i }}</h3>
-              <p class="product-price">€$ ---</p>
-              <a href="#" class="btn btn-cta btn-product disabled">[OFFLINE]</a> {% comment %} MODIFIED CLASS & ADDED DISABLED {% endcomment %}
+              <div class="product-content">
+                <h3 class="product-name">ITEM_SLOT_{{ i }}</h3>
+                <p class="product-price">€$ ---</p>
+              </div>
+              <div class="product-actions">
+                <a href="#" class="btn btn-cta btn-product disabled">[OFFLINE]</a> {% comment %} MODIFIED CLASS & ADDED DISABLED {% endcomment %}
+              </div>
             </div>
           </div>
         {% endfor %}
@@ -59,9 +67,13 @@
               {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
             </div>
             <div class="product-info">
-              <h3 class="product-name">ITEM_SLOT_{{ i }}</h3>
-              <p class="product-price">€$ ---</p>
-              <a href="#" class="btn btn-cta btn-product disabled">[OFFLINE]</a> {% comment %} MODIFIED CLASS & ADDED DISABLED {% endcomment %}
+              <div class="product-content">
+                <h3 class="product-name">ITEM_SLOT_{{ i }}</h3>
+                <p class="product-price">€$ ---</p>
+              </div>
+              <div class="product-actions">
+                <a href="#" class="btn btn-cta btn-product disabled">[OFFLINE]</a> {% comment %} MODIFIED CLASS & ADDED DISABLED {% endcomment %}
+              </div>
             </div>
           </div>
         {% endfor %}
