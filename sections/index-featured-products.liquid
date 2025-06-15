@@ -30,13 +30,13 @@
             </p>
             {% endcomment %}
             <p class="product-price">{{ product.price | money }}</p>
-            <a href="{{ product.url | within: collection }}" class="btn btn-cta btn-product">[ANALYZE_ITEM]</a> {# MODIFIED CLASS #}
+            <a href="{{ product.url | within: collection }}" class="btn btn-cta btn-product">[ANALYZE_ITEM]</a> {% comment %} MODIFIED CLASS {% endcomment %}
           </div>
         </div>
       {% endfor %}
 
       {% if collection.products_count == 0 %}
-        <p class="text-center my-lg">//:NO_PRODUCTS_IN_SELECTED_DATASTREAM (COLLECTION)//</p> {# Added utility classes #}
+        <p class="text-center my-lg">//:NO_PRODUCTS_IN_SELECTED_DATASTREAM (COLLECTION)//</p> {% comment %} Added utility classes {% endcomment %}
         {% comment %} Show minimum number of placeholder cards when no products exist {% endcomment %}
         {% for i in (1..2) %}
           <div class="product-card placeholder">
@@ -46,7 +46,7 @@
             <div class="product-info">
               <h3 class="product-name">ITEM_SLOT_{{ i }}</h3>
               <p class="product-price">€$ ---</p>
-              <a href="#" class="btn btn-cta btn-product disabled">[OFFLINE]</a> {# MODIFIED CLASS & ADDED DISABLED #}
+              <a href="#" class="btn btn-cta btn-product disabled">[OFFLINE]</a> {% comment %} MODIFIED CLASS & ADDED DISABLED {% endcomment %}
             </div>
           </div>
         {% endfor %}
@@ -61,7 +61,7 @@
             <div class="product-info">
               <h3 class="product-name">ITEM_SLOT_{{ i }}</h3>
               <p class="product-price">€$ ---</p>
-              <a href="#" class="btn btn-cta btn-product disabled">[OFFLINE]</a> {# MODIFIED CLASS & ADDED DISABLED #}
+              <a href="#" class="btn btn-cta btn-product disabled">[OFFLINE]</a> {% comment %} MODIFIED CLASS & ADDED DISABLED {% endcomment %}
             </div>
           </div>
         {% endfor %}

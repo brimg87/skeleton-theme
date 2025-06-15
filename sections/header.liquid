@@ -18,6 +18,7 @@
                 <span class="dropdown-indicator">▼</span>
               {% endif %}
             </a>
+            {%- comment -%}
             {% if link.links != blank %}
               <ul class="dropdown-menu">
                 {%- for childlink in link.links -%}
@@ -29,6 +30,7 @@
                 {%- endfor -%}
               </ul>
             {% endif %}
+            {%- endcomment -%}
           </li>
         {%- endfor -%}
       </ul>
