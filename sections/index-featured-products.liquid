@@ -41,7 +41,7 @@
                 </div>
               {% endif %}
               {% if product.compare_at_price > product.price %}
-                <div class="product-badge sale-badge">{{ 'products.product.on_sale' | t }}</div>
+                <div class="product-badge sale-badge">[ON_SALE]</div>
               {% endif %}
             </a>
           </div>
@@ -57,9 +57,9 @@
                 <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
                 <meta itemprop="price" content="{{ product.price | divided_by: 100.0 }}">
                 {% if product.compare_at_price > product.price %}
-                  <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+                  <span class="visually-hidden">Regular price</span>
                   <s class="product-price-compare">{{ product.compare_at_price | money }}</s>
-                  <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
+                  <span class="visually-hidden">Sale price</span>
                 {% endif %}
                 <span class="product-price-current">{{ product.price | money }}</span>
                 {% if product.available %}

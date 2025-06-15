@@ -139,35 +139,58 @@
                   <div class="product-image">
                     <a href="{{ product.url | within: collection }}" aria-label="View {{ product.title | escape }} details">
                       {% if product.featured_image %}
-                        <img src="{{ product.featured_image | image_url: width: 300, height: 250, crop: 'center' }}"
-                             alt="{{ product.featured_image.alt | escape | default: product.title | escape }}"
-                             loading="lazy"
-                             width="300" height="250">
+                        <div class="product-image-wrapper" style="padding-bottom: 100%;">
+                          <img src="{{ product.featured_image | image_url: width: 600 }}" 
+                               alt="{{ product.featured_image.alt | escape | default: product.title | escape }}"
+                               loading="lazy"
+                               width="600" 
+                               height="{{ 600 | divided_by: product.featured_image.aspect_ratio | round }}"
+                               sizes="(min-width: 990px) {{ 1200 | divided_by: section.settings.desktop_columns }}px, (min-width: 750px) {{ 750 | divided_by: section.settings.tablet_columns }}px, 100vw"
+                               srcset="{{ product.featured_image | image_url: width: 300 }} 300w, {{ product.featured_image | image_url: width: 600 }} 600w, {{ product.featured_image | image_url: width: 900 }} 900w"
+                               itemprop="image">
+                        </div>
                       {% else %}
-                        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                        <div class="product-image-placeholder">
+                          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                        </div>
                       {% endif %}
                       {% if product.compare_at_price > product.price and section.settings.show_sale_badges %}
                         <div class="product-badge sale-badge">[ON_SALE]</div>
                       {% endif %}
                     </a>
                   </div>
-                  <div class="product-info">
-                    <h3 class="product-name" id="product-title-{{ product.id }}" itemprop="name">
-                      <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
-                    </h3>
-                                        <div class="product-price" aria-label="Price: {{ product.price | money }}">
-                      {% if product.compare_at_price > product.price and section.settings.show_compare_prices %}
-                        <span class="visually-hidden">Regular price</span>
-                        <s class="product-price-compare">{{ product.compare_at_price | money }}</s>
-                        <span class="visually-hidden">Sale price</span>
-                      {% endif %}
-                      <span class="product-price-current" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-                        <meta itemprop="price" content="{{ product.price | money_without_currency }}">
+                                    <div class="product-info">
+                    <div class="product-content">
+                      <h3 class="product-name h4" id="product-title-{{ product.id }}" itemprop="name">
+                        <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
+                      </h3>
+                      <div class="product-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                         <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
-                        {{ product.price | money }}
-                      </span>
+                        <meta itemprop="price" content="{{ product.price | divided_by: 100.0 }}">
+                        {% if product.compare_at_price > product.price and section.settings.show_compare_prices %}
+                          <span class="visually-hidden">Regular price</span>
+                          <s class="product-price-compare">{{ product.compare_at_price | money }}</s>
+                          <span class="visually-hidden">Sale price</span>
+                        {% endif %}
+                        <span class="product-price-current">{{ product.price | money }}</span>
+                        {% if product.available %}
+                          <link itemprop="availability" href="http://schema.org/InStock">
+                        {% else %}
+                          <link itemprop="availability" href="http://schema.org/OutOfStock">
+                        {% endif %}
+                      </div>
                     </div>
-                    <a href="{{ product.url | within: collection }}" class="product-button" aria-label="View {{ product.title | escape }} details">[ANALYZE_ITEM]</a>
+                    <div class="product-actions">
+                      {% if product.available %}
+                        <a href="{{ product.url | within: collection }}" class="btn btn-cta btn-product" aria-describedby="product-{{ product.id }}-price">
+                          [ANALYZE_ITEM]
+                        </a>
+                      {% else %}
+                        <button class="btn btn-cta btn-product disabled" disabled>
+                          [OUT_OF_STOCK]
+                        </button>
+                      {% endif %}
+                    </div>
                   </div>
                 </article>
               {%- endfor -%}
