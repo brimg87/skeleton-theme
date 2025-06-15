@@ -11,7 +11,7 @@
       </div>
     {% endif %}
     
-    <div class="product-grid" style="--grid-desktop-columns: {{ section.settings.columns_desktop }}; --grid-mobile-columns: {{ section.settings.columns_mobile }};">
+    <div class="product-grid" style="--grid-desktop-columns: {{ section.settings.columns_desktop }}; --grid-tablet-columns: {{ section.settings.columns_tablet }}; --grid-mobile-columns: {{ section.settings.columns_mobile }};">
       {%- assign collection = section.settings.collection -%}
       {%- assign products_to_show = section.settings.products_to_show -%}
 
@@ -31,7 +31,7 @@
                     loading="lazy"
                     width="600" 
                     height="{{ 600 | divided_by: product.featured_image.aspect_ratio | round }}"
-                    sizes="(min-width: 990px) {{ 1200 | divided_by: section.settings.columns_desktop }}px, (min-width: 750px) {{ 750 | divided_by: 2 }}px, 100vw"
+                    sizes="(min-width: 990px) {{ 1200 | divided_by: section.settings.columns_desktop }}px, (min-width: 750px) {{ 750 | divided_by: section.settings.columns_tablet }}px, 100vw"
                     srcset="{{ product.featured_image | image_url: width: 300 }} 300w, {{ product.featured_image | image_url: width: 600 }} 600w, {{ product.featured_image | image_url: width: 900 }} 900w"
                     itemprop="image">
                 </div>
@@ -40,7 +40,7 @@
                   {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
                 </div>
               {% endif %}
-              {% if product.compare_at_price > product.price %}
+              {% if product.compare_at_price > product.price and section.settings.show_sale_badges %}
                 <div class="product-badge sale-badge">[ON_SALE]</div>
               {% endif %}
             </a>
@@ -56,7 +56,7 @@
               <div class="product-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                 <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
                 <meta itemprop="price" content="{{ product.price | divided_by: 100.0 }}">
-                {% if product.compare_at_price > product.price %}
+                {% if product.compare_at_price > product.price and section.settings.show_compare_prices %}
                   <span class="visually-hidden">Regular price</span>
                   <s class="product-price-compare">{{ product.compare_at_price | money }}</s>
                   <span class="visually-hidden">Sale price</span>
@@ -207,6 +207,15 @@
       "default": 4
     },
     {
+      "type": "range",
+      "id": "columns_tablet",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "label": "Number of columns on tablet",
+      "default": 3
+    },
+    {
       "type": "select",
       "id": "columns_mobile",
       "label": "Number of columns on mobile",
@@ -274,6 +283,24 @@
       "id": "button_label",
       "label": "Button label",
       "default": "[ANALYZE_ITEM]"
+    },
+    {
+      "type": "header",
+      "content": "Product Features"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sale_badges",
+      "label": "Show sale badges",
+      "default": true,
+      "info": "Display [ON_SALE] badges on discounted products"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_compare_prices",
+      "label": "Show compare at prices",
+      "default": true,
+      "info": "Display crossed-out original prices for sale items"
     },
     {
       "type": "header",
