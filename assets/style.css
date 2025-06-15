@@ -478,6 +478,12 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
     font-size: var(--font-size-md);
 }
 
+.unit-price {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family-secondary);
+}
+
 /* Product vendor styling */
 .product-vendor {
     font-family: var(--font-family-secondary);
@@ -562,6 +568,95 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 }
 
 .social-content {
+    padding: var(--space-md);
+}
+
+/* Zoom functionality */
+.zoom-button {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    background-color: rgba(var(--color-primary-dark-rgb), 0.8);
+    border: var(--border-width-thin) solid var(--color-accent-cyan);
+    color: var(--color-accent-cyan);
+    padding: var(--space-xs);
+    cursor: pointer;
+    transition: all var(--transition-duration-normal) var(--transition-easing);
+    clip-path: var(--clip-path-input);
+    z-index: 2;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+}
+
+.main-media-container:hover .zoom-button {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+.zoom-button:hover {
+    background-color: var(--color-accent-cyan);
+    color: var(--color-text-on-accent);
+}
+
+.zoom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: var(--z-index-modal);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+}
+
+.zoom-modal.active {
+    display: flex;
+}
+
+.zoom-modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.zoom-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border: var(--border-width-thin) solid var(--color-accent-cyan);
+}
+
+.zoom-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: none;
+    border: none;
+    color: var(--color-accent-cyan);
+    font-size: var(--font-size-xl);
+    cursor: pointer;
+    padding: var(--space-sm);
+    transition: color var(--transition-duration-normal) var(--transition-easing);
+}
+
+.zoom-close:hover {
+    color: var(--color-accent-yellow);
+}
+
+/* Pickup availability */
+.pickup-availability {
+    margin-top: var(--space-lg);
+}
+
+.pickup-content {
     padding: var(--space-md);
 }
 

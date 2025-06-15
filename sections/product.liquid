@@ -4,6 +4,7 @@
 {% endcomment %}
 
 {{ 'section-product.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-zoom.js' | asset_url }}" defer></script>
 
 <section class="breadcrumb-trail">
   <div class="container">
@@ -43,7 +44,10 @@
                        srcset="{{ product.featured_media | image_url: width: 400 }} 400w,
                                {{ product.featured_media | image_url: width: 600 }} 600w,
                                {{ product.featured_media | image_url: width: 800 }} 800w,
-                               {{ product.featured_media | image_url: width: 1200 }} 1200w"
+                               {{ product.featured_media | image_url: width: 1200 }} 1200w,
+                               {{ product.featured_media | image_url: width: 1600 }} 1600w"
+                       {% comment %} Always add zoom data for functionality {% endcomment %}
+                       data-zoom="{{ product.featured_media | image_url: width: 1600 }}"
                        itemprop="image">
                 {%- elsif product.featured_media.media_type == 'video' -%}
                   {{ product.featured_media | video_tag: controls: true, muted: true, loop: true }}
@@ -60,6 +64,15 @@
             {% if section.settings.show_media_overlay %}
               <div class="image-overlay-data">SYS_IMG_DISPLAY_{{ product.featured_media.position | default: '01' }}</div>
             {% endif %}
+
+            {% comment %} Show zoom button if enabled OR if setting doesn't exist yet (default to true) {% endcomment %}
+            {% if section.settings.enable_zoom != false and product.featured_media.media_type == 'image' %}
+              <button type="button" class="zoom-button" aria-label="Zoom image">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"/>
+                </svg>
+              </button>
+            {% endif %}
           </div>
 
           {% if product.media.size > 1 and section.settings.show_thumbnails %}
@@ -71,7 +84,16 @@
                         data-media-type="{{ media.media_type }}"
                         {% if media.media_type == 'image' %}
                           data-src="{{ media | image_url: width: 800 }}"
-                          data-srcset="{{ media | image_url: width: 400 }} 400w, {{ media | image_url: width: 800 }} 800w"
+                          data-srcset="{{ media | image_url: width: 400 }} 400w, {{ media | image_url: width: 800 }} 800w, {{ media | image_url: width: 1200 }} 1200w"
+                          {% if section.settings.enable_zoom %}
+                            data-zoom="{{ media | image_url: width: 1600 }}"
+                          {% endif %}
+                        {% elsif media.media_type == 'video' %}
+                          data-video-html="{{ media | video_tag: controls: true, muted: true, loop: section.settings.video_loop }}"
+                        {% elsif media.media_type == 'external_video' %}
+                          data-external-video-html="{{ media | external_video_tag }}"
+                        {% elsif media.media_type == 'model' %}
+                          data-model-html="{{ media | model_viewer_tag: reveal: 'interaction', toggleable: true }}"
                         {% endif %}
                         role="tab"
                         aria-selected="{% if media == product.featured_media %}true{% else %}false{% endif %}"
@@ -148,10 +170,20 @@
                     {{ product.selected_or_first_available_variant.price | money }}
                   </span>
                   {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
-                    <span class="compare-at-price">
+                    <span class="compare-at-price" id="ComparePrice-{{ section.id }}">
                       <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
                       <s>{{ product.selected_or_first_available_variant.compare_at_price | money }}</s>
                     </span>
+                  {% endif %}
+                  {% if product.selected_or_first_available_variant.unit_price_measurement %}
+                    <div class="unit-price">
+                      <span class="visually-hidden">{{ 'products.product.unit_price_label' | t }}</span>
+                      {{ product.selected_or_first_available_variant.unit_price | money }}
+                      {%- if product.selected_or_first_available_variant.unit_price_measurement.reference_value != 1 -%}
+                        {{- product.selected_or_first_available_variant.unit_price_measurement.reference_value -}}
+                      {%- endif -%}
+                      {{ product.selected_or_first_available_variant.unit_price_measurement.reference_unit }}
+                    </div>
                   {% endif %}
                 </div>
                 
@@ -280,12 +312,29 @@
                 </div>
               </div>
             {% endif %}
+
+            {% if section.settings.show_pickup_availability and product.selected_or_first_available_variant.store_availabilities.size > 0 %}
+              <div class="pickup-availability data-box">
+                <div class="data-box-header">//:PICKUP_LOCATIONS://</div>
+                <div class="pickup-content">
+                  {% render 'pickup-availability', variant: product.selected_or_first_available_variant %}
+                </div>
+              </div>
+            {% endif %}
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- Zoom Modal - Always render for JavaScript functionality -->
+<div id="zoom-modal-{{ section.id }}" class="zoom-modal" aria-hidden="true">
+  <div class="zoom-modal-content">
+    <button type="button" class="zoom-close" aria-label="Close zoom">&times;</button>
+    <img id="zoom-image-{{ section.id }}" src="" alt="" class="zoom-image">
+  </div>
+</div>
 
 <script type="application/ld+json">
 {
@@ -358,6 +407,24 @@
       "type": "checkbox",
       "id": "show_media_overlay",
       "label": "Show media overlay data",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_zoom",
+      "label": "Enable image zoom",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "video_autoplay",
+      "label": "Autoplay videos",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "video_loop",
+      "label": "Loop videos",
       "default": true
     },
     {
@@ -446,6 +513,12 @@
       "id": "show_social_sharing",
       "label": "Show social sharing buttons",
       "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pickup_availability",
+      "label": "Show pickup availability",
+      "default": true
     },
     {
       "type": "header",
@@ -621,6 +694,34 @@ document.addEventListener('DOMContentLoaded', function() {
         if (mainImage) {
           mainImage.src = newSrc;
           mainImage.srcset = newSrcset;
+          
+          // Update zoom data if zoom is enabled
+          {% if section.settings.enable_zoom %}
+          if (this.dataset.zoom) {
+            mainImage.dataset.zoom = this.dataset.zoom;
+          }
+          {% endif %}
+        }
+      } else if (mediaType === 'video') {
+        // Handle video switching
+        const videoHtml = this.dataset.videoHtml;
+        if (videoHtml) {
+          const mediaContainer = mainMediaContainer.querySelector('.product-media');
+          mediaContainer.innerHTML = videoHtml;
+        }
+      } else if (mediaType === 'external_video') {
+        // Handle external video switching
+        const externalVideoHtml = this.dataset.externalVideoHtml;
+        if (externalVideoHtml) {
+          const mediaContainer = mainMediaContainer.querySelector('.product-media');
+          mediaContainer.innerHTML = externalVideoHtml;
+        }
+      } else if (mediaType === 'model') {
+        // Handle 3D model switching
+        const modelHtml = this.dataset.modelHtml;
+        if (modelHtml) {
+          const mediaContainer = mainMediaContainer.querySelector('.product-media');
+          mediaContainer.innerHTML = modelHtml;
         }
       }
       
@@ -628,9 +729,13 @@ document.addEventListener('DOMContentLoaded', function() {
       const mediaContainer = mainMediaContainer.querySelector('.product-media');
       if (mediaContainer) {
         mediaContainer.dataset.mediaId = mediaId;
+        mediaContainer.dataset.mediaType = mediaType;
       }
     });
   });
+
+  // Zoom functionality is handled by product-zoom.js
+  console.log('Product section {{ section.id }} script loaded');
   
   // Form submission with loading state
   productForm.addEventListener('submit', function() {

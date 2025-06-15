@@ -1,0 +1,115 @@
+{% comment %}
+  Pickup Availability Snippet
+  Shows store locations where the product variant is available for pickup
+{% endcomment %}
+
+{% if variant.store_availabilities.size > 0 %}
+  <div class="pickup-availability-list">
+    {% for availability in variant.store_availabilities limit: 3 %}
+      <div class="pickup-location">
+        <div class="location-info">
+          <span class="location-name">{{ availability.location.name }}</span>
+          <span class="location-status {% if availability.available %}available{% else %}unavailable{% endif %}">
+            {% if availability.available %}
+              [READY_FOR_PICKUP]
+            {% else %}
+              [UNAVAILABLE]
+            {% endif %}
+          </span>
+        </div>
+        {% if availability.location.address %}
+          <div class="location-address">
+            {{ availability.location.address.street }}
+            {% if availability.location.address.city %}, {{ availability.location.address.city }}{% endif %}
+            {% if availability.location.address.province_code %} {{ availability.location.address.province_code }}{% endif %}
+            {% if availability.location.address.zip %} {{ availability.location.address.zip }}{% endif %}
+          </div>
+        {% endif %}
+        {% if availability.pick_up_time %}
+          <div class="pickup-time">
+            Usually ready in {{ availability.pick_up_time }}
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+    
+    {% if variant.store_availabilities.size > 3 %}
+      <button type="button" class="btn btn-secondary show-more-locations" data-variant-id="{{ variant.id }}">
+        [VIEW_ALL_LOCATIONS]
+      </button>
+    {% endif %}
+  </div>
+{% else %}
+  <div class="no-pickup-available">
+    <span class="status-unavailable">[PICKUP_NOT_AVAILABLE]</span>
+  </div>
+{% endif %}
+
+<style>
+.pickup-availability-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.pickup-location {
+  padding: var(--space-sm);
+  background-color: rgba(var(--color-accent-cyan-rgb), 0.05);
+  border: var(--border-width-thin) solid var(--color-border-primary);
+  clip-path: var(--clip-path-input);
+}
+
+.location-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xs);
+}
+
+.location-name {
+  font-family: var(--font-family-secondary);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-highlight);
+}
+
+.location-status.available {
+  color: var(--color-accent-green);
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.location-status.unavailable {
+  color: var(--color-accent-red);
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.location-address {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.pickup-time {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-sm);
+  color: var(--color-accent-cyan);
+}
+
+.show-more-locations {
+  margin-top: var(--space-sm);
+  align-self: flex-start;
+}
+
+.no-pickup-available {
+  text-align: center;
+  padding: var(--space-md);
+}
+
+.status-unavailable {
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-sm);
+}
+</style> 
