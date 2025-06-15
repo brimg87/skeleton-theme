@@ -1,0 +1,179 @@
+{% comment %}
+  Transmission Log Archive Notice
+  Displays at top of collection to clarify these are showcase/archive items
+{% endcomment %}
+
+<section class="transmission-log-notice-section">
+  <div class="container">
+    <div class="archive-notice data-box">
+      <div class="data-box-header">//: ARCHIVE_ACCESS_NOTICE ://</div>
+      <div class="notice-content">
+        <div class="notice-grid">
+          <div class="notice-icon">
+            <span class="archive-symbol">[◉]</span>
+          </div>
+          <div class="notice-text">
+            <h2 class="notice-title">TRANSMISSION LOG ARCHIVE</h2>
+            <p class="notice-description">
+              This archive contains documentation of prototype designs, one-of-a-kind pieces, 
+              and classified development projects. Items displayed here are for reference and 
+              showcase purposes only.
+            </p>
+            <div class="notice-status">
+              <span class="status-indicator">[STATUS: REFERENCE_ONLY]</span>
+              <span class="access-level">[ACCESS: PUBLIC_ARCHIVE]</span>
+            </div>
+          </div>
+        </div>
+        
+        {% if section.settings.show_designer_note %}
+          <div class="designer-note">
+            <div class="note-header">//: DESIGNER_NOTE ://</div>
+            <p>{{ section.settings.designer_note_text }}</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.transmission-log-notice-section {
+  padding: 2rem 0;
+  background: var(--color-background-secondary, #0a0a0a);
+}
+
+.archive-notice {
+  margin-bottom: 0;
+}
+
+.notice-content {
+  padding: 1.5rem;
+}
+
+.notice-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  margin-bottom: 1rem;
+}
+
+.notice-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.archive-symbol {
+  font-size: 2rem;
+  color: var(--color-accent-cyan, #00ffff);
+  font-family: var(--font-family-primary, monospace);
+  text-shadow: 0 0 10px currentColor;
+}
+
+.notice-title {
+  font-family: var(--font-family-primary, monospace);
+  font-size: 1.25rem;
+  color: var(--color-accent-cyan, #00ffff);
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.notice-description {
+  color: var(--color-text-secondary, #cccccc);
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+}
+
+.notice-status {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.status-indicator,
+.access-level {
+  font-family: var(--font-family-primary, monospace);
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--color-accent-magenta, #ff00ff);
+  color: var(--color-accent-magenta, #ff00ff);
+  background: rgba(255, 0, 255, 0.1);
+  text-transform: uppercase;
+}
+
+.access-level {
+  border-color: var(--color-accent-green, #00ff00);
+  color: var(--color-accent-green, #00ff00);
+  background: rgba(0, 255, 0, 0.1);
+}
+
+.designer-note {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border, #333333);
+}
+
+.note-header {
+  font-family: var(--font-family-primary, monospace);
+  color: var(--color-accent-yellow, #ffff00);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.designer-note p {
+  color: var(--color-text-secondary, #cccccc);
+  line-height: 1.6;
+  margin: 0;
+  font-style: italic;
+}
+
+@media (max-width: 767px) {
+  .notice-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .notice-status {
+    justify-content: center;
+  }
+  
+  .status-indicator,
+  .access-level {
+    font-size: 0.75rem;
+  }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Transmission Log Notice",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Archive Notice Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_designer_note",
+      "label": "Show designer note",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "designer_note_text",
+      "label": "Designer note text",
+      "info": "Optional personal note from the designer about the archive"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Transmission Log Notice"
+    }
+  ]
+}
+{% endschema %} 

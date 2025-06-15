@@ -162,6 +162,80 @@
   gap: 1.5rem;
 }
 
+/* Not For Sale Notice */
+.not-for-sale-notice {
+  border: 2px solid var(--color-accent-magenta);
+  background: rgba(255, 0, 255, 0.05);
+  margin-bottom: 1.5rem;
+}
+
+.not-for-sale-notice .data-box-header {
+  background: var(--color-accent-magenta);
+  color: var(--color-background);
+}
+
+.not-for-sale-notice .notice-content {
+  padding: 1.5rem;
+}
+
+.notice-alert {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: start;
+  margin-bottom: 1rem;
+}
+
+.alert-icon {
+  font-size: 1.5rem;
+  color: var(--color-accent-yellow);
+  font-family: var(--font-family-primary);
+  text-shadow: 0 0 8px currentColor;
+}
+
+.alert-text strong {
+  display: block;
+  color: var(--color-accent-magenta);
+  font-family: var(--font-family-primary);
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.alert-text p {
+  color: var(--color-foreground-75);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.acquisition-status {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.not-for-sale-notice .status-badge {
+  font-family: var(--font-family-primary);
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.not-for-sale-notice .status-badge.not-for-sale {
+  border-color: var(--color-accent-magenta);
+  color: var(--color-accent-magenta);
+  background: rgba(255, 0, 255, 0.1);
+}
+
+.not-for-sale-notice .status-badge.reference {
+  border-color: var(--color-accent-cyan);
+  color: var(--color-accent-cyan);
+  background: rgba(0, 255, 255, 0.1);
+}
+
 .archive-title {
   font-size: 2rem;
   font-weight: bold;

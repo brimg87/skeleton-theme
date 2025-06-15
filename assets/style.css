@@ -839,6 +839,126 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
     border-color: var(--color-accent-magenta);
 }
 
+/* Transmission Log Card Styles */
+.transmission-log-card {
+    border: 2px solid var(--color-accent-cyan);
+    background: rgba(0, 255, 255, 0.02);
+}
+
+.transmission-log-card .product-image {
+    position: relative;
+}
+
+.archive-badge {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    background: var(--color-accent-cyan);
+    color: var(--color-background);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-family: var(--font-family-primary);
+    font-weight: bold;
+    z-index: 2;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 100%, 8px 100%);
+}
+
+.entry-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: var(--color-accent-magenta);
+    color: var(--color-background);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-family: var(--font-family-primary);
+    font-weight: bold;
+    z-index: 2;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 100%, 8px 100%);
+}
+
+.archive-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.archive-status {
+    font-family: var(--font-family-primary);
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.archive-status.status-details {
+    border-color: var(--color-accent-green);
+    color: var(--color-accent-green);
+    background: rgba(0, 255, 0, 0.1);
+}
+
+.archive-status.status-restricted {
+    border-color: #ff4444;
+    color: #ff4444;
+    background: rgba(255, 68, 68, 0.1);
+}
+
+.archive-status.status-sealed {
+    border-color: var(--color-accent-cyan);
+    color: var(--color-accent-cyan);
+    background: rgba(0, 255, 255, 0.1);
+}
+
+.archive-status.status-archived {
+    border-color: var(--color-foreground-50);
+    color: var(--color-foreground-50);
+    background: rgba(136, 136, 136, 0.1);
+}
+
+.archive-rarity {
+    font-family: var(--font-family-primary);
+    font-size: 0.875rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+.archive-rarity.rarity-prototype {
+    color: var(--color-accent-magenta);
+}
+
+.archive-rarity.rarity-unique {
+    color: var(--color-accent-yellow);
+}
+
+.archive-rarity.rarity-rare {
+    color: var(--color-accent-cyan);
+}
+
+.archive-notice {
+    font-family: var(--font-family-primary);
+    font-size: 0.75rem;
+    color: var(--color-accent-magenta);
+    text-align: center;
+    padding: 0.25rem;
+    border: 1px solid var(--color-accent-magenta);
+    background: rgba(255, 0, 255, 0.1);
+    text-transform: uppercase;
+}
+
+.btn-archive {
+    background: var(--color-accent-cyan);
+    color: var(--color-background);
+    border: 2px solid var(--color-accent-cyan);
+}
+
+.btn-archive:hover {
+    background: transparent;
+    color: var(--color-accent-cyan);
+    box-shadow: 0 0 15px var(--color-accent-cyan);
+}
+
 /* Collection Page Specific Styles */
 .collection-page {
     padding-top: calc(var(--header-height) + var(--space-xl));

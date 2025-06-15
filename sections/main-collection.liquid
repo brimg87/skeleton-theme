@@ -135,7 +135,7 @@
           <div class="product-grid collection-product-grid" role="main" aria-label="Product list">
             {%- if collection.products.size > 0 -%}
               {%- for product in collection.products -%}
-                <article class="product-card" aria-labelledby="product-title-{{ product.id }}" itemscope itemtype="http://schema.org/Product">
+                <article class="product-card{% if product.product_type == 'Transmission Log' %} transmission-log-card{% endif %}" aria-labelledby="product-title-{{ product.id }}" itemscope itemtype="http://schema.org/Product">
                   <div class="product-image">
                     <a href="{{ product.url | within: collection }}" aria-label="View {{ product.title | escape }} details">
                       {% if product.featured_image %}
@@ -154,7 +154,12 @@
                           {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
                         </div>
                       {% endif %}
-                      {% if product.compare_at_price > product.price and section.settings.show_sale_badges %}
+                      {% if product.product_type == 'Transmission Log' %}
+                        <div class="product-badge archive-badge">[ARCHIVE]</div>
+                        {% if product.metafields.transmission_log.entry_number %}
+                          <div class="product-badge entry-badge">[#{{ product.metafields.transmission_log.entry_number }}]</div>
+                        {% endif %}
+                      {% elsif product.compare_at_price > product.price and section.settings.show_sale_badges %}
                         <div class="product-badge sale-badge">[ON_SALE]</div>
                       {% endif %}
                     </a>
@@ -164,24 +169,45 @@
                       <h3 class="product-name h4" id="product-title-{{ product.id }}" itemprop="name">
                         <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
                       </h3>
-                      <div class="product-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-                        <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
-                        <meta itemprop="price" content="{{ product.price | divided_by: 100.0 }}">
-                        {% if product.compare_at_price > product.price and section.settings.show_compare_prices %}
-                          <span class="visually-hidden">Regular price</span>
-                          <s class="product-price-compare">{{ product.compare_at_price | money }}</s>
-                          <span class="visually-hidden">Sale price</span>
-                        {% endif %}
-                        <span class="product-price-current">{{ product.price | money }}</span>
-                        {% if product.available %}
-                          <link itemprop="availability" href="http://schema.org/InStock">
-                        {% else %}
-                          <link itemprop="availability" href="http://schema.org/OutOfStock">
-                        {% endif %}
-                      </div>
+                      
+                      {% if product.product_type == 'Transmission Log' %}
+                        <div class="archive-info">
+                          {% if product.metafields.transmission_log.status %}
+                            <span class="archive-status status-{{ product.metafields.transmission_log.status | downcase }}">
+                              [{{ product.metafields.transmission_log.status | upcase }}]
+                            </span>
+                          {% endif %}
+                          {% if product.metafields.product_specs.rarity %}
+                            <span class="archive-rarity rarity-{{ product.metafields.product_specs.rarity | downcase }}">
+                              {{ product.metafields.product_specs.rarity | upcase }}
+                            </span>
+                          {% endif %}
+                          <span class="archive-notice">[REFERENCE_ONLY]</span>
+                        </div>
+                      {% else %}
+                        <div class="product-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                          <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
+                          <meta itemprop="price" content="{{ product.price | divided_by: 100.0 }}">
+                          {% if product.compare_at_price > product.price and section.settings.show_compare_prices %}
+                            <span class="visually-hidden">Regular price</span>
+                            <s class="product-price-compare">{{ product.compare_at_price | money }}</s>
+                            <span class="visually-hidden">Sale price</span>
+                          {% endif %}
+                          <span class="product-price-current">{{ product.price | money }}</span>
+                          {% if product.available %}
+                            <link itemprop="availability" href="http://schema.org/InStock">
+                          {% else %}
+                            <link itemprop="availability" href="http://schema.org/OutOfStock">
+                          {% endif %}
+                        </div>
+                      {% endif %}
                     </div>
                     <div class="product-actions">
-                      {% if product.available %}
+                      {% if product.product_type == 'Transmission Log' %}
+                        <a href="{{ product.url | within: collection }}" class="btn btn-cta btn-archive" aria-describedby="product-{{ product.id }}-archive">
+                          [ACCESS_ARCHIVE]
+                        </a>
+                      {% elsif product.available %}
                         <a href="{{ product.url | within: collection }}" class="btn btn-cta btn-product" aria-describedby="product-{{ product.id }}-price">
                           [ANALYZE_ITEM]
                         </a>
