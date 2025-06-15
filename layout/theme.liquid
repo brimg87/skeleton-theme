@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="{{ request.locale.iso_code }}">
 <head>
-    <meta charset="UTF-DPR">
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0f1f">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <title>
       {{ page_title }}
@@ -13,18 +17,37 @@
     </title>
 
     {%- if page_description %}<meta name="description" content="{{ page_description | escape }}">{% endif -%}
+    
+    {%- unless settings.password_page_enabled -%}
+      <meta name="robots" content="index,follow">
+    {%- else -%}
+      <meta name="robots" content="noindex,nofollow">
+    {%- endunless -%}
 
     <link rel="canonical" href="{{ canonical_url }}">
+    
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+    
+    {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
 
     {% render 'css-variables' %}
     <link rel="stylesheet" href="{{ 'style.css' | asset_url }}">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
     
-    <script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous" defer></script>
+    {% comment %} Replace YOUR_KIT_CODE with actual FontAwesome kit ID {% endcomment %}
+    {% comment %} <script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous" defer></script> {% endcomment %}
 
     {{ content_for_header }}
 </head>
 <body class="template-{{ request.page_type | handle }}">
+  <a class="skip-to-content-link visually-hidden" href="#MainContent">
+    {{ 'accessibility.skip_to_text' | t }}
+  </a>
+  
   <div class="crt-effect"></div>
 
     {% section 'header' %}
