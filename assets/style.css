@@ -870,13 +870,13 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 /* === PRODUCT GRID RESPONSIVE === */
 @media screen and (max-width: 1199px) {
     .product-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(var(--grid-tablet-columns, 3), 1fr);
     }
 }
 
 @media screen and (max-width: 989px) {
     .product-grid {
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        grid-template-columns: repeat(var(--grid-tablet-columns, 3), 1fr);
     }
 }
 

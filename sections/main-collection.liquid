@@ -3,7 +3,7 @@
   assign products_per_page = section.settings.products_per_page
 -%}
 
-<section class="collection-interface-section">
+<section class="collection-interface-section" style="--grid-desktop-columns: {{ section.settings.desktop_columns }}; --grid-tablet-columns: {{ section.settings.tablet_columns }}; --grid-mobile-columns: {{ section.settings.mobile_columns }}">
   <div class="container">
     <header class="collection-header data-box">
       <div class="data-box-header">//: COLLECTION_DATABANK: {{ collection.title | upcase }} ://</div>
@@ -146,8 +146,8 @@
                       {% else %}
                         {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
                       {% endif %}
-                      {% if product.compare_at_price > product.price %}
-                        <div class="product-badge sale-badge">{{ 'products.product.on_sale' | t }}</div>
+                      {% if product.compare_at_price > product.price and section.settings.show_sale_badges %}
+                        <div class="product-badge sale-badge">[ON_SALE]</div>
                       {% endif %}
                     </a>
                   </div>
@@ -155,18 +155,18 @@
                     <h3 class="product-name" id="product-title-{{ product.id }}" itemprop="name">
                       <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
                     </h3>
-                    <div class="product-price" aria-label="Price: {{ product.price | money }}">
-                      {% if product.compare_at_price > product.price %}
-                        <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+                                        <div class="product-price" aria-label="Price: {{ product.price | money }}">
+                      {% if product.compare_at_price > product.price and section.settings.show_compare_prices %}
+                        <span class="visually-hidden">Regular price</span>
                         <s class="product-price-compare">{{ product.compare_at_price | money }}</s>
-                        <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
+                        <span class="visually-hidden">Sale price</span>
                       {% endif %}
-                                             <span class="product-price-current" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-                         <meta itemprop="price" content="{{ product.price | money_without_currency }}">
-                         <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
-                         {{ product.price | money }}
-                       </span>
-                     </div>
+                      <span class="product-price-current" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                        <meta itemprop="price" content="{{ product.price | money_without_currency }}">
+                        <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
+                        {{ product.price | money }}
+                      </span>
+                    </div>
                     <a href="{{ product.url | within: collection }}" class="product-button" aria-label="View {{ product.title | escape }} details">[ANALYZE_ITEM]</a>
                   </div>
                 </article>
@@ -194,6 +194,10 @@
   "class": "section-main-collection",
   "settings": [
     {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
       "type": "range",
       "id": "products_per_page",
       "min": 4,
@@ -201,6 +205,40 @@
       "step": 4,
       "label": "Products per page",
       "default": 16
+    },
+    {
+      "type": "range",
+      "id": "desktop_columns",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "label": "Desktop columns",
+      "default": 4,
+      "info": "Number of product columns on desktop screens"
+    },
+    {
+      "type": "range",
+      "id": "tablet_columns",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "label": "Tablet columns",
+      "default": 3,
+      "info": "Number of product columns on tablet screens"
+    },
+    {
+      "type": "range",
+      "id": "mobile_columns",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "label": "Mobile columns",
+      "default": 2,
+      "info": "Number of product columns on mobile screens"
+    },
+    {
+      "type": "header",
+      "content": "Collection Display"
     },
     {
       "type": "checkbox",
@@ -215,6 +253,10 @@
       "default": false
     },
     {
+      "type": "header",
+      "content": "Product Features"
+    },
+    {
       "type": "checkbox",
       "id": "enable_sorting",
       "label": "Enable sorting",
@@ -226,6 +268,20 @@
       "label": "Enable filtering",
       "default": true,
       "info": "Ensure product filters are set up in Shopify Admin (Search & Discovery app)."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sale_badges",
+      "label": "Show sale badges",
+      "default": true,
+      "info": "Display [ON_SALE] badges on discounted products"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_compare_prices",
+      "label": "Show compare at prices",
+      "default": true,
+      "info": "Display crossed-out original prices for sale items"
     }
   ]
 }
