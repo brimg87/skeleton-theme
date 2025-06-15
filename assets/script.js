@@ -4,6 +4,107 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- 1. Global Site Functionalities ---
 
+    // Mobile Menu Toggle
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const siteHeader = document.querySelector('.site-header');
+    
+    if (mobileMenuToggle && siteHeader) {
+        mobileMenuToggle.addEventListener('click', function() {
+            const isOpen = siteHeader.classList.contains('mobile-menu-open');
+            
+            if (isOpen) {
+                siteHeader.classList.remove('mobile-menu-open');
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                // Close any open dropdowns
+                document.querySelectorAll('.has-dropdown.dropdown-open').forEach(item => {
+                    item.classList.remove('dropdown-open');
+                });
+            } else {
+                siteHeader.classList.add('mobile-menu-open');
+                mobileMenuToggle.setAttribute('aria-expanded', 'true');
+            }
+        });
+
+        // Handle dropdown toggles in mobile menu
+        const mobileDropdownItems = document.querySelectorAll('.main-nav .has-dropdown > .nav-link');
+        mobileDropdownItems.forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Only prevent default if we're in mobile view
+                if (window.innerWidth <= 989) {
+                    e.preventDefault();
+                    const parentItem = this.closest('.has-dropdown');
+                    const isOpen = parentItem.classList.contains('dropdown-open');
+                    
+                    // Close all other dropdowns
+                    document.querySelectorAll('.has-dropdown.dropdown-open').forEach(item => {
+                        if (item !== parentItem) {
+                            item.classList.remove('dropdown-open');
+                        }
+                    });
+                    
+                    // Toggle current dropdown
+                    if (isOpen) {
+                        parentItem.classList.remove('dropdown-open');
+                    } else {
+                        parentItem.classList.add('dropdown-open');
+                    }
+                }
+            });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!siteHeader.contains(e.target) && siteHeader.classList.contains('mobile-menu-open')) {
+                siteHeader.classList.remove('mobile-menu-open');
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                // Close any open dropdowns
+                document.querySelectorAll('.has-dropdown.dropdown-open').forEach(item => {
+                    item.classList.remove('dropdown-open');
+                });
+            }
+        });
+
+        // Close mobile menu on window resize if it gets too wide
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 989 && siteHeader.classList.contains('mobile-menu-open')) {
+                siteHeader.classList.remove('mobile-menu-open');
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                // Close any open dropdowns
+                document.querySelectorAll('.has-dropdown.dropdown-open').forEach(item => {
+                    item.classList.remove('dropdown-open');
+                });
+            }
+        });
+    }
+
+    // Desktop Dropdown Hover Functionality (Dawn style)
+    const dropdownItems = document.querySelectorAll('.has-dropdown');
+    dropdownItems.forEach(item => {
+        const dropdown = item.querySelector('.dropdown-menu');
+        if (!dropdown) return;
+        
+        let timeout;
+        
+        item.addEventListener('mouseenter', () => {
+            // Only apply hover behavior on desktop
+            if (window.innerWidth > 989) {
+                clearTimeout(timeout);
+                dropdown.style.display = 'block';
+                setTimeout(() => dropdown.style.opacity = '1', 10);
+            }
+        });
+        
+        item.addEventListener('mouseleave', () => {
+            // Only apply hover behavior on desktop
+            if (window.innerWidth > 989) {
+                timeout = setTimeout(() => {
+                    dropdown.style.opacity = '0';
+                    setTimeout(() => dropdown.style.display = 'none', 200);
+                }, 100);
+            }
+        });
+    });
+
     // Smooth Scroll for Anchor Links (excluding tab controls)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {

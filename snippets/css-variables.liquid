@@ -7,16 +7,22 @@
 
   :root {
     /* Base Colors */
-    --color-primary-dark: {{ settings.color_primary_dark }};
-    --color-secondary-dark: {{ settings.color_secondary_dark }};
-    --color-accent-green: {{ settings.color_accent_green }};
-    --color-accent-magenta: {{ settings.color_accent_magenta }};
-    --color-accent-cyan: {{ settings.color_accent_cyan }};
-    --color-white: {{ settings.color_white }};
+    --color-primary-dark: {{ settings.color_primary_dark | default: '#0a0f1f' }};
+    --color-secondary-dark: {{ settings.color_secondary_dark | default: '#1a1f2e' }};
+    --color-accent-green: {{ settings.color_accent_green | default: '#00ff00' }};
+    --color-accent-magenta: {{ settings.color_accent_magenta | default: '#ff00ff' }};
+    --color-accent-cyan: {{ settings.color_accent_cyan | default: '#00ffff' }};
+    --color-accent-yellow: {{ settings.color_accent_yellow | default: '#ffff00' }};
+    --color-accent-orange: {{ settings.color_accent_orange | default: '#ff8800' }};
+    --color-accent-red: {{ settings.color_accent_red | default: '#ff0000' }};
+    --color-white: {{ settings.color_white | default: '#ffffff' }};
+    --color-darkest: {{ settings.color_darkest | default: '#000000' }};
 
     /* Derived Colors */
     --color-background-body: var(--color-primary-dark);
     --color-background-card: var(--color-secondary-dark);
+    --color-background-overlay: rgba(10, 15, 31, 0.9);
+    --color-background-input: var(--color-secondary-dark);
     --color-text-primary: var(--color-white);
     --color-text-secondary: rgba(255, 255, 255, 0.7);
     --color-text-highlight: var(--color-accent-green);
@@ -28,18 +34,96 @@
     --color-border-secondary: rgba(255, 255, 255, 0.1);
 
     /* RGB Values for Opacity */
+    --color-primary-dark-rgb: 10, 15, 31;
+    --color-secondary-dark-rgb: 26, 31, 46;
     --color-accent-green-rgb: 0, 255, 0;
     --color-accent-magenta-rgb: 255, 0, 255;
     --color-accent-cyan-rgb: 0, 255, 255;
+    --color-accent-yellow-rgb: 255, 255, 0;
+    --color-accent-orange-rgb: 255, 136, 0;
+    --color-accent-red-rgb: 255, 0, 0;
+    --color-white-rgb: 255, 255, 255;
+    --color-darkest-rgb: 0, 0, 0;
+    --color-border-primary-rgb: 0, 255, 255;
+
+    /* Debug Colors (for development) */
+    --debug-primary: #ff0080;
+    --debug-secondary: #00ff80;
 
     /* Typography */
-    --font-primary: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
-    --font-weight-normal: {{ settings.type_primary_font.weight }};
-    --font-weight-bold: {{ settings.type_primary_font.weight | plus: 300 }};
+    --font-family-primary: 'Orbitron', sans-serif;
+    --font-family-secondary: 'Share Tech Mono', monospace;
+    --font-family-body: 'Roboto Condensed', sans-serif;
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-bold: 700;
+
+    /* Font Sizes */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-md: 1.125rem;
+    --font-size-lg: 1.25rem;
+    --font-size-xl: 1.5rem;
+    --font-size-xxl: 2rem;
+    --font-size-h1: 2.8rem;
+    --font-size-h2: 2.2rem;
+    --font-size-h3: 1.5rem;
+    --font-size-h4: 1.25rem;
+    --font-size-hero-title: 3.5rem;
+    --font-size-hero-subtext: 1.5rem;
+    --font-size-section-title: 2.2rem;
+    --font-size-header-logo: 1.5rem;
+    --font-size-header-nav: 1rem;
+    --font-size-card-title: 1.25rem;
+
+    /* Line Heights */
+    --line-height-tight: 1.2;
+    --line-height-normal: 1.6;
+    --line-height-heading: 1.3;
+
+    /* Spacing */
+    --space-unit: 0.25rem;
+    --space-xxs: 0.25rem;
+    --space-xs: 0.5rem;
+    --space-sm: 0.75rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-xxl: 3rem;
+    --space-section-padding-y: 3rem;
+
+    /* Borders */
+    --border-width-thin: 1px;
+    --border-width-medium: 2px;
+    --border-radius-sharp: 0px;
+    --border-radius-subtle: 3px;
+    --border-radius-sm: 3px;
+
+    /* Transitions */
+    --transition-duration-fast: 0.15s;
+    --transition-duration-normal: 0.3s;
+    --transition-easing: ease-in-out;
+
+    /* Z-Indexes */
+    --z-index-default: 1;
+    --z-index-sticky: 1000;
+    --z-index-overlay: 500;
+    --z-index-dropdown: 1100;
+    --z-index-modal: 1200;
+    --z-index-critical-overlay: 9999;
 
     /* Layout */
-    --max-width: {{ settings.max_page_width }};
-    --page-margin: {{ settings.min_page_margin }}px;
-    --style-border-radius-inputs: {{ settings.input_corner_radius }}px;
+    --container-max-width: 1200px;
+    --container-padding-x-sm: 1em;
+    --container-padding-x-md: 2em;
+    --header-height: 70px;
+
+    /* Clip Paths */
+    --clip-path-button: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    --clip-path-card: polygon(0 15px, 15px 0, calc(100% - 15px) 0, 100% 15px, 100% calc(100% - 15px), calc(100% - 15px) 100%, 15px 100%, 0 calc(100% - 15px));
+    --clip-path-data-box: polygon(0 8px, 8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px));
+    --clip-path-input: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+    --clip-path-qty-button: polygon(3px 0, calc(100% - 3px) 0, 100% 3px, 100% calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - 3px), 0 3px);
   }
 {% endstyle %}

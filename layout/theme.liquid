@@ -27,58 +27,7 @@
 <body class="template-{{ request.page_type | handle }}">
   <div class="crt-effect"></div>
 
-    <header class="site-header">
-        <div class="logo">
-          <a href="{{ routes.root_url }}"> STARSIDE_ARMORY
-            <span class="glitch" data-text="STARSIDE_ARMORY"></span>
-          </a>
-        </div>
-        <nav class="main-nav">
-            <ul class="d-flex align-items-center">
-              {%- for link in linklists['main-menu'].links -%}
-                {%- if link.links != blank -%}
-                  <li class="nav-item has-dropdown">
-                    <a href="{{ link.url }}" class="nav-link">
-                      //:{{ link.title | upcase }}_
-                      <i class="fas fa-chevron-down dropdown-indicator"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                      {%- for child_link in link.links -%}
-                        <li><a href="{{ child_link.url }}" class="dropdown-link">{{ child_link.title }}</a></li>
-                      {%- endfor -%}
-                    </ul>
-                  </li>
-                {%- else -%}
-                  <li class="nav-item">
-                    <a href="{{ link.url }}" class="nav-link">//:{{ link.title | upcase }}_</a>
-                  </li>
-                {%- endif -%}
-              {%- else -%}
-                <li class="nav-item">
-                  <a href="{{ routes.collections_url }}/weaponry" class="nav-link">//:WEAPONRY_</a>
-                </li>
-                <li class="nav-item">
-                  <a href="{{ routes.collections_url }}/armor-systems" class="nav-link">//:ARMOR_SYSTEMS_</a>
-                </li>
-                <li class="nav-item">
-                  <a href="{{ routes.collections_url }}/cybernetics" class="nav-link">//:CYBERNETICS_</a>
-                </li>
-              {%- endfor -%}
-            </ul>
-        </nav>
-        <div class="user-interface">
-            {%- if shop.customer_accounts_enabled -%}
-              {%- if customer -%}
-                <a href="{{ routes.account_url }}">[USER: {{ customer.first_name | default: 'AGENT' }}]</a>
-              {%- else -%}
-                <a href="{{ routes.account_login_url }}">[LOGIN_TERMINAL]</a>
-              {%- endif -%}
-            {%- endif -%}
-            <a href="{{ routes.cart_url }}">
-              <span>[CREDITS: <i class="fas fa-shopping-cart"></i> {{ cart.item_count }} // {{ cart.total_price | money }}]</span>
-            </a>
-        </div>
-    </header>
+    {% section 'header' %}
 
     <main role="main" id="MainContent" class="site-main">
         {{ content_for_layout }} </main>
