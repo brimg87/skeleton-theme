@@ -1,84 +1,149 @@
-<section id="featured-products" class="section-padding">
-  <div class="container">
+{{ 'section-featured-products.css' | asset_url | stylesheet_tag }}
+
+<section id="featured-products-{{ section.id }}" class="section-padding{% if section.settings.color_scheme != 'background-1' %} color-{{ section.settings.color_scheme }}{% endif %}{% if section.settings.full_width %} section--full-width{% endif %}" style="--section-padding-top: {{ section.settings.padding_top }}px; --section-padding-bottom: {{ section.settings.padding_bottom }}px;">
+  <div class="{% if section.settings.full_width %}page-width-desktop{% else %}container{% endif %}">
     {% if section.settings.title != blank %}
-      <h2 class="section-title" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
+      <div class="section-header text-{{ section.settings.header_alignment }}">
+        <h2 class="section-title h1" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
+        {% if section.settings.description != blank %}
+          <div class="section-description rte">{{ section.settings.description }}</div>
+        {% endif %}
+      </div>
     {% endif %}
     
-    <div class="product-grid">
+    <div class="product-grid" style="--grid-desktop-columns: {{ section.settings.columns_desktop }}; --grid-mobile-columns: {{ section.settings.columns_mobile }};">
       {%- assign collection = section.settings.collection -%}
       {%- assign products_to_show = section.settings.products_to_show -%}
 
       {% for product in collection.products limit: products_to_show %}
-        <div class="product-card">
+        <div class="product-card" itemscope itemtype="http://schema.org/Product">
           <div class="product-image">
-            <a href="{{ product.url | within: collection }}">
+            <a href="{{ product.url | within: collection }}" aria-label="{{ 'products.product.view_product' | t: product_title: product.title }}">
               {% if product.featured_image %}
-                <img src="{{ product.featured_image | image_url: width: 300, height: 250, crop: 'center' }}" 
-                     alt="{{ product.featured_image.alt | escape }}"
-                     loading="lazy"
-                     width="300" height="250">
+                {%- assign image_height = section.settings.image_ratio -%}
+                {%- if section.settings.image_ratio == 'adapt' -%}
+                  {%- assign image_height = 1 | divided_by: product.featured_image.aspect_ratio | times: 100 | append: '%' -%}
+                {%- endif -%}
+                <div class="product-image-wrapper" style="padding-bottom: {{ image_height }};">
+                  <img 
+                    src="{{ product.featured_image | image_url: width: 600 }}" 
+                    alt="{{ product.featured_image.alt | escape }}"
+                    loading="lazy"
+                    width="600" 
+                    height="{{ 600 | divided_by: product.featured_image.aspect_ratio | round }}"
+                    sizes="(min-width: 990px) {{ 1200 | divided_by: section.settings.columns_desktop }}px, (min-width: 750px) {{ 750 | divided_by: 2 }}px, 100vw"
+                    srcset="{{ product.featured_image | image_url: width: 300 }} 300w, {{ product.featured_image | image_url: width: 600 }} 600w, {{ product.featured_image | image_url: width: 900 }} 900w"
+                    itemprop="image">
+                </div>
               {% else %}
-                {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                <div class="product-image-placeholder">
+                  {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              {% endif %}
+              {% if product.compare_at_price > product.price %}
+                <div class="product-badge sale-badge">{{ 'products.product.on_sale' | t }}</div>
               {% endif %}
             </a>
           </div>
           <div class="product-info">
             <div class="product-content">
-              <h3 class="product-name"><a href="{{ product.url | within: collection }}">{{ product.title }}</a></h3>
-              {% comment %}
-              <p class="product-spec">
-                {{ product.tags | first }} 
-              </p>
-              {% endcomment %}
-              <p class="product-price">{{ product.price | money }}</p>
+              <h3 class="product-name h4" itemprop="name">
+                <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
+              </h3>
+              {% if section.settings.show_vendor and product.vendor != blank %}
+                <div class="product-vendor">{{ product.vendor }}</div>
+              {% endif %}
+              <div class="product-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
+                <meta itemprop="price" content="{{ product.price | divided_by: 100.0 }}">
+                {% if product.compare_at_price > product.price %}
+                  <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+                  <s class="product-price-compare">{{ product.compare_at_price | money }}</s>
+                  <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
+                {% endif %}
+                <span class="product-price-current">{{ product.price | money }}</span>
+                {% if product.available %}
+                  <link itemprop="availability" href="http://schema.org/InStock">
+                {% else %}
+                  <link itemprop="availability" href="http://schema.org/OutOfStock">
+                {% endif %}
+              </div>
+              {% if section.settings.show_rating and product.metafields.reviews.rating.value != blank %}
+                <div class="product-rating">
+                  {% render 'product-rating', product: product %}
+                </div>
+              {% endif %}
             </div>
             <div class="product-actions">
-              <a href="{{ product.url | within: collection }}" class="btn btn-cta btn-product">[ANALYZE_ITEM]</a> {% comment %} MODIFIED CLASS {% endcomment %}
+              {% if product.available %}
+                <a href="{{ product.url | within: collection }}" class="btn btn-cta btn-product" aria-describedby="product-{{ product.id }}-price">
+                  {{ section.settings.button_label | default: '[ANALYZE_ITEM]' }}
+                </a>
+              {% else %}
+                <button class="btn btn-cta btn-product disabled" disabled>
+                  [OUT_OF_STOCK]
+                </button>
+              {% endif %}
             </div>
           </div>
         </div>
       {% endfor %}
 
       {% if collection.products_count == 0 %}
-        <p class="text-center my-lg">//:NO_PRODUCTS_IN_SELECTED_DATASTREAM (COLLECTION)//</p> {% comment %} Added utility classes {% endcomment %}
-        {% comment %} Show minimum number of placeholder cards when no products exist {% endcomment %}
-        {% for i in (1..2) %}
-          <div class="product-card placeholder">
-            <div class="product-image">
-              {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
-            </div>
-            <div class="product-info">
-              <div class="product-content">
-                <h3 class="product-name">ITEM_SLOT_{{ i }}</h3>
-                <p class="product-price">€$ ---</p>
+        <div class="collection-empty text-center">
+          <p class="h3">//:NO_PRODUCTS_IN_SELECTED_DATASTREAM//</p>
+          {% comment %} Show minimum number of placeholder cards when no products exist {% endcomment %}
+          {% for i in (1..section.settings.columns_desktop) %}
+            <div class="product-card placeholder">
+              <div class="product-image">
+                <div class="product-image-placeholder">
+                  {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
               </div>
-              <div class="product-actions">
-                <a href="#" class="btn btn-cta btn-product disabled">[OFFLINE]</a> {% comment %} MODIFIED CLASS & ADDED DISABLED {% endcomment %}
+              <div class="product-info">
+                <div class="product-content">
+                  <h3 class="product-name">EMPTY_SLOT</h3>
+                  <div class="product-price">€$ ---</div>
+                </div>
+                <div class="product-actions">
+                  <button class="btn btn-cta btn-product disabled" disabled>[OFFLINE]</button>
+                </div>
               </div>
             </div>
-          </div>
-        {% endfor %}
-      {% elsif collection.products_count < 2 %}
+          {% endfor %}
+        </div>
+      {% elsif collection.products_count < section.settings.columns_desktop %}
         {% comment %} Show placeholder cards only if we have fewer than minimum products {% endcomment %}
-        {% assign remaining_slots = 2 | minus: collection.products_count %}
+        {% assign remaining_slots = section.settings.columns_desktop | minus: collection.products_count %}
         {% for i in (1..remaining_slots) %}
           <div class="product-card placeholder">
             <div class="product-image">
-              {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
+              <div class="product-image-placeholder">
+                {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
             </div>
             <div class="product-info">
               <div class="product-content">
-                <h3 class="product-name">ITEM_SLOT_{{ i }}</h3>
-                <p class="product-price">€$ ---</p>
+                <h3 class="product-name">EMPTY_SLOT</h3>
+                <div class="product-price">€$ ---</div>
               </div>
               <div class="product-actions">
-                <a href="#" class="btn btn-cta btn-product disabled">[OFFLINE]</a> {% comment %} MODIFIED CLASS & ADDED DISABLED {% endcomment %}
+                <button class="btn btn-cta btn-product disabled" disabled>[OFFLINE]</button>
               </div>
             </div>
           </div>
         {% endfor %}
       {% endif %}
     </div>
+
+    {% if section.settings.show_view_all and collection.products_count > products_to_show %}
+      <div class="section-footer text-center">
+        <a href="{{ collection.url }}" class="btn btn-secondary">
+          {{ 'sections.featured_collection.view_all' | t }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
 </section>
 
 {% schema %}
@@ -88,10 +153,35 @@
   "class": "section-featured-products",
   "settings": [
     {
-      "type": "text",
+      "type": "inline_richtext",
       "id": "title",
       "label": "Heading",
       "default": "// FEATURED_ITEMS //"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "select",
+      "id": "header_alignment",
+      "label": "Header alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
     },
     {
       "type": "collection",
@@ -102,15 +192,158 @@
       "type": "range",
       "id": "products_to_show",
       "min": 2,
-      "max": 8,
+      "max": 12,
       "step": 1,
-      "label": "Products to Show",
+      "label": "Products to show",
       "default": 4
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "label": "Number of columns on desktop",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Number of columns on mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 column"
+        },
+        {
+          "value": "2",
+          "label": "2 columns"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "100%",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "150%",
+          "label": "Portrait (2:3)"
+        },
+        {
+          "value": "75%",
+          "label": "Landscape (4:3)"
+        },
+        {
+          "value": "56.25%",
+          "label": "Wide (16:9)"
+        }
+      ],
+      "default": "100%"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show product vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show product rating",
+      "default": false,
+      "info": "To display a rating, add a product rating app. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#featured-collection-show-product-rating)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show 'View all' button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "[ANALYZE_ITEM]"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Make section full width",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "background-1",
+          "label": "Background 1"
+        },
+        {
+          "value": "background-2",
+          "label": "Background 2"
+        },
+        {
+          "value": "inverse",
+          "label": "Inverse"
+        },
+        {
+          "value": "accent-1",
+          "label": "Accent 1"
+        },
+        {
+          "value": "accent-2",
+          "label": "Accent 2"
+        }
+      ],
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
     }
   ],
   "presets": [
     {
-      "name": "Featured Products"
+      "name": "Featured Products",
+      "settings": {
+        "collection": "all"
+      }
     }
   ]
 }
