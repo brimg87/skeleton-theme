@@ -1928,6 +1928,48 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 .id-value { color: var(--color-accent-yellow); }
 .status-value.status-operational { color: var(--color-accent-green); font-weight: var(--font-weight-bold); }
 .product-short-desc { font-size: var(--font-size-md); margin-bottom: var(--space-lg); line-height: var(--line-height-normal); opacity: 0.9; }
+
+/* Add padding to product description for better readability */
+.product-interface-section .product-short-desc {
+    padding: 0 var(--space-sm);
+}
+
+/* Fix redundant borders - Remove border from product-visuals when it has data-box class */
+.product-interface-section .product-visuals.data-box {
+    border: none;
+    background: transparent;
+    clip-path: none;
+}
+
+/* Style the Shopify Buy Now button to match cyberpunk theme */
+.shopify-payment-button,
+.shopify-payment-button__button,
+.shopify-payment-button__button--unbranded {
+    width: 100% !important;
+    margin-top: var(--space-sm) !important;
+}
+
+.shopify-payment-button__button--unbranded {
+    background-color: var(--color-accent-magenta) !important;
+    color: var(--color-text-on-accent) !important;
+    border: var(--border-width-medium) solid var(--color-accent-magenta) !important;
+    font-family: var(--font-family-secondary) !important;
+    font-size: var(--font-size-base) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    clip-path: var(--clip-path-button) !important;
+    transition: all var(--transition-duration-normal) var(--transition-easing) !important;
+    box-shadow: 0 0 10px var(--color-accent-magenta), 0 0 15px rgba(255, 0, 255, 0.3) !important;
+    padding: var(--space-sm) var(--space-lg) !important;
+    min-height: 48px !important;
+}
+
+.shopify-payment-button__button--unbranded:hover {
+    background-color: transparent !important;
+    color: var(--color-accent-magenta) !important;
+    border-color: var(--color-accent-magenta) !important;
+    box-shadow: 0 0 15px var(--color-accent-magenta), 0 0 25px var(--color-accent-magenta) !important;
+}
 .price-block.data-box .price-content { padding: var(--space-md) var(--space-lg); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
 .price-block .price-label { font-family: var(--font-family-secondary); font-size: var(--font-size-base); color: var(--color-text-secondary); margin-right: var(--space-xs); }
 .product-price-detail.terminal-green-glow { font-family: var(--font-family-primary); font-size: var(--font-size-xxl); color: var(--color-accent-green); font-weight: var(--font-weight-bold); text-shadow: 0 0 5px var(--color-accent-green), 0 0 10px rgba(0, 255, 0, 0.5); }

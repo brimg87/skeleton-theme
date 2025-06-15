@@ -1,0 +1,74 @@
+# Starside Armory Shopify Theme - Development Rules
+
+## 🚨 CRITICAL SAFETY RULES
+
+### CSS Editing Guidelines
+- **NEVER use `edit_file` for large CSS sections** - always use `search_replace` for targeted changes
+- **Make ONE change at a time** and test immediately
+- **NEVER rewrite existing working code** unless absolutely necessary
+- **Always preserve navigation functionality** - test dropdowns and mobile menu after CSS changes
+- **Use git commits frequently** to create safe restore points before major changes
+
+### Navigation Protection
+- The header navigation uses complex dropdown styles (`.has-dropdown`, `.dropdown-menu`, etc.)
+- Mobile navigation has specific responsive breakpoints and JavaScript dependencies
+- **Test navigation immediately** after any CSS changes
+- If navigation breaks, revert with `git checkout -- assets/style.css`
+
+### Change Process
+1. **Commit current working state** before making changes
+2. **Make targeted change** using `search_replace`
+3. **Test the specific functionality** affected
+4. **Test navigation** (desktop dropdowns + mobile menu)
+5. **Commit if working**, or revert if broken
+6. **Move to next change** only after current one is verified
+
+## 🎨 Theme Specifics
+
+### Cyberpunk Aesthetic
+- Colors: cyan (`--color-accent-cyan`), magenta (`--color-accent-magenta`), green (`--color-accent-green`), yellow (`--color-accent-yellow`)
+- Fonts: Primary (`--font-family-primary`), Secondary (`--font-family-secondary`)
+- Effects: Clip-paths, glows, terminal-style interfaces
+- Text style: Uppercase, bracketed labels like `[ADD_TO_INVENTORY_CORE]`
+
+### Responsive Breakpoints
+- Mobile: 0-767px
+- Tablet: 768-989px  
+- Desktop Small: 990-1399px
+- Desktop Large: 1400px+
+
+### Key Files
+- `assets/style.css` - Main stylesheet (HANDLE WITH EXTREME CARE)
+- `assets/script.js` - Navigation JavaScript
+- `sections/header.liquid` - Navigation HTML structure
+- `sections/product.liquid` - Product page template
+
+## 🛠️ Common Tasks
+
+### Product Page Improvements
+- Use `.product-interface-section` prefix for product-specific styles
+- Maintain data-box styling consistency
+- Ensure Buy Now button matches theme (`--color-accent-magenta`)
+
+### Adding New Styles
+- Follow existing CSS organization and naming conventions
+- Use CSS variables for colors, spacing, and fonts
+- Test on mobile and desktop
+- Maintain cyberpunk aesthetic
+
+## 🚫 What NOT to Do
+- Don't delete large sections of CSS
+- Don't modify navigation styles without extreme caution
+- Don't use `edit_file` for anything larger than 10-20 lines
+- Don't make multiple unrelated changes at once
+- Don't skip testing navigation after CSS changes
+
+## ✅ Best Practices
+- Read existing code before making changes
+- Use semantic, descriptive class names
+- Follow the established CSS variable system
+- Maintain consistent indentation and formatting
+- Document complex changes with comments
+
+---
+*This file helps ensure the Starside Armory theme remains stable and functional during development.* 
