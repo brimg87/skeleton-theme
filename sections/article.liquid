@@ -1,68 +1,345 @@
 {% comment %}
-  This section is used in the article template to render the article page, which
-  displays the full content of the blog post and can optionally include a
-  comments section for customers (not shown in this example).
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/article
+  Enhanced article section with cyberpunk terminal styling
+  Supports different article types: Update Log and Manuals & Guides
 {% endcomment %}
 
-{% if article.image %}
-  {{ article.image | image_url: width: 1000 | image_tag }}
-{% endif %}
+<article class="article-interface-section" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="container">
+    
+    {%- if section.settings.show_breadcrumbs -%}
+      <nav class="breadcrumbs" aria-label="Breadcrumb navigation">
+        <a href="{{ blog.url }}" class="breadcrumb-link">
+          {% if blog.handle == 'update-log' %}
+            [SYSTEM_UPDATE_LOG]
+          {% elsif blog.handle == 'manuals-guides' %}
+            [TECHNICAL_MANUALS]
+          {% else %}
+            [{{ blog.title | upcase }}]
+          {% endif %}
+        </a>
+        <span class="breadcrumb-separator">></span>
+        <span class="breadcrumb-current">[CURRENT_ENTRY]</span>
+      </nav>
+    {%- endif -%}
 
-<h1>{{ article.title }}</h1>
+    <header class="article-header">
+      <div class="data-box">
+        
+        {%- if blog.handle == 'update-log' -%}
+          <div class="article-type-indicator update-type">
+            <span class="type-badge">[SYSTEM_UPDATE]</span>
+            <span class="status-indicator">[STATUS: ACTIVE]</span>
+          </div>
+        {%- elsif blog.handle == 'manuals-guides' -%}
+          <div class="article-type-indicator manual-type">
+            <span class="type-badge">[TECHNICAL_MANUAL]</span>
+            <span class="status-indicator">[ACCESS: GRANTED]</span>
+          </div>
+        {%- endif -%}
 
-{% assign date = article.published_at | time_tag: format: 'date' %}
-<p>{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
-
-{{ article.content }}
-
-{% if blog.comments_enabled? %}
-  <h2>{{ 'blog.article_comments' | t }}</h2>
-
-  <div id="comments">
-    {% paginate article.comments by 10 %}
-      {% for comment in article.comments %}
-        <div>
-          <p>{{ comment.author }}</p>
-          <p>
-            {{- comment.created_at | time_tag: format: 'date' -}}
-          </p>
-          <p>{{ comment.content }}</p>
+        <h1 class="article-title" itemprop="headline">{{ article.title }}</h1>
+        
+        <div class="article-meta">
+          <div class="meta-row">
+            <time class="article-date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}" itemprop="datePublished">
+              [PUBLISHED: {{ article.published_at | date: '%Y.%m.%d_%H:%M' }}]
+            </time>
+            
+            {%- if article.moderated? and article.updated_at != article.published_at -%}
+              <time class="article-updated" datetime="{{ article.updated_at | date: '%Y-%m-%d' }}" itemprop="dateModified">
+                [UPDATED: {{ article.updated_at | date: '%Y.%m.%d_%H:%M' }}]
+              </time>
+            {%- endif -%}
+          </div>
+          
+          <div class="meta-row">
+            {%- if section.settings.show_author and article.author != blank -%}
+              <span class="article-author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+                <span itemprop="name">[AUTHOR: {{ article.author | upcase }}]</span>
+              </span>
+            {%- endif -%}
+            
+            {%- if section.settings.show_read_time -%}
+              {% assign words = article.content | strip_html | split: ' ' | size %}
+              {% assign read_time = words | divided_by: 200 | at_least: 1 %}
+              <span class="read-time">[READ_TIME: {{ read_time }}MIN]</span>
+            {%- endif -%}
+          </div>
         </div>
-      {% endfor %}
 
-      {{ paginate | default_pagination: anchor: 'comments' }}
-    {% endpaginate %}
+        {%- if article.tags.size > 0 and section.settings.show_tags -%}
+          <div class="article-tags">
+            <span class="tags-label">[TAGS:</span>
+            {% for tag in article.tags %}
+              <span class="tag">{{ tag | upcase }}</span>{% unless forloop.last %},{% endunless %}
+            {% endfor %}
+            <span class="tags-close">]</span>
+          </div>
+        {%- endif -%}
+      </div>
+    </header>
+
+    {%- if article.image and section.settings.show_featured_image -%}
+      <div class="article-featured-image">
+        <img src="{{ article.image | image_url: width: 1200, height: 600, crop: 'center' }}"
+             srcset="{{ article.image | image_url: width: 600, height: 300, crop: 'center' }} 600w,
+                     {{ article.image | image_url: width: 900, height: 450, crop: 'center' }} 900w,
+                     {{ article.image | image_url: width: 1200, height: 600, crop: 'center' }} 1200w,
+                     {{ article.image | image_url: width: 1800, height: 900, crop: 'center' }} 1800w"
+             sizes="(min-width: 1200px) 1200px, (min-width: 750px) 100vw, 100vw"
+             alt="{{ article.image.alt | escape | default: article.title | escape }}"
+             loading="eager"
+             width="1200" height="600"
+             itemprop="image">
+      </div>
+    {%- endif -%}
+
+    <main class="article-content">
+      <div class="content-wrapper">
+        
+        {%- if article.excerpt != blank and section.settings.show_excerpt -%}
+          <div class="article-excerpt">
+            <div class="data-box excerpt-box">
+              <h2 class="excerpt-title">[SUMMARY]</h2>
+              <div itemprop="description">{{ article.excerpt }}</div>
+            </div>
+          </div>
+        {%- endif -%}
+
+        <div class="article-body" itemprop="articleBody">
+          {{ article.content }}
+        </div>
+
+        {%- if section.settings.show_article_navigation -%}
+          <nav class="article-navigation">
+            <div class="nav-links">
+              {%- if blog.previous_article -%}
+                <a href="{{ blog.previous_article.url }}" class="nav-link prev-article" aria-label="Previous article">
+                  <span class="nav-direction">[PREV]</span>
+                  <span class="nav-title">{{ blog.previous_article.title | truncate: 50 }}</span>
+                </a>
+              {%- endif -%}
+              
+              <a href="{{ blog.url }}" class="nav-link back-to-blog" aria-label="Back to blog">
+                {% if blog.handle == 'update-log' %}
+                  [BACK_TO_LOG]
+                {% elsif blog.handle == 'manuals-guides' %}
+                  [BACK_TO_MANUALS]
+                {% else %}
+                  [BACK_TO_BLOG]
+                {% endif %}
+              </a>
+              
+              {%- if blog.next_article -%}
+                <a href="{{ blog.next_article.url }}" class="nav-link next-article" aria-label="Next article">
+                  <span class="nav-direction">[NEXT]</span>
+                  <span class="nav-title">{{ blog.next_article.title | truncate: 50 }}</span>
+                </a>
+              {%- endif -%}
+            </div>
+          </nav>
+        {%- endif -%}
+      </div>
+    </main>
+
+    {%- if blog.comments_enabled? and section.settings.show_comments -%}
+      <section class="article-comments" id="comments">
+        <div class="data-box">
+          <h2 class="comments-title">[SYSTEM_COMMENTS]</h2>
+          
+          {%- if article.comments_count > 0 -%}
+            <div class="comments-stats">
+              <span>[TOTAL_ENTRIES: {{ article.comments_count }}]</span>
+              <span>[STATUS: ACTIVE]</span>
+            </div>
+          {%- endif -%}
+
+          <div class="comments-list">
+            {% paginate article.comments by section.settings.comments_per_page %}
+              {% for comment in article.comments %}
+                <div class="comment" id="comment-{{ comment.id }}">
+                  <div class="comment-header">
+                    <span class="comment-author">[USER: {{ comment.author | upcase }}]</span>
+                    <time class="comment-date" datetime="{{ comment.created_at | date: '%Y-%m-%d' }}">
+                      [{{ comment.created_at | date: '%Y.%m.%d_%H:%M' }}]
+                    </time>
+                  </div>
+                  <div class="comment-content">
+                    {{ comment.content }}
+                  </div>
+                </div>
+              {% endfor %}
+
+              {%- if paginate.pages > 1 -%}
+                <nav class="comments-pagination" aria-label="Comments pagination">
+                  <div class="pagination">
+                    {%- if paginate.previous -%}
+                      <a href="{{ paginate.previous.url }}#comments" class="pagination-button prev">
+                        [PREV_COMMENTS]
+                      </a>
+                    {%- endif -%}
+                    
+                    <span class="pagination-info">
+                      [PAGE {{ paginate.current_page }} OF {{ paginate.pages }}]
+                    </span>
+                    
+                    {%- if paginate.next -%}
+                      <a href="{{ paginate.next.url }}#comments" class="pagination-button next">
+                        [NEXT_COMMENTS]
+                      </a>
+                    {%- endif -%}
+                  </div>
+                </nav>
+              {%- endif -%}
+            {% endpaginate %}
+          </div>
+
+          {% form 'new_comment', article, class: 'comment-form' %}
+            <h3 class="form-title">[SUBMIT_COMMENT]</h3>
+
+            {%- if form.errors -%}
+              <div class="form-errors">
+                <h4>[ERROR_LOG]</h4>
+                {{ form.errors | default_errors }}
+              </div>
+            {%- endif -%}
+
+            <div class="form-fields">
+              <div class="field-group">
+                <label for="comment-author" class="field-label">[USER_ID]</label>
+                <input type="text" 
+                       name="comment[author]" 
+                       id="comment-author" 
+                       value="{{ form.author }}" 
+                       class="field-input"
+                       required 
+                       aria-describedby="author-help">
+                <small id="author-help" class="field-help">Enter your display name</small>
+              </div>
+
+              <div class="field-group">
+                <label for="comment-email" class="field-label">[EMAIL_ADDRESS]</label>
+                <input type="email" 
+                       name="comment[email]" 
+                       id="comment-email" 
+                       value="{{ form.email }}" 
+                       class="field-input"
+                       required 
+                       aria-describedby="email-help">
+                <small id="email-help" class="field-help">Your email will not be published</small>
+              </div>
+
+              <div class="field-group">
+                <label for="comment-body" class="field-label">[MESSAGE_CONTENT]</label>
+                <textarea name="comment[body]" 
+                          id="comment-body" 
+                          class="field-textarea"
+                          required 
+                          aria-describedby="body-help">{{ form.body }}</textarea>
+                <small id="body-help" class="field-help">Enter your comment</small>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="submit-button">
+                  [TRANSMIT_COMMENT]
+                </button>
+              </div>
+            </div>
+          {% endform %}
+        </div>
+      </section>
+    {%- endif -%}
   </div>
-
-  {% form 'new_comment', article %}
-    <h2>{{ 'blog.comment_form_title' | t }}</h2>
-
-    {{ form.errors | default_errors }}
-
-    <div>
-      <label for="author">{{ 'blog.comment_form_name' | t }}</label>
-      <input type="text" name="comment[author]" id="author" value="{{ form.author }}" required>
-    </div>
-
-    <div>
-      <label for="email">{{ 'blog.comment_form_email' | t }}</label>
-      <input type="email" name="comment[email]" id="email" value="{{ form.email }}" required>
-    </div>
-
-    <div>
-      <label for="body">{{ 'blog.comment_form_body' | t }}</label>
-      <textarea name="comment[body]" id="body" required>{{ form.body }}</textarea>
-    </div>
-
-    <input type="submit" value="{{ 'blog.comment_form_submit' | t }}">
-  {% endform %}
-{% endif %}
+</article>
 
 {% schema %}
 {
-  "name": "t:general.article",
-  "settings": []
+  "name": "Article",
+  "tag": "section",
+  "class": "section-article",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Article Header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Show breadcrumbs",
+      "default": true,
+      "info": "Display navigation breadcrumbs"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_featured_image",
+      "label": "Show featured image",
+      "default": true,
+      "info": "Display article featured image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show article excerpt",
+      "default": true,
+      "info": "Display article summary/excerpt"
+    },
+    {
+      "type": "header",
+      "content": "Article Metadata"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show article author",
+      "default": true,
+      "info": "Display author information"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_read_time",
+      "label": "Show estimated read time",
+      "default": true,
+      "info": "Calculate and display reading time"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "Show article tags",
+      "default": true,
+      "info": "Display article tags"
+    },
+    {
+      "type": "header",
+      "content": "Article Navigation"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_article_navigation",
+      "label": "Show article navigation",
+      "default": true,
+      "info": "Display previous/next article links"
+    },
+    {
+      "type": "header",
+      "content": "Comments System"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_comments",
+      "label": "Show comments section",
+      "default": true,
+      "info": "Display comments and comment form"
+    },
+    {
+      "type": "range",
+      "id": "comments_per_page",
+      "min": 5,
+      "max": 50,
+      "step": 5,
+      "label": "Comments per page",
+      "default": 10,
+      "info": "Number of comments to display per page"
+    }
+  ]
 }
 {% endschema %}
