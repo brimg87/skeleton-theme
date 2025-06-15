@@ -2067,6 +2067,71 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
     padding: 0 var(--space-sm);
 }
 
+/* Product Specifications and Features */
+.product-specs .specs-content,
+.product-features .features-content {
+  padding: 1rem;
+}
+
+.spec-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.spec-row:last-child {
+  margin-bottom: 0;
+}
+
+.spec-label {
+  color: var(--color-accent-yellow);
+  font-weight: bold;
+  font-size: 0.9rem;
+  min-width: 100px;
+}
+
+.spec-value {
+  color: var(--color-foreground);
+  font-family: var(--font-family-secondary);
+}
+
+.spec-value.rarity-prototype {
+  color: var(--color-accent-magenta);
+  font-weight: bold;
+}
+
+.spec-value.rarity-unique {
+  color: var(--color-accent-cyan);
+  font-weight: bold;
+}
+
+.spec-value.rarity-rare {
+  color: var(--color-accent-yellow);
+  font-weight: bold;
+}
+
+.spec-value.rarity-common {
+  color: var(--color-foreground);
+}
+
+.features-content {
+  line-height: 1.6;
+  color: var(--color-foreground-75);
+}
+
+@media (max-width: 767px) {
+  .spec-row {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+  
+  .spec-label {
+    min-width: auto;
+  }
+}
+
 /* Fix redundant borders - Remove border from product-visuals when it has data-box class */
 .product-interface-section .product-visuals.data-box {
     border: none;

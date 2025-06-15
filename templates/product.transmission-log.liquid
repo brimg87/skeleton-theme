@@ -1,0 +1,325 @@
+{% comment %}
+  Transmission Log Product Template
+  Custom template for showcase/lore items with terminal/archive styling
+{% endcomment %}
+
+{{ 'section-transmission-log.css' | asset_url | stylesheet_tag }}
+
+<section class="breadcrumb-trail">
+  <div class="container">
+    <nav aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">STARSIDE_ARMORY</a> &gt;
+      <a href="{{ collections['transmission-log'].url }}">TRANSMISSION_LOG</a> &gt;
+      <span class="current-item" aria-current="page">{{ product.title | upcase | replace: ' ', '_' }}</span>
+    </nav>
+  </div>
+</section>
+
+<section class="transmission-log-interface-section" 
+         itemscope itemtype="http://schema.org/Product">
+  
+  <div class="container">
+    
+    <!-- Archive Header -->
+    <header class="archive-header data-box">
+      <div class="data-box-header">//: TRANSMISSION_LOG_ACCESS ://</div>
+      <div class="archive-meta">
+        {% if product.metafields.transmission_log.entry_number %}
+          <span class="entry-number">[ENTRY_#{{ product.metafields.transmission_log.entry_number }}]</span>
+        {% endif %}
+        {% if product.metafields.transmission_log.status %}
+          <span class="status-badge status-{{ product.metafields.transmission_log.status | downcase }}">
+            [{{ product.metafields.transmission_log.status | upcase }}]
+          </span>
+        {% endif %}
+        {% if product.product_type %}
+          <span class="classification">[{{ product.product_type | upcase }}]</span>
+        {% endif %}
+        <span class="timestamp">[ARCHIVED: {{ product.created_at | date: '%Y.%m.%d' }}]</span>
+      </div>
+    </header>
+
+    <div class="transmission-layout">
+      
+      <!-- Visual Documentation -->
+      <div class="visual-archive data-box">
+        <div class="data-box-header">//: VISUAL_DOCUMENTATION ://</div>
+        
+        <div class="archive-media">
+          {%- if product.featured_media -%}
+            <div class="main-visual">
+              {%- if product.featured_media.media_type == 'image' -%}
+                <img src="{{ product.featured_media | image_url: width: 800 }}" 
+                     alt="{{ product.featured_media.alt | escape }}"
+                     width="800"
+                     height="{{ 800 | divided_by: product.featured_media.aspect_ratio | round }}"
+                     loading="eager"
+                     itemprop="image">
+              {%- elsif product.featured_media.media_type == 'video' -%}
+                {{ product.featured_media | video_tag: controls: true, muted: true }}
+              {%- endif -%}
+              
+              <div class="image-classification">
+                <span>IMG_{{ product.featured_media.position | default: '01' }}_CLASSIFIED</span>
+              </div>
+            </div>
+          {%- else -%}
+            <div class="visual-placeholder">
+              <span>[VISUAL_DATA_CORRUPTED]</span>
+            </div>
+          {%- endif -%}
+
+          {% if product.media.size > 1 %}
+            <div class="archive-gallery">
+              {% for media in product.media offset: 1 limit: 6 %}
+                <div class="archive-thumbnail">
+                  {%- if media.media_type == 'image' -%}
+                    <img src="{{ media | image_url: width: 150 }}" 
+                         alt="{{ media.alt | escape }}"
+                         loading="lazy">
+                  {%- endif -%}
+                  <span class="thumb-label">IMG_{{ forloop.index | plus: 1 | prepend: '0' | slice: -2, 2 }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Archive Data -->
+      <div class="archive-data">
+        
+        <!-- Item Identification -->
+        <div class="identification-block data-box">
+          <div class="data-box-header">//: ITEM_IDENTIFICATION ://</div>
+          <div class="id-content">
+            <h1 class="archive-title" itemprop="name">{{ product.title }}</h1>
+            
+            <div class="classification-grid">
+              {% if product.metafields.transmission_log.desc %}
+                <div class="class-item">
+                  <span class="class-label">DESC:</span>
+                  <span class="class-value">{{ product.metafields.transmission_log.desc }}</span>
+                </div>
+              {% endif %}
+              
+              {% if product.metafields.transmission_log.type %}
+                <div class="class-item">
+                  <span class="class-label">TYPE:</span>
+                  <span class="class-value">{{ product.metafields.transmission_log.type }}</span>
+                </div>
+              {% endif %}
+              
+              {% if product.metafields.transmission_log.role %}
+                <div class="class-item">
+                  <span class="class-label">ROLE:</span>
+                  <span class="class-value">{{ product.metafields.transmission_log.role }}</span>
+                </div>
+              {% endif %}
+              
+              {% if product.metafields.product_specs.class %}
+                <div class="class-item">
+                  <span class="class-label">CLASS:</span>
+                  <span class="class-value">{{ product.metafields.product_specs.class }}</span>
+                </div>
+              {% endif %}
+              
+              {% if product.metafields.product_specs.rarity %}
+                <div class="class-item">
+                  <span class="class-label">RARITY:</span>
+                  <span class="class-value rarity-{{ product.metafields.product_specs.rarity | downcase }}">
+                    {{ product.metafields.product_specs.rarity | upcase }}
+                  </span>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Technical Specifications -->
+        {% if product.metafields.product_specs.materials or product.weight > 0 or product.metafields.product_specs.dimensions_detailed %}
+          <div class="specifications-block data-box">
+            <div class="data-box-header">//: TECHNICAL_SPECIFICATIONS ://</div>
+            <div class="specs-grid">
+              
+              {% if product.metafields.product_specs.materials %}
+                <div class="spec-item">
+                  <span class="spec-label">MATERIALS:</span>
+                  <span class="spec-value">{{ product.metafields.product_specs.materials }}</span>
+                </div>
+              {% endif %}
+              
+              {% if product.weight > 0 %}
+                <div class="spec-item">
+                  <span class="spec-label">WEIGHT:</span>
+                  <span class="spec-value">{{ product.weight }}{{ product.weight_unit }}</span>
+                </div>
+              {% endif %}
+              
+              {% if product.metafields.product_specs.dimensions_detailed %}
+                <div class="spec-item">
+                  <span class="spec-label">DIMENSIONS:</span>
+                  <span class="spec-value">{{ product.metafields.product_specs.dimensions_detailed }}</span>
+                </div>
+              {% endif %}
+              
+              {% if product.vendor %}
+                <div class="spec-item">
+                  <span class="spec-label">DESIGNER:</span>
+                  <span class="spec-value">{{ product.vendor | upcase }}</span>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- EVA Operations -->
+        {% if product.metafields.transmission_log.eva_notes %}
+          <div class="eva-block data-box">
+            <div class="data-box-header">//: EVA_OPERATIONAL_NOTES ://</div>
+            <div class="eva-content">
+              <p>{{ product.metafields.transmission_log.eva_notes }}</p>
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Archive Status -->
+        <div class="status-block data-box">
+          <div class="data-box-header">//: ARCHIVE_STATUS ://</div>
+          <div class="status-content">
+            <div class="status-grid">
+              <div class="status-item">
+                <span class="status-label">AVAILABILITY:</span>
+                <span class="status-value status-{{ product.metafields.transmission_log.status | default: 'archived' | downcase }}">
+                  {{ product.metafields.transmission_log.status | default: 'ARCHIVED' }}
+                </span>
+              </div>
+              
+              <div class="status-item">
+                <span class="status-label">ARCHIVE_DATE:</span>
+                <span class="status-value">{{ product.created_at | date: '%Y.%m.%d_%H:%M' }}</span>
+              </div>
+              
+              <div class="status-item">
+                <span class="status-label">LAST_UPDATE:</span>
+                <span class="status-value">{{ product.updated_at | date: '%Y.%m.%d_%H:%M' }}</span>
+              </div>
+            </div>
+            
+            <div class="access-actions">
+              {% if product.metafields.transmission_log.status == 'DETAILS' %}
+                <button class="archive-button primary" onclick="toggleDetails()">
+                  [ACCESS_DETAILED_SPECS]
+                </button>
+              {% elsif product.metafields.transmission_log.status == 'RESTRICTED' %}
+                <button class="archive-button restricted" disabled>
+                  [ACCESS_RESTRICTED]
+                </button>
+              {% elsif product.metafields.transmission_log.status == 'SEALED' %}
+                <button class="archive-button sealed" disabled>
+                  [CLASSIFIED_SEALED]
+                </button>
+              {% else %}
+                <button class="archive-button archived" disabled>
+                  [ARCHIVED_REFERENCE_ONLY]
+                </button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Information Sections -->
+    {% if product.description != blank or product.metafields.transmission_log.backstory or product.metafields.transmission_log.technical_details %}
+      <div class="detailed-archive" id="detailed-specs" style="display: none;">
+        
+        {% if product.description != blank %}
+          <div class="description-archive data-box">
+            <div class="data-box-header">//: PRIMARY_DOCUMENTATION ://</div>
+            <div class="archive-text rte" itemprop="description">
+              {{ product.description }}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if product.metafields.transmission_log.backstory %}
+          <div class="backstory-archive data-box">
+            <div class="data-box-header">//: DEVELOPMENT_HISTORY ://</div>
+            <div class="archive-text rte">
+              {{ product.metafields.transmission_log.backstory }}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if product.metafields.transmission_log.technical_details %}
+          <div class="technical-archive data-box">
+            <div class="data-box-header">//: TECHNICAL_ANALYSIS ://</div>
+            <div class="archive-text rte">
+              {{ product.metafields.transmission_log.technical_details }}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <!-- Navigation -->
+    <nav class="archive-navigation data-box">
+      <div class="data-box-header">//: ARCHIVE_NAVIGATION ://</div>
+      <div class="nav-actions">
+        <a href="{{ collections['transmission-log'].url }}" class="nav-button">
+          [RETURN_TO_ARCHIVE]
+        </a>
+        
+        {% if collection.previous_product %}
+          <a href="{{ collection.previous_product.url }}" class="nav-button">
+            [PREV_ENTRY]
+          </a>
+        {% endif %}
+        
+        {% if collection.next_product %}
+          <a href="{{ collection.next_product.url }}" class="nav-button">
+            [NEXT_ENTRY]
+          </a>
+        {% endif %}
+      </div>
+    </nav>
+  </div>
+</section>
+
+<script>
+function toggleDetails() {
+  const detailsSection = document.getElementById('detailed-specs');
+  const button = event.target;
+  
+  if (detailsSection.style.display === 'none') {
+    detailsSection.style.display = 'block';
+    button.textContent = '[HIDE_DETAILED_SPECS]';
+  } else {
+    detailsSection.style.display = 'none';
+    button.textContent = '[ACCESS_DETAILED_SPECS]';
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org/",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "url": {{ request.origin | append: product.url | json }},
+  {% if product.featured_image %}
+    "image": [
+      {{ product.featured_image | image_url: width: 800 | prepend: "https:" | json }}
+    ],
+  {% endif %}
+  "description": {{ product.description | strip_html | json }},
+  {% if product.vendor != blank %}
+    "brand": {
+      "@type": "Brand", 
+      "name": {{ product.vendor | json }}
+    },
+  {% endif %}
+  "category": "Archive Documentation"
+}
+</script> 

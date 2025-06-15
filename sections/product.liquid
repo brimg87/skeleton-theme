@@ -160,6 +160,54 @@
               </div>
             {% endif %}
 
+            <!-- Product Specifications (if available) -->
+            {% if product.metafields.product_specs.class or product.metafields.product_specs.rarity or product.metafields.product_specs.materials %}
+              <div class="product-specs data-box">
+                <div class="data-box-header">//:ITEM_SPECIFICATIONS://</div>
+                <div class="specs-content">
+                  {% if product.metafields.product_specs.class %}
+                    <div class="spec-row">
+                      <span class="spec-label">CLASS:</span>
+                      <span class="spec-value">{{ product.metafields.product_specs.class }}</span>
+                    </div>
+                  {% endif %}
+                  
+                  {% if product.metafields.product_specs.rarity %}
+                    <div class="spec-row">
+                      <span class="spec-label">RARITY:</span>
+                      <span class="spec-value rarity-{{ product.metafields.product_specs.rarity | downcase }}">
+                        {{ product.metafields.product_specs.rarity | upcase }}
+                      </span>
+                    </div>
+                  {% endif %}
+                  
+                  {% if product.metafields.product_specs.materials %}
+                    <div class="spec-row">
+                      <span class="spec-label">MATERIALS:</span>
+                      <span class="spec-value">{{ product.metafields.product_specs.materials }}</span>
+                    </div>
+                  {% endif %}
+                  
+                  {% if product.metafields.product_specs.dimensions_detailed %}
+                    <div class="spec-row">
+                      <span class="spec-label">DIMENSIONS:</span>
+                      <span class="spec-value">{{ product.metafields.product_specs.dimensions_detailed }}</span>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            {% endif %}
+
+            <!-- Product Features (if available) -->
+            {% if product.metafields.product_info.features_list %}
+              <div class="product-features data-box">
+                <div class="data-box-header">//:FEATURE_SET://</div>
+                <div class="features-content">
+                  {{ product.metafields.product_info.features_list | newline_to_br }}
+                </div>
+              </div>
+            {% endif %}
+
             <!-- Price Block -->
             <div class="price-block data-box" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
               <div class="data-box-header">//:TRANSACTION_MODULE://</div>
