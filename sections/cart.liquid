@@ -151,9 +151,6 @@
               </div>
               
               <div class="checkout-buttons">
-                <button type="submit" name="update" class="btn btn-secondary btn-update">
-                  [UPDATE_MANIFEST]
-                </button>
                 <button type="submit" name="checkout" class="btn btn-cta-primary btn-checkout">
                   [INITIATE_CHECKOUT_SEQUENCE]
                 </button>
@@ -540,14 +537,14 @@
 
 .checkout-buttons {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  justify-content: center;
 }
 
-.btn-update,
 .btn-checkout {
   white-space: nowrap;
-  min-width: 200px;
+  min-width: 250px;
+  font-size: 1.125rem;
+  padding: 1rem 2rem;
 }
 
 .empty-cart-content {
@@ -599,7 +596,6 @@
   }
   
   .checkout-buttons {
-    flex-direction: row;
     justify-content: center;
   }
 }
@@ -622,12 +618,13 @@
   }
   
   .checkout-buttons {
-    flex-direction: column;
+    justify-content: center;
   }
   
-  .btn-update,
   .btn-checkout {
     min-width: auto;
+    width: 100%;
+    max-width: 300px;
   }
 }
 </style>
