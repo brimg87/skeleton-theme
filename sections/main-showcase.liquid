@@ -1,0 +1,194 @@
+<div class="showcase-interface-section section-padding">
+  <div class="container">
+    {% if section.settings.title != blank %}
+      <div class="showcase-header">
+        <div class="showcase-header-content">
+          <div class="terminal-header">
+            <span class="terminal-prompt">[PORTFOLIO_CORE]$ </span>
+            <span class="terminal-command">load --database=showcase_archive</span>
+          </div>
+          <h1 class="showcase-title section-title">{{ section.settings.title }}</h1>
+          {% if section.settings.description != blank %}
+            <div class="showcase-description section-subheader">
+              {{ section.settings.description }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if section.blocks.size > 0 %}
+      <div class="showcase-content">
+        <div class="portfolio-grid">
+          {% for block in section.blocks %}
+            {% case block.type %}
+              {% when 'showcase_item' %}
+                <div class="portfolio-item data-box" {{ block.shopify_attributes }}>
+                  <div class="data-box-header">
+                    <span class="portfolio-id">[PROJECT_{{ forloop.index | prepend: '000' | slice: -3, 3 }}]</span>
+                    {% if block.settings.title != blank %}
+                      <span class="portfolio-status">STATUS: ARCHIVED</span>
+                    {% endif %}
+                  </div>
+                  
+                  <div class="portfolio-content">
+                    <div class="portfolio-visual">
+                      {% if block.settings.image != blank %}
+                        <div class="portfolio-image-container">
+                          {{
+                            block.settings.image
+                            | image_url: width: 800
+                            | image_tag:
+                              loading: 'lazy',
+                              alt: block.settings.image.alt | default: block.settings.title,
+                              class: 'portfolio-image'
+                          }}
+                          <div class="image-overlay-data">
+                            <span class="image-meta">{{ block.settings.image.width }}x{{ block.settings.image.height }}</span>
+                          </div>
+                        </div>
+                      {% else %}
+                        <div class="portfolio-image-placeholder">
+                          <div class="placeholder-icon">📁</div>
+                          <span class="placeholder-text">[IMAGE_DATA_MISSING]</span>
+                        </div>
+                      {% endif %}
+                    </div>
+                    
+                    <div class="portfolio-data">
+                      {% if block.settings.title != blank %}
+                        <h3 class="portfolio-title">{{ block.settings.title }}</h3>
+                      {% endif %}
+                      
+                      {% if block.settings.description != blank %}
+                        <div class="portfolio-description rte">
+                          {{ block.settings.description }}
+                        </div>
+                      {% endif %}
+                      
+                      {% if block.settings.testimonial_quote != blank %}
+                        <div class="testimonial-section">
+                          <div class="testimonial-header">
+                            <span class="testimonial-label">[CLIENT_FEEDBACK]</span>
+                          </div>
+                          <blockquote class="testimonial-quote">
+                            "{{ block.settings.testimonial_quote }}"
+                          </blockquote>
+                          {% if block.settings.testimonial_author != blank %}
+                            <cite class="testimonial-author">
+                              — {{ block.settings.testimonial_author }}
+                            </cite>
+                          {% endif %}
+                        </div>
+                      {% endif %}
+                      
+                      <div class="portfolio-metadata">
+                        <div class="meta-grid">
+                          <div class="meta-item">
+                            <span class="meta-label">ARCHIVED:</span>
+                            <span class="meta-value">{{ 'now' | date: '%Y.%m.%d' }}</span>
+                          </div>
+                          <div class="meta-item">
+                            <span class="meta-label">STATUS:</span>
+                            <span class="meta-value status-complete">COMPLETED</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            {% endcase %}
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <div class="empty-showcase">
+        <div class="empty-showcase-content data-box">
+          <div class="data-box-header">
+            <span class="empty-status">[PORTFOLIO_CORE]</span>
+          </div>
+          <div class="empty-content">
+            <div class="empty-icon">📁</div>
+            <h3 class="empty-title">NO_PORTFOLIO_DATA_FOUND</h3>
+            <p class="empty-message">
+              The showcase archive is currently empty. Add portfolio items through the Theme Editor to display your completed projects and client testimonials.
+            </p>
+            <div class="empty-terminal">
+              <span class="terminal-prompt">[SYSTEM]$ </span>
+              <span class="terminal-command">add_portfolio_items --required</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Main Showcase",
+  "tag": "section",
+  "class": "section-main-showcase",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title", 
+      "label": "Showcase Title",
+      "default": "// PORTFOLIO_ARCHIVE //"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Showcase Description",
+      "default": "<p>Access archived project files and client testimonials from completed fabrication contracts.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "showcase_item",
+      "name": "Showcase Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Project Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Project Title",
+          "placeholder": "e.g. Custom Tactical Knife Commission"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Project Description",
+          "info": "Describe the project, materials used, techniques, or client requirements"
+        },
+        {
+          "type": "text",
+          "id": "testimonial_quote",
+          "label": "Client Testimonial (Optional)",
+          "placeholder": "Enter client feedback or testimonial"
+        },
+        {
+          "type": "text",
+          "id": "testimonial_author",
+          "label": "Testimonial Author (Optional)",
+          "placeholder": "Client name or handle"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Showcase",
+      "blocks": [
+        {
+          "type": "showcase_item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %} 

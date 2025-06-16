@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const productForms = document.querySelectorAll('[id^="product-form-"]');
     
     productForms.forEach(productForm => {
-        const sectionId = productForm.id.replace('product-form-', '');
+        const sectionId = productForm.id ? productForm.id.replace('product-form-', '') : 'unknown';
         const variantInputs = productForm.querySelectorAll('input[name^="options"], select[name^="options"]');
         const priceElement = document.querySelector(`#ProductPrice-${sectionId}`);
         const addToCartButton = productForm.querySelector('[type="submit"]');
@@ -316,10 +316,19 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Get variant data from the form's data attribute
         const variantsData = productForm.dataset.variants;
-        if (!variantsData) return;
+        if (!variantsData) {
+            console.log('No variants data found for form:', productForm);
+            return;
+        }
         
-        const variants = JSON.parse(variantsData);
-        const productOptions = JSON.parse(productForm.dataset.options || '[]');
+        let variants, productOptions;
+        try {
+            variants = JSON.parse(variantsData);
+            productOptions = JSON.parse(productForm.dataset.options || '[]');
+        } catch (e) {
+            console.error('Failed to parse variant data:', e);
+            return;
+        }
         
         // Update variant when options change
         variantInputs.forEach(input => {

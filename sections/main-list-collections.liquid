@@ -1,0 +1,223 @@
+{% comment %}
+Starside Armory - Main List Collections Section
+Curated collection display powered by 'main-catalog' menu
+Store owner controls which collections appear via Shopify Admin > Menus
+{% endcomment %}
+
+<section class="collections-catalog-section section-padding">
+  <div class="container">
+    
+    <!-- Catalog Header -->
+    <div class="catalog-header">
+      <div class="catalog-header-content">
+        <div class="terminal-header">
+          <span class="terminal-prompt">[ARMORY_CATALOG]$ </span>
+          <span class="terminal-command">list --collections --access_level=authorized --source=menu_curated</span>
+        </div>
+        <h1 class="catalog-title section-title">EQUIPMENT CATALOG</h1>
+        <div class="catalog-description section-subheader">
+          <p class="terminal-subtext">Access authorized equipment collections and tactical gear categories.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Collections Grid -->
+    <div class="collections-grid {{ section.settings.grid_item_width }}">
+      {%- for link in linklists.main-catalog.links -%}
+        {%- assign collection = link.object -%}
+        {%- if collection != blank -%}
+          <a class="collection-catalog-card" href="{{ collection.url }}">
+            
+            <!-- Collection Visual -->
+            <div class="collection-visual">
+              {%- liquid
+                if collection.featured_image
+                  assign image_to_display = collection.featured_image
+                elsif collection.products.first.featured_image
+                  assign image_to_display = collection.products.first.featured_image
+                else
+                  assign image_to_display = null
+                endif
+              -%}
+              
+              {% if image_to_display != blank %}
+                <div class="collection-image-container">
+                  <img src="{{ image_to_display | image_url: width: 600 }}" 
+                       alt="{{ image_to_display.alt | escape | default: collection.title | escape }}"
+                       loading="lazy"
+                       width="600" 
+                       height="600">
+                  <div class="image-overlay-data">
+                    [IMG_{{ image_to_display.id }}]
+                  </div>
+                </div>
+              {% else %}
+                <div class="collection-image-placeholder">
+                  <div class="placeholder-icon">
+                    {% case collection.handle %}
+                      {% when 'weaponry' %}
+                        <i class="fas fa-crosshairs"></i>
+                      {% when 'armor-systems' %}
+                        <i class="fas fa-shield-alt"></i>
+                      {% when 'cybernetics' %}
+                        <i class="fas fa-microchip"></i>
+                      {% when 'accessories' %}
+                        <i class="fas fa-cog"></i>
+                      {% else %}
+                        <i class="fas fa-cube"></i>
+                    {% endcase %}
+                  </div>
+                  <div class="placeholder-text">[COLLECTION_{{ collection.id }}]</div>
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Collection Data -->
+            <div class="collection-data">
+              <div class="data-box-header">
+                <span class="collection-id">[CAT_{{ collection.id | slice: -3, 3 | upcase }}]</span>
+                <span class="collection-status">ACTIVE</span>
+              </div>
+              
+              <div class="collection-info">
+                <h3 class="collection-title">{{ collection.title | upcase }}</h3>
+                
+                {% if collection.description != blank %}
+                  <p class="collection-description">{{ collection.description | strip_html | truncatewords: 20 }}</p>
+                {% else %}
+                  <p class="collection-description">Specialized equipment category for tactical operations.</p>
+                {% endif %}
+                
+                <div class="collection-stats">
+                  <div class="stat-item">
+                    <span class="stat-label">[ITEMS:]</span>
+                    <span class="stat-value">{{ collection.products_count }}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">[STATUS:]</span>
+                    <span class="stat-value status-operational">OPERATIONAL</span>
+                  </div>
+                </div>
+                
+                <div class="collection-cta">
+                  <span class="cta-text">[ACCESS_INVENTORY]</span>
+                  <span class="cta-arrow">→</span>
+                </div>
+              </div>
+            </div>
+            
+          </a>
+        {%- endif -%}
+      {%- else -%}
+        
+        <!-- Onboarding/Empty State -->
+        {%- for i in (1..4) -%}
+          <div class="collection-catalog-card placeholder-card" data-placeholder="{{ i }}">
+            
+            <div class="collection-visual">
+              <div class="collection-image-placeholder">
+                <div class="placeholder-icon">
+                  <i class="fas fa-plus-circle"></i>
+                </div>
+                <div class="placeholder-text">[COLLECTION_SLOT_{{ i }}]</div>
+              </div>
+            </div>
+
+            <div class="collection-data">
+              <div class="data-box-header">
+                <span class="collection-id">[SETUP_{{ i | prepend: '00' | slice: -2, 2 }}]</span>
+                <span class="collection-status status-setup">SETUP</span>
+              </div>
+              
+              <div class="collection-info">
+                <h3 class="collection-title">COLLECTION SLOT {{ i }}</h3>
+                <p class="collection-description">
+                  Configure this collection slot via Shopify Admin → Content → Menus → Main Catalog.
+                </p>
+                
+                <div class="collection-stats">
+                  <div class="stat-item">
+                    <span class="stat-label">[STATUS:]</span>
+                    <span class="stat-value status-setup">AWAITING_SETUP</span>
+                  </div>
+                </div>
+                
+                <div class="collection-cta">
+                  <span class="cta-text">[CONFIGURE_SLOT]</span>
+                  <span class="cta-arrow">⚙</span>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        {%- endfor -%}
+        
+      {%- endfor -%}
+    </div>
+
+    <!-- Admin Help Notice (only shows when no menu items) -->
+    {% if linklists.main-catalog.links.size == 0 %}
+      <div class="admin-setup-notice data-box">
+        <div class="data-box-header">//: CATALOG_CONFIGURATION_REQUIRED ://</div>
+        <div class="setup-content">
+          <div class="setup-icon">[⚙]</div>
+          <h2 class="setup-title">CATALOG SETUP REQUIRED</h2>
+          <div class="setup-instructions">
+            <p><strong>Store Administrator:</strong> Configure your equipment catalog display:</p>
+            <ol class="setup-steps">
+              <li>Navigate to <strong>Shopify Admin → Content → Menus</strong></li>
+              <li>Create or edit the <strong>"Main Catalog"</strong> menu</li>
+              <li>Add menu items linking to your collections</li>
+              <li>Collections will automatically appear in this catalog</li>
+            </ol>
+            <p class="setup-note">
+              <strong>Note:</strong> Only collections added to the "Main Catalog" menu will be displayed here. 
+              This allows you to hide specific collections (like internal archives) from public view.
+            </p>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main List Collections",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "This page displays collections from the 'Main Catalog' menu. Manage which collections appear by editing that menu in Shopify Admin under Content → Menus."
+    },
+    {
+      "type": "select",
+      "id": "grid_item_width",
+      "label": "Grid Layout",
+      "options": [
+        { "value": "collections-compact", "label": "Compact (3 columns)" },
+        { "value": "collections-standard", "label": "Standard (2 columns)" },
+        { "value": "collections-large", "label": "Large (1 column)" }
+      ],
+      "default": "collections-standard"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_count",
+      "label": "Show product count",
+      "default": true
+    },
+    {
+      "type": "checkbox", 
+      "id": "show_collection_descriptions",
+      "label": "Show collection descriptions",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main List Collections"
+    }
+  ]
+}
+{% endschema %} 
