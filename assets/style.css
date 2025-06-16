@@ -546,11 +546,13 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
     font-family: var(--font-family-secondary);
     font-size: var(--font-size-base);
     -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 .quantity-input::-webkit-outer-spin-button,
 .quantity-input::-webkit-inner-spin-button {
     -webkit-appearance: none;
+    appearance: none;
     margin: 0;
 }
 
@@ -1343,7 +1345,8 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 }
 
 .nav-link * {
-  /* Removed vertical-align: middle as it conflicts with flexbox */
+  /* All child elements inherit positioning from flexbox parent */
+  display: inline-block;
 }
 
 .nav-link:hover,
@@ -1511,10 +1514,12 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 /* Navigation Overflow Management */
 .nav-item.priority-low {
   /* Lower priority items that can be hidden on smaller screens */
+  order: 2;
 }
 
 .nav-item.priority-high {
   /* High priority items that should always be visible */
+  order: 1;
 }
 
 /* Utility classes for hiding navigation items when space is limited */
