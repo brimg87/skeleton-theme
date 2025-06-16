@@ -3085,6 +3085,30 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
     animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
 }
 
+/* Terminal subheader styling */
+.section-subheader {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+    margin-top: calc(var(--space-md) * -1);
+}
+
+.terminal-subtext {
+    font-family: var(--font-family-secondary);
+    color: var(--color-accent-cyan);
+    font-size: var(--font-size-md);
+    margin: 0;
+    opacity: 0.9;
+    position: relative;
+    display: inline-block;
+}
+
+.terminal-subtext::before {
+    content: '> ';
+    color: var(--color-accent-green);
+    font-weight: bold;
+    margin-right: var(--space-xs);
+}
+
 .custom-message-content.data-box {
     margin-bottom: var(--space-lg);
 }

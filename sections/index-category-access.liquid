@@ -5,11 +5,8 @@
     {% endif %}
     
     {% if section.settings.description != blank %}
-      <div class="section-description data-box">
-        <div class="data-box-header">[SYSTEM_BRIEFING]</div>
-        <div class="data-box-content">
-          <p>{{ section.settings.description }}</p>
-        </div>
+      <div class="section-subheader">
+        <p class="terminal-subtext">{{ section.settings.description }}</p>
       </div>
     {% endif %}
 
