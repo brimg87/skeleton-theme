@@ -69,6 +69,9 @@
     },
     "about-maker": {
       "type": "about-maker",
+      "settings": {
+        "maker_name": "CURTIS LEE"
+      },
       "blocks": {
         "credential-1": {
           "type": "credential",
