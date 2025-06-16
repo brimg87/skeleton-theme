@@ -1,2 +1,352 @@
+{% comment %}
+  Transmission Log Archive Collection Template
+  Custom interface for showcasing archive items without commerce elements
+{% endcomment %}
+
 {% section 'transmission-log-notice' %}
-{% section 'main-collection' %} 
+
+<section class="transmission-log-archive-section section-padding">
+  <div class="container">
+    
+    <!-- Archive Header -->
+    <header class="archive-header">
+      <div class="data-box">
+        <div class="data-box-header">//: COLLECTION_DATABANK: TRANSMISSION_LOG ://</div>
+        <div class="archive-title-container">
+          <h1 class="archive-title">TRANSMISSION LOG</h1>
+          <div class="archive-stats">
+            <span class="stat-item">[ENTRIES: {{ collection.products_count }}]</span>
+            <span class="stat-item">[STATUS: ACTIVE_ARCHIVE]</span>
+            <span class="stat-item">[ACCESS: PUBLIC_READ]</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Archive Controls -->
+    <div class="archive-controls-section">
+      <div class="controls-grid">
+        
+        <!-- Filter Panel -->
+        <div class="filter-panel data-box">
+          <div class="data-box-header">//: FILTER_PROTOCOL ://</div>
+          <div class="filter-content">
+            
+            <!-- Status Filter -->
+            <div class="filter-group">
+              <label class="filter-label">[ARCHIVE_STATUS]</label>
+              <div class="filter-options">
+                <button class="filter-btn active" data-filter="all">[ALL_ENTRIES]</button>
+                <button class="filter-btn" data-filter="details">[DETAILS]</button>
+                <button class="filter-btn" data-filter="restricted">[RESTRICTED]</button>
+                <button class="filter-btn" data-filter="sealed">[SEALED]</button>
+                <button class="filter-btn" data-filter="archived">[ARCHIVED]</button>
+              </div>
+            </div>
+
+            <!-- Sort Options -->
+            <div class="filter-group">
+              <label class="filter-label">[SORT_PROTOCOL]</label>
+              <select class="archive-sort-select" id="archiveSort">
+                <option value="entry-number">[ENTRY_NUMBER]</option>
+                <option value="date-added">[DATE_ARCHIVED]</option>
+                <option value="alphabetical">[ALPHABETICAL]</option>
+                <option value="classification">[CLASSIFICATION]</option>
+              </select>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="filter-stats">
+              <div class="stat-line">
+                <span class="stat-label">[VISIBLE_ENTRIES:]</span>
+                <span class="stat-value" id="visibleCount">{{ collection.products_count }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search Terminal -->
+        <div class="search-panel data-box">
+          <div class="data-box-header">//: SEARCH_PROTOCOL ://</div>
+          <div class="search-content">
+            <div class="terminal-search">
+              <span class="search-prompt">></span>
+              <input type="text" 
+                     class="search-input" 
+                     id="archiveSearch"
+                     placeholder="SEARCH_ARCHIVE_ENTRIES..."
+                     autocomplete="off">
+            </div>
+            <div class="search-help">
+              <span class="help-text">[TIP: SEARCH BY ENTRY #, NAME, OR CLASSIFICATION]</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Archive Entries Grid -->
+    <main class="archive-entries-container">
+      {% paginate collection.products by 24 %}
+        
+        {% if collection.products.size > 0 %}
+          <div class="archive-entries-grid" id="archiveGrid">
+            {% for product in collection.products %}
+              <article class="archive-entry" 
+                       data-entry-number="{{ product.metafields.transmission_log.entry_number | default: '000' }}"
+                       data-status="{{ product.metafields.transmission_log.status | default: 'archived' | downcase }}"
+                       data-title="{{ product.title | downcase }}"
+                       data-classification="{{ product.metafields.transmission_log.desc | default: 'unclassified' | downcase }}"
+                       itemscope itemtype="http://schema.org/Product">
+                
+                <!-- Entry Visual -->
+                <div class="entry-visual">
+                  {% if product.featured_image %}
+                    <div class="entry-image">
+                      <img src="{{ product.featured_image | image_url: width: 400, height: 300, crop: 'center' }}"
+                           srcset="{{ product.featured_image | image_url: width: 200, height: 150, crop: 'center' }} 200w,
+                                   {{ product.featured_image | image_url: width: 400, height: 300, crop: 'center' }} 400w,
+                                   {{ product.featured_image | image_url: width: 600, height: 450, crop: 'center' }} 600w"
+                           sizes="(min-width: 990px) 300px, (min-width: 750px) 250px, 100vw"
+                           alt="{{ product.featured_image.alt | escape | default: product.title | escape }}"
+                           loading="lazy"
+                           width="400" height="300">
+                    </div>
+                  {% else %}
+                    <div class="entry-image-placeholder">
+                      <span class="placeholder-icon">[DATA_CLASSIFIED]</span>
+                    </div>
+                  {% endif %}
+                  
+                  <!-- Entry Badges -->
+                  <div class="entry-badges">
+                    {% if product.metafields.transmission_log.entry_number %}
+                      <div class="entry-badge entry-number">[#{{ product.metafields.transmission_log.entry_number }}]</div>
+                    {% endif %}
+                    
+                    {% if product.metafields.transmission_log.status %}
+                      <div class="entry-badge status-badge status-{{ product.metafields.transmission_log.status | downcase }}">
+                        [{{ product.metafields.transmission_log.status | upcase }}]
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- Entry Data -->
+                <div class="entry-data">
+                  <header class="entry-header">
+                    <h2 class="entry-title" itemprop="name">
+                      <a href="{{ product.url }}">{{ product.title }}</a>
+                    </h2>
+                    
+                    {% if product.metafields.transmission_log.desc %}
+                      <div class="entry-classification">
+                        <span class="classification-label">[CLASS:]</span>
+                        <span class="classification-value">{{ product.metafields.transmission_log.desc | upcase }}</span>
+                      </div>
+                    {% endif %}
+                  </header>
+
+                  {% if product.description != blank %}
+                    <div class="entry-description" itemprop="description">
+                      {{ product.description | strip_html | truncate: 120 }}
+                    </div>
+                  {% endif %}
+
+                  <!-- Entry Metadata -->
+                  <div class="entry-metadata">
+                    {% if product.metafields.transmission_log.type %}
+                      <div class="meta-item">
+                        <span class="meta-label">[TYPE:]</span>
+                        <span class="meta-value">{{ product.metafields.transmission_log.type }}</span>
+                      </div>
+                    {% endif %}
+                    
+                    {% if product.metafields.transmission_log.role %}
+                      <div class="meta-item">
+                        <span class="meta-label">[ROLE:]</span>
+                        <span class="meta-value">{{ product.metafields.transmission_log.role }}</span>
+                      </div>
+                    {% endif %}
+
+                    <div class="meta-item">
+                      <span class="meta-label">[ARCHIVED:]</span>
+                      <span class="meta-value">{{ product.created_at | date: '%Y.%m.%d' }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Entry Actions -->
+                  <div class="entry-actions">
+                    <a href="{{ product.url }}" class="archive-view-btn" aria-label="Access archive entry: {{ product.title | escape }}">
+                      [ACCESS_ENTRY]
+                    </a>
+                  </div>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-archive">
+            <div class="data-box">
+              <div class="data-box-header">//: ARCHIVE_STATUS ://</div>
+              <div class="empty-content">
+                <h2 class="empty-title">[NO_ENTRIES_FOUND]</h2>
+                <p class="empty-message">
+                  Archive database contains no entries matching current filter parameters.
+                  Adjust search criteria or contact system administrator.
+                </p>
+                <div class="empty-actions">
+                  <button class="filter-btn" onclick="resetArchiveFilters()">[RESET_FILTERS]</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Archive Pagination -->
+        {% if paginate.pages > 1 %}
+          <nav class="archive-pagination" aria-label="Archive pagination">
+            <div class="pagination-terminal">
+              {% if paginate.previous %}
+                <a href="{{ paginate.previous.url }}" class="pagination-btn prev" aria-label="Previous page">
+                  [PREV_ENTRIES]
+                </a>
+              {% endif %}
+              
+              <div class="pagination-info">
+                <span class="page-indicator">[PAGE {{ paginate.current_page }} OF {{ paginate.pages }}]</span>
+                <span class="entries-indicator">[DISPLAYING {{ paginate.current_offset | plus: 1 }}-{{ paginate.current_offset | plus: paginate.page_size | at_most: collection.products_count }} OF {{ collection.products_count }}]</span>
+              </div>
+              
+              {% if paginate.next %}
+                <a href="{{ paginate.next.url }}" class="pagination-btn next" aria-label="Next page">
+                  [NEXT_ENTRIES]
+                </a>
+              {% endif %}
+            </div>
+          </nav>
+        {% endif %}
+        
+      {% endpaginate %}
+    </main>
+  </div>
+</section>
+
+<!-- Archive JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const filterButtons = document.querySelectorAll('.filter-btn[data-filter]');
+  const sortSelect = document.getElementById('archiveSort');
+  const searchInput = document.getElementById('archiveSearch');
+  const archiveGrid = document.getElementById('archiveGrid');
+  const visibleCount = document.getElementById('visibleCount');
+  
+  let currentFilter = 'all';
+  let currentSort = 'entry-number';
+  let currentSearch = '';
+
+  // Filter functionality
+  filterButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      this.classList.add('active');
+      currentFilter = this.dataset.filter;
+      applyFilters();
+    });
+  });
+
+  // Sort functionality
+  if (sortSelect) {
+    sortSelect.addEventListener('change', function() {
+      currentSort = this.value;
+      applyFilters();
+    });
+  }
+
+  // Search functionality
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      currentSearch = this.value.toLowerCase();
+      applyFilters();
+    });
+  }
+
+  function applyFilters() {
+    const entries = archiveGrid.querySelectorAll('.archive-entry');
+    let visibleEntries = 0;
+    
+    // Convert to array for sorting
+    const entriesArray = Array.from(entries);
+    
+    // Filter entries
+    entriesArray.forEach(entry => {
+      let show = true;
+      
+      // Status filter
+      if (currentFilter !== 'all') {
+        const entryStatus = entry.dataset.status;
+        show = show && entryStatus === currentFilter;
+      }
+      
+      // Search filter
+      if (currentSearch) {
+        const searchableText = `${entry.dataset.title} ${entry.dataset.entryNumber} ${entry.dataset.classification}`;
+        show = show && searchableText.includes(currentSearch);
+      }
+      
+      entry.style.display = show ? 'block' : 'none';
+      if (show) visibleEntries++;
+    });
+    
+    // Sort visible entries
+    const visibleEntriesArray = entriesArray.filter(entry => entry.style.display !== 'none');
+    sortEntries(visibleEntriesArray);
+    
+    // Update count
+    if (visibleCount) {
+      visibleCount.textContent = visibleEntries;
+    }
+  }
+
+  function sortEntries(entries) {
+    entries.sort((a, b) => {
+      switch (currentSort) {
+        case 'entry-number':
+          const numA = parseInt(a.dataset.entryNumber) || 0;
+          const numB = parseInt(b.dataset.entryNumber) || 0;
+          return numA - numB;
+        
+        case 'alphabetical':
+          return a.dataset.title.localeCompare(b.dataset.title);
+        
+        case 'classification':
+          return a.dataset.classification.localeCompare(b.dataset.classification);
+        
+        case 'date-added':
+        default:
+          // Keep original DOM order for date-added
+          return 0;
+      }
+    });
+    
+    // Reorder in DOM
+    entries.forEach(entry => {
+      archiveGrid.appendChild(entry);
+    });
+  }
+
+  // Global reset function
+  window.resetArchiveFilters = function() {
+    filterButtons.forEach(btn => btn.classList.remove('active'));
+    filterButtons[0].classList.add('active'); // First button should be "all"
+    if (sortSelect) sortSelect.value = 'entry-number';
+    if (searchInput) searchInput.value = '';
+    
+    currentFilter = 'all';
+    currentSort = 'entry-number';
+    currentSearch = '';
+    
+    applyFilters();
+  };
+});
+</script> 
