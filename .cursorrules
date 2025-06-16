@@ -56,12 +56,53 @@
 - Test on mobile and desktop
 - Maintain cyberpunk aesthetic
 
+## 🏪 SHOPIFY BEST PRACTICES
+
+### CSS Organization (CRITICAL)
+- **NEVER add inline `<style>` tags** in section files
+- **ALL CSS must go in `assets/style.css`** with organized comments
+- **Dynamic CSS variables are OK**: `style="--color: {{ settings.color }}"`
+- **Use CSS custom properties** for theme settings integration
+- **Organize CSS by sections** with clear comment headers
+
+### JavaScript Organization (CRITICAL)
+- **NEVER add inline `<script>` tags** in section files (except JSON-LD)
+- **ALL JavaScript must go in `assets/script.js`** 
+- **Use data attributes** to pass dynamic data from Liquid to JS
+- **Scope selectors properly** to avoid conflicts between sections
+- **JSON-LD structured data is OK** - this is the recommended approach
+
+### Section File Standards
+- **Keep sections clean** - HTML/Liquid only
+- **Use data attributes** for dynamic values: `data-variants="{{ product.variants | json | escape }}"`
+- **External script references are OK**: `{{ 'product-zoom.js' | asset_url | script_tag }}`
+- **Schema settings should be comprehensive** and well-documented
+
+### Performance Requirements
+- **Single CSS file** for browser caching optimization
+- **Single main JS file** for faster page loads  
+- **Minimize HTTP requests** - avoid multiple asset files
+- **Use CSS variables** instead of inline styles for theming
+
+### File Structure
+```
+assets/
+├── style.css (ALL theme CSS)
+├── script.js (ALL theme JavaScript)  
+└── specialized.js (Only for complex features like zoom)
+
+sections/
+└── *.liquid (Clean HTML/Liquid only)
+```
+
 ## 🚫 What NOT to Do
 - Don't delete large sections of CSS
 - Don't modify navigation styles without extreme caution
 - Don't use `edit_file` for anything larger than 10-20 lines
 - Don't make multiple unrelated changes at once
 - Don't skip testing navigation after CSS changes
+- **Don't add inline CSS or JavaScript to section files**
+- **Don't create multiple CSS/JS files** unless absolutely necessary
 
 ## ✅ Best Practices
 - Read existing code before making changes
@@ -69,6 +110,10 @@
 - Follow the established CSS variable system
 - Maintain consistent indentation and formatting
 - Document complex changes with comments
+- **Always move CSS to main stylesheet with organized comments**
+- **Always move JavaScript to main script file with modular organization**
+- **Use data attributes for dynamic Liquid-to-JS communication**
+- **Test functionality after moving inline code to main files**
 
 ---
 *This file helps ensure the Starside Armory theme remains stable and functional during development.* 
