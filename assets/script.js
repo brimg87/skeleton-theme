@@ -305,10 +305,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- 6. Product Page Functionality ---
     // Product variant selection functionality
-    const productForms = document.querySelectorAll('[id^="product-form-"]');
-    
-    productForms.forEach(productForm => {
-        const sectionId = productForm.id ? productForm.id.replace('product-form-', '') : 'unknown';
+    try {
+        const productForms = document.querySelectorAll('form[data-type="add-to-cart-form"]');
+        console.log('Found', productForms.length, 'product forms');
+        
+        productForms.forEach((productForm, index) => {
+            console.log('Processing form', index + 1, ':', productForm);
+            
+            if (!productForm.id || !productForm.id.includes('product-form-')) {
+                console.log('Skipping form without proper ID:', productForm);
+                return;
+            }
+            const sectionId = productForm.id.replace('product-form-', '');
         const variantInputs = productForm.querySelectorAll('input[name^="options"], select[name^="options"]');
         const priceElement = document.querySelector(`#ProductPrice-${sectionId}`);
         const addToCartButton = productForm.querySelector('[type="submit"]');
@@ -343,6 +351,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Collect selected options more reliably
             variantInputs.forEach(input => {
+                if (!input.name || !input.name.includes('options[')) return;
+                
                 const optionName = input.name.replace('options[', '').replace(']', '');
                 if (input.type === 'radio') {
                     if (input.checked) {
@@ -354,7 +364,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             console.log('Selected options:', selectedOptions); // Debug logging
-            console.log('Available variants:', variants); // Debug logging
+            console.log('Available variants:', variants.length, 'variants'); // Debug logging
             console.log('Product options:', productOptions); // Debug logging
             
             // Find matching variant
@@ -469,6 +479,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    
+    } catch (error) {
+        console.error('Error in product page functionality:', error);
+    }
     
     // Media gallery functionality
     const thumbnailButtons = document.querySelectorAll('.thumbnail-btn');
