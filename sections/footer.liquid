@@ -1,56 +1,209 @@
-<footer>
-  <div class="footer__copyright">
-    &copy;
-    {{ 'now' | date: '%Y' }}
-    {{ shop.name | link_to: routes.root_url }}, {{ powered_by_link }}
-  </div>
+{% comment %}
+  Footer Section
+  Professional footer with customizable menus and social links
+{% endcomment %}
 
-  <div class="footer__links">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
-    {% endfor %}
-  </div>
+<footer class="site-footer-terminal">
+  <div class="footer-content cyberpunk-container">
+    <div class="footer-grid">
+      <!-- Support Grid Column -->
+      <div class="footer-column">
+        <h4 class="footer-heading">{{ section.settings.support_title | default: '//: SUPPORT_GRID ://' }}</h4>
+        <ul class="footer-links" role="list">
+          {%- for link in linklists[section.settings.support_menu].links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- else -%}
+            <!-- Fallback links if no menu is selected -->
+            <li><a href="{{ routes.search_url }}">Contact</a></li>
+            <li><a href="#">Shipping Info</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="{{ pages.privacy-policy.url | default: '#' }}">Policies & Privacy</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
 
-  <div class="footer__payment">
-    {% if section.settings.show_payment_icons %}
-      {% for type in shop.enabled_payment_types %}
-        {{ type | payment_type_svg_tag }}
-      {% endfor %}
-    {% endif %}
+      <!-- Armory Databank Column -->
+      <div class="footer-column">
+        <h4 class="footer-heading">{{ section.settings.armory_title | default: '//: ARMORY_DATABANK ://' }}</h4>
+        <ul class="footer-links" role="list">
+          {%- for link in linklists[section.settings.armory_menu].links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- else -%}
+            <!-- Fallback links if no menu is selected -->
+            <li><a href="{{ pages.about.url | default: '#' }}">The Proprietor (About)</a></li>
+            <li><a href="{{ blog.url | default: '#' }}">Update Log (Blog)</a></li>
+            <li><a href="#">Affiliate Links</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+
+      <!-- Communications Grid Column -->
+      <div class="footer-column footer-social-column">
+        <h4 class="footer-heading">{{ section.settings.social_title | default: '//: COMMS_GRID ://' }}</h4>
+        <div class="social-links">
+          {% for block in section.blocks %}
+            {% case block.type %}
+              {% when 'social_link' %}
+                {% if block.settings.url != blank %}
+                  <a href="{{ block.settings.url }}" 
+                     aria-label="{{ block.settings.platform | default: 'Social Link' }}"
+                     {% if block.settings.new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}
+                     {{ block.shopify_attributes }}>
+                    {% if block.settings.icon != blank %}
+                      <i class="{{ block.settings.icon }}"></i>
+                    {% else %}
+                      {{ block.settings.platform | default: 'Link' }}
+                    {% endif %}
+                  </a>
+                {% endif %}
+            {% endcase %}
+          {% endfor %}
+          
+          <!-- Fallback social links if no blocks -->
+          {% if section.blocks.size == 0 %}
+            <a href="#" aria-label="Social Link 1"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Social Link 2"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Social Link 3"><i class="fab fa-artstation"></i></a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-lore-text">
+        <p>{{ section.settings.lore_line_1 | default: 'MARKET: SOL_3' }}</p>
+        <p>{{ section.settings.lore_line_2 | default: 'HXC_SATCOM 1234ASDF' }}</p>
+      </div>
+      <div class="footer-copyright">
+        <p>{{ section.settings.copyright_text | default: '&copy; {year} {shop_name}' | replace: '{year}', 'now' | date: "%Y" | replace: '{shop_name}', shop.name }}</p>
+      </div>
+    </div>
   </div>
 </footer>
 
-{% stylesheet %}
-  footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 2rem;
-  }
-  footer a {
-    text-decoration: none;
-    color: var(--color-foreground);
-  }
-  footer .footer__links,
-  footer .footer__payment {
-    display: flex;
-    gap: 1rem;
-  }
-{% endstylesheet %}
-
 {% schema %}
 {
-  "name": "t:general.footer",
+  "name": "Footer",
   "settings": [
     {
-      "type": "link_list",
-      "id": "menu",
-      "label": "t:labels.menu"
+      "type": "header",
+      "content": "Footer Columns"
     },
     {
-      "type": "checkbox",
-      "id": "show_payment_icons",
-      "label": "t:labels.show_payment_icons",
-      "default": true
+      "type": "text",
+      "id": "support_title",
+      "label": "Support column title",
+      "default": "//: SUPPORT_GRID ://"
+    },
+    {
+      "type": "link_list",
+      "id": "support_menu",
+      "label": "Support menu",
+      "info": "Select the menu for support links"
+    },
+    {
+      "type": "text",
+      "id": "armory_title",
+      "label": "Armory column title",
+      "default": "//: ARMORY_DATABANK ://"
+    },
+    {
+      "type": "link_list",
+      "id": "armory_menu",
+      "label": "Armory menu",
+      "info": "Select the menu for armory/company links"
+    },
+    {
+      "type": "text",
+      "id": "social_title",
+      "label": "Social column title",
+      "default": "//: COMMS_GRID ://"
+    },
+    {
+      "type": "header",
+      "content": "Footer Bottom"
+    },
+    {
+      "type": "text",
+      "id": "lore_line_1",
+      "label": "Lore text line 1",
+      "default": "MARKET: SOL_3"
+    },
+    {
+      "type": "text",
+      "id": "lore_line_2",
+      "label": "Lore text line 2",
+      "default": "HXC_SATCOM 1234ASDF"
+    },
+    {
+      "type": "textarea",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "default": "&copy; {year} {shop_name}",
+      "info": "Use {year} for current year and {shop_name} for store name"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "social_link",
+      "name": "Social Link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "platform",
+          "label": "Platform name",
+          "default": "Twitter"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Social media URL"
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "FontAwesome icon class",
+          "default": "fab fa-twitter",
+          "info": "e.g., fab fa-twitter, fab fa-instagram, fab fa-artstation"
+        },
+        {
+          "type": "checkbox",
+          "id": "new_tab",
+          "label": "Open in new tab",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        {
+          "type": "social_link",
+          "settings": {
+            "platform": "Twitter",
+            "url": "https://twitter.com",
+            "icon": "fab fa-twitter"
+          }
+        },
+        {
+          "type": "social_link",
+          "settings": {
+            "platform": "Instagram",
+            "url": "https://instagram.com",
+            "icon": "fab fa-instagram"
+          }
+        },
+        {
+          "type": "social_link",
+          "settings": {
+            "platform": "ArtStation",
+            "url": "https://artstation.com",
+            "icon": "fab fa-artstation"
+          }
+        }
+      ]
     }
   ]
 }
