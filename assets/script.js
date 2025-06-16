@@ -295,4 +295,197 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // --- 6. Product Page Functionality ---
+    // Product variant selection functionality
+    const productForms = document.querySelectorAll('[id^="product-form-"]');
+    
+    productForms.forEach(productForm => {
+        const sectionId = productForm.id.replace('product-form-', '');
+        const variantInputs = productForm.querySelectorAll('input[name^="options"], select[name^="options"]');
+        const priceElement = document.querySelector(`#ProductPrice-${sectionId}`);
+        const addToCartButton = productForm.querySelector('[type="submit"]');
+        const quantityInput = productForm.querySelector(`#Quantity-${sectionId}`);
+        
+        // Get variant data from the form's data attribute
+        const variantsData = productForm.dataset.variants;
+        if (!variantsData) return;
+        
+        const variants = JSON.parse(variantsData);
+        const productOptions = JSON.parse(productForm.dataset.options || '[]');
+        
+        // Update variant when options change
+        variantInputs.forEach(input => {
+            input.addEventListener('change', updateVariant);
+        });
+        
+        function updateVariant() {
+            const selectedOptions = {};
+            variantInputs.forEach(input => {
+                const optionName = input.name.replace('options[', '').replace(']', '');
+                selectedOptions[optionName] = input.value;
+            });
+            
+            const selectedVariant = variants.find(variant => {
+                return variant.options.every((option, index) => {
+                    const optionName = productOptions[index];
+                    return selectedOptions[optionName] === option;
+                });
+            });
+            
+            if (selectedVariant) {
+                // Update hidden variant ID
+                const variantIdInput = productForm.querySelector('.product-variant-id');
+                if (variantIdInput) {
+                    variantIdInput.value = selectedVariant.id;
+                }
+                
+                // Update price
+                if (priceElement) {
+                    const currency = document.documentElement.lang || 'en';
+                    const currencyCode = productForm.dataset.currency || 'USD';
+                    priceElement.textContent = new Intl.NumberFormat(currency, {
+                        style: 'currency',
+                        currency: currencyCode
+                    }).format(selectedVariant.price / 100);
+                }
+                
+                // Update availability
+                if (addToCartButton) {
+                    const btnText = addToCartButton.querySelector('.btn-text');
+                    if (selectedVariant.available) {
+                        addToCartButton.disabled = false;
+                        if (btnText) {
+                            btnText.textContent = addToCartButton.dataset.addText || '[ADD_TO_INVENTORY_CORE]';
+                        }
+                    } else {
+                        addToCartButton.disabled = true;
+                        if (btnText) {
+                            btnText.textContent = addToCartButton.dataset.soldOutText || '[ASSET_UNAVAILABLE]';
+                        }
+                    }
+                }
+                
+                // Update quantity max if inventory tracking
+                if (quantityInput && selectedVariant.inventory_management === 'shopify' && selectedVariant.inventory_policy === 'deny') {
+                    quantityInput.max = selectedVariant.inventory_quantity;
+                } else if (quantityInput) {
+                    quantityInput.removeAttribute('max');
+                }
+            }
+        }
+        
+        // Quantity selector functionality for product pages
+        const qtyButtons = productForm.querySelectorAll('.qty-btn');
+        qtyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const action = this.dataset.action;
+                const input = this.parentNode.querySelector('.quantity-input');
+                if (!input) return;
+                
+                let value = parseInt(input.value) || 1;
+                
+                if (action === 'increase') {
+                    value++;
+                    if (input.max && value > parseInt(input.max)) {
+                        value = parseInt(input.max);
+                    }
+                } else if (action === 'decrease' && value > 1) {
+                    value--;
+                }
+                
+                input.value = value;
+            });
+        });
+        
+        // Form submission with loading state
+        productForm.addEventListener('submit', function() {
+            if (addToCartButton) {
+                addToCartButton.classList.add('loading');
+                addToCartButton.disabled = true;
+            }
+        });
+    });
+    
+    // Media gallery functionality
+    const thumbnailButtons = document.querySelectorAll('.thumbnail-btn');
+    const mainMediaContainers = document.querySelectorAll('.main-media-container');
+    
+    thumbnailButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const galleryContainer = this.closest('.product-media-gallery');
+            if (!galleryContainer) return;
+            
+            const galleryThumbnails = galleryContainer.querySelectorAll('.thumbnail-btn');
+            const mainMediaContainer = galleryContainer.querySelector('.main-media-container');
+            
+            if (!mainMediaContainer) return;
+            
+            // Remove active class from all thumbnails in this gallery
+            galleryThumbnails.forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-selected', 'false');
+            });
+            
+            // Add active class to clicked thumbnail
+            this.classList.add('active');
+            this.setAttribute('aria-selected', 'true');
+            
+            // Update main media
+            const mediaType = this.dataset.mediaType;
+            const mediaId = this.dataset.mediaId;
+            
+            if (mediaType === 'image') {
+                const newSrc = this.dataset.src;
+                const newSrcset = this.dataset.srcset;
+                const mainImage = mainMediaContainer.querySelector('img');
+                
+                if (mainImage) {
+                    mainImage.src = newSrc;
+                    if (newSrcset) {
+                        mainImage.srcset = newSrcset;
+                    }
+                    
+                    // Update zoom data if zoom is enabled
+                    if (this.dataset.zoom) {
+                        mainImage.dataset.zoom = this.dataset.zoom;
+                    }
+                }
+            } else if (mediaType === 'video') {
+                // Handle video switching
+                const videoHtml = this.dataset.videoHtml;
+                if (videoHtml) {
+                    const mediaContainer = mainMediaContainer.querySelector('.product-media');
+                    if (mediaContainer) {
+                        mediaContainer.innerHTML = videoHtml;
+                    }
+                }
+            } else if (mediaType === 'external_video') {
+                // Handle external video switching
+                const externalVideoHtml = this.dataset.externalVideoHtml;
+                if (externalVideoHtml) {
+                    const mediaContainer = mainMediaContainer.querySelector('.product-media');
+                    if (mediaContainer) {
+                        mediaContainer.innerHTML = externalVideoHtml;
+                    }
+                }
+            } else if (mediaType === 'model') {
+                // Handle 3D model switching
+                const modelHtml = this.dataset.modelHtml;
+                if (modelHtml) {
+                    const mediaContainer = mainMediaContainer.querySelector('.product-media');
+                    if (mediaContainer) {
+                        mediaContainer.innerHTML = modelHtml;
+                    }
+                }
+            }
+            
+            // Update media container data attribute
+            const mediaContainer = mainMediaContainer.querySelector('.product-media');
+            if (mediaContainer) {
+                mediaContainer.dataset.mediaId = mediaId;
+                mediaContainer.dataset.mediaType = mediaType;
+            }
+        });
+    });
+
 }); // End of DOMContentLoaded

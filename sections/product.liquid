@@ -258,7 +258,7 @@
             </div>
 
             <!-- Product Form -->
-            {%- form 'product', product, id: "product-form-{{ section.id }}", class: "product-form", novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+            {%- form 'product', product, id: "product-form-{{ section.id }}", class: "product-form", novalidate: 'novalidate', data-type: 'add-to-cart-form', data-variants: "{{ product.variants | json | escape }}", data-options: "{{ product.options | json | escape }}", data-currency: "{{ cart.currency.iso_code }}" -%}
               <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" class="product-variant-id">
               
               <!-- Variant Selection -->
@@ -332,7 +332,9 @@
                           name="add" 
                           class="btn btn-cta-primary product-page-cta" 
                           {% unless product.selected_or_first_available_variant.available %}disabled="disabled"{% endunless %}
-                          aria-describedby="ProductPrice-{{ section.id }}">
+                          aria-describedby="ProductPrice-{{ section.id }}"
+                          data-add-text="{{ section.settings.add_to_cart_text | default: '[ADD_TO_INVENTORY_CORE]' }}"
+                          data-sold-out-text="{{ section.settings.sold_out_text | default: '[ASSET_UNAVAILABLE]' }}">
                     <span class="btn-text">
                       {% if product.selected_or_first_available_variant.available %}
                         {{ section.settings.add_to_cart_text | default: '[ADD_TO_INVENTORY_CORE]' }}
@@ -633,165 +635,6 @@
   ]
 }
 {% endschema %}
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Product variant selection functionality
-  const productForm = document.querySelector('#product-form-{{ section.id }}');
-  const variantInputs = productForm.querySelectorAll('input[name^="options"], select[name^="options"]');
-  const priceElement = document.querySelector('#ProductPrice-{{ section.id }}');
-  const addToCartButton = productForm.querySelector('[type="submit"]');
-  const quantityInput = productForm.querySelector('#Quantity-{{ section.id }}');
-  
-  // Variant data
-  const variants = {{ product.variants | json }};
-  
-  // Update variant when options change
-  variantInputs.forEach(input => {
-    input.addEventListener('change', updateVariant);
-  });
-  
-  function updateVariant() {
-    const selectedOptions = {};
-    variantInputs.forEach(input => {
-      const optionName = input.name.replace('options[', '').replace(']', '');
-      selectedOptions[optionName] = input.value;
-    });
-    
-    const selectedVariant = variants.find(variant => {
-      return variant.options.every((option, index) => {
-        const optionName = {{ product.options | json }}[index];
-        return selectedOptions[optionName] === option;
-      });
-    });
-    
-    if (selectedVariant) {
-      // Update hidden variant ID
-      productForm.querySelector('.product-variant-id').value = selectedVariant.id;
-      
-      // Update price
-      priceElement.textContent = new Intl.NumberFormat('{{ cart.currency.iso_code }}', {
-        style: 'currency',
-        currency: '{{ cart.currency.iso_code }}'
-      }).format(selectedVariant.price / 100);
-      
-      // Update availability
-      if (selectedVariant.available) {
-        addToCartButton.disabled = false;
-        addToCartButton.querySelector('.btn-text').textContent = '{{ section.settings.add_to_cart_text | default: "[ADD_TO_INVENTORY_CORE]" }}';
-      } else {
-        addToCartButton.disabled = true;
-        addToCartButton.querySelector('.btn-text').textContent = '{{ section.settings.sold_out_text | default: "[ASSET_UNAVAILABLE]" }}';
-      }
-      
-      // Update quantity max if inventory tracking
-      if (selectedVariant.inventory_management === 'shopify' && selectedVariant.inventory_policy === 'deny') {
-        quantityInput.max = selectedVariant.inventory_quantity;
-      } else {
-        quantityInput.removeAttribute('max');
-      }
-    }
-  }
-  
-  // Quantity selector functionality
-  const qtyButtons = productForm.querySelectorAll('.qty-btn');
-  qtyButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      const action = this.dataset.action;
-      const input = this.parentNode.querySelector('.quantity-input');
-      let value = parseInt(input.value);
-      
-      if (action === 'increase') {
-        value++;
-        if (input.max && value > parseInt(input.max)) {
-          value = parseInt(input.max);
-        }
-      } else if (action === 'decrease' && value > 1) {
-        value--;
-      }
-      
-      input.value = value;
-    });
-  });
-  
-  // Media gallery functionality
-  const thumbnailButtons = document.querySelectorAll('.thumbnail-btn');
-  const mainMediaContainer = document.querySelector('.main-media-container');
-  
-  thumbnailButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      // Remove active class from all thumbnails
-      thumbnailButtons.forEach(btn => {
-        btn.classList.remove('active');
-        btn.setAttribute('aria-selected', 'false');
-      });
-      
-      // Add active class to clicked thumbnail
-      this.classList.add('active');
-      this.setAttribute('aria-selected', 'true');
-      
-      // Update main media
-      const mediaType = this.dataset.mediaType;
-      const mediaId = this.dataset.mediaId;
-      
-      if (mediaType === 'image') {
-        const newSrc = this.dataset.src;
-        const newSrcset = this.dataset.srcset;
-        const mainImage = mainMediaContainer.querySelector('img');
-        
-        if (mainImage) {
-          mainImage.src = newSrc;
-          mainImage.srcset = newSrcset;
-          
-          // Update zoom data if zoom is enabled
-          {% if section.settings.enable_zoom %}
-          if (this.dataset.zoom) {
-            mainImage.dataset.zoom = this.dataset.zoom;
-          }
-          {% endif %}
-        }
-      } else if (mediaType === 'video') {
-        // Handle video switching
-        const videoHtml = this.dataset.videoHtml;
-        if (videoHtml) {
-          const mediaContainer = mainMediaContainer.querySelector('.product-media');
-          mediaContainer.innerHTML = videoHtml;
-        }
-      } else if (mediaType === 'external_video') {
-        // Handle external video switching
-        const externalVideoHtml = this.dataset.externalVideoHtml;
-        if (externalVideoHtml) {
-          const mediaContainer = mainMediaContainer.querySelector('.product-media');
-          mediaContainer.innerHTML = externalVideoHtml;
-        }
-      } else if (mediaType === 'model') {
-        // Handle 3D model switching
-        const modelHtml = this.dataset.modelHtml;
-        if (modelHtml) {
-          const mediaContainer = mainMediaContainer.querySelector('.product-media');
-          mediaContainer.innerHTML = modelHtml;
-        }
-      }
-      
-      // Update media container data attribute
-      const mediaContainer = mainMediaContainer.querySelector('.product-media');
-      if (mediaContainer) {
-        mediaContainer.dataset.mediaId = mediaId;
-        mediaContainer.dataset.mediaType = mediaType;
-      }
-    });
-  });
-
-  // Zoom functionality is handled by product-zoom.js
-  console.log('Product section {{ section.id }} script loaded');
-  
-  // Form submission with loading state
-  productForm.addEventListener('submit', function() {
-    addToCartButton.classList.add('loading');
-    addToCartButton.disabled = true;
-  });
-});
-</script>
 
 {% comment %} Recommended products section would typically be its own section file {% endcomment %}
 {% section 'product-recommendations' %}
