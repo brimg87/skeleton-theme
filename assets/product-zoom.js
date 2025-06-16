@@ -121,7 +121,12 @@ function initializeProductZoom() {
   const productSections = document.querySelectorAll('[id^="product-"]');
   
   productSections.forEach(section => {
-    const sectionId = section.id.replace('product-', '');
+    const sectionIdRaw = String(section.id || '');
+    if (!sectionIdRaw || !sectionIdRaw.includes('product-')) {
+      console.log('ProductZoom: Skipping section without proper ID:', sectionIdRaw);
+      return;
+    }
+    const sectionId = sectionIdRaw.replace('product-', '');
     new ProductZoom(sectionId);
   });
 }
