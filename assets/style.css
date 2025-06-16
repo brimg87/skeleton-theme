@@ -2403,7 +2403,6 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 
 /* ===== CONTACT PAGE STYLES ===== */
 .contact-interface-section {
-  padding-top: calc(var(--header-height) + 2rem);
   min-height: 80vh;
 }
 
@@ -2645,7 +2644,7 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 }
 
 @media (max-width: 767px) {
-  .contact-interface-section {
+  .contact-interface-section.section-padding {
     padding-top: calc(var(--header-height) + 1rem);
   }
   
@@ -3305,14 +3304,19 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 .debug-primary { background-color: var(--debug-primary) !important; }
 .debug-secondary { background-color: var(--debug-secondary) !important; }
 
-/* Section spacing */
+/* Section spacing with header offset */
 .section-padding {
-    padding-top: var(--space-section-padding-y);
+    padding-top: calc(var(--header-height) + var(--space-section-padding-y));
     padding-bottom: var(--space-section-padding-y);
     padding-left: var(--container-padding-x-md);
     padding-right: var(--container-padding-x-md);
     margin-top: var(--space-lg);
     margin-bottom: var(--space-lg);
+}
+
+/* Override for sections that need different header spacing */
+.section-padding.no-header-offset {
+    padding-top: var(--space-section-padding-y);
 }
 
 .section-padding:first-child {
@@ -3626,7 +3630,6 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 
 /* Cart Interface Section */
 .cart-interface-section {
-  padding-top: calc(var(--header-height) + 2rem);
   min-height: 60vh;
 }
 
@@ -4212,7 +4215,6 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 
 /* About Hero Section */
 .about-hero-section {
-  padding-top: calc(var(--header-height) + 2rem);
   min-height: 80vh;
   display: flex;
   align-items: center;
@@ -4477,7 +4479,7 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 }
 
 @media (max-width: 767px) {
-  .about-hero-section {
+  .about-hero-section.section-padding {
     min-height: auto;
     padding-top: calc(var(--header-height) + 1rem);
   }
