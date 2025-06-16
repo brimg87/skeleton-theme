@@ -2089,6 +2089,123 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 .signup-form .form-errors ul { list-style: none; padding-left: 0; margin-top: var(--space-xs); }
 .signup-form .form-errors li { margin-bottom: var(--space-xxs); }
 
+/* ===== NEWSLETTER SIGNUP CYBERPUNK STYLES ===== */
+.section-newsletter-signup {
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, rgba(10, 15, 31, 0.95) 100%);
+  border-top: 1px solid var(--color-accent-cyan);
+  border-bottom: 1px solid var(--color-accent-cyan);
+  position: relative;
+  overflow: hidden;
+}
+
+.section-newsletter-signup::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(255, 0, 255, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.section-newsletter-signup .container {
+  position: relative;
+  z-index: 1;
+}
+
+.section-newsletter-signup .section-title {
+  color: var(--color-accent-green);
+  text-shadow: 0 0 10px var(--color-accent-green);
+  font-family: var(--font-family-secondary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 2rem;
+}
+
+.section-newsletter-signup .signup-form-fields {
+  max-width: 600px;
+  margin: 0 auto;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.section-newsletter-signup .signup-form-fields .form-input {
+  background: rgba(10, 15, 31, 0.8);
+  border: 1px solid var(--color-accent-cyan);
+  color: var(--color-accent-cyan);
+  font-family: var(--font-family-secondary);
+  padding: 1rem 1.5rem;
+  border-radius: 0;
+  transition: all 0.3s ease;
+}
+
+.section-newsletter-signup .signup-form-fields .form-input:focus {
+  outline: none;
+  border-color: var(--color-accent-green);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+  color: var(--color-accent-green);
+}
+
+.section-newsletter-signup .signup-form-fields .form-input::placeholder {
+  color: rgba(0, 255, 255, 0.6);
+  font-family: var(--font-family-secondary);
+}
+
+.section-newsletter-signup .signup-form-fields .btn-cta {
+  background: linear-gradient(135deg, var(--color-accent-magenta) 0%, var(--color-accent-cyan) 100%);
+  border: 1px solid var(--color-accent-magenta);
+  color: var(--color-primary-dark);
+  font-family: var(--font-family-secondary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 1rem 2rem;
+  border-radius: 0;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.section-newsletter-signup .signup-form-fields .btn-cta:hover {
+  background: linear-gradient(135deg, var(--color-accent-cyan) 0%, var(--color-accent-magenta) 100%);
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.section-newsletter-signup .form-success {
+  background: rgba(0, 255, 0, 0.1);
+  border: 1px solid var(--color-accent-green);
+  color: var(--color-accent-green);
+  font-family: var(--font-family-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.section-newsletter-signup .form-errors {
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid var(--color-accent-red);
+  color: var(--color-accent-red);
+  font-family: var(--font-family-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 767px) {
+  .section-newsletter-signup .signup-form-fields {
+    flex-direction: column;
+  }
+  
+  .section-newsletter-signup .signup-form-fields .btn-cta {
+    padding: 1rem;
+  }
+}
+
 /* === SITE FOOTER === */
 .site-footer-terminal { 
   background-color: var(--color-darkest); 
