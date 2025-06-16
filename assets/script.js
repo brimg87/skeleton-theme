@@ -304,28 +304,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- 6. Product Page Functionality ---
-    // Simple quantity selector functionality for product pages
-    const qtyButtons = document.querySelectorAll('.qty-btn');
-    qtyButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const action = this.dataset.action;
-            const input = this.parentNode.querySelector('.quantity-input');
-            if (!input) return;
-            
-            let value = parseInt(input.value) || 1;
-            
-            if (action === 'increase') {
-                value++;
-                if (input.max && value > parseInt(input.max)) {
-                    value = parseInt(input.max);
-                }
-            } else if (action === 'decrease' && value > 1) {
-                value--;
-            }
-            
-            input.value = value;
-        });
-    });
+    // (Quantity functionality handled above in product-specific section)
     
     // Form submission with loading state
     const productForms = document.querySelectorAll('form[data-type="add-to-cart-form"]');
