@@ -1,37 +1,693 @@
 {% comment %}
-  This section is used in the cart template to render /cart page with an
-  overview of the items in customer's cart.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/cart
+  Cyberpunk Cart Interface
+  Terminal-style cart with data-box styling and proper quantity controls
 {% endcomment %}
 
-<h1>{{ 'cart.title' | t }}</h1>
+<section class="cart-interface-section section-padding">
+  <div class="container">
+    <div class="cart-header data-box">
+      <div class="data-box-header">//: INVENTORY_MANIFEST ://</div>
+      <div class="cart-stats">
+        <div class="stat-grid">
+          <div class="stat-item">
+            <span class="stat-label">[ITEMS_COUNT]</span>
+            <span class="stat-value">{{ cart.item_count }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">[TOTAL_CREDITS]</span>
+            <span class="stat-value terminal-green-glow">{{ cart.total_price | money }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">[STATUS]</span>
+            <span class="stat-value status-{{ cart.item_count | plus: 0 | at_least: 1 }}">
+              {% if cart.item_count > 0 %}READY_FOR_CHECKOUT{% else %}INVENTORY_EMPTY{% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<form action="{{ routes.cart_url }}" method="post">
-  <table>
-    {% for item in cart.items %}
-      <tr>
-        <td>
-          {% render 'image', image: item.image, url: item.url %}
-        </td>
-        <td>
-          <p>{{ item.product.title }}</p>
-          {{ 'cart.remove' | t | link_to: item.url_to_remove }}
-        </td>
-        <td>
-          <input type="text" name="updates[]" value="{{ item.quantity }}">
-          <input type="submit" value="{{ 'cart.update' | t }}">
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
+    {% if cart.item_count > 0 %}
+      <form action="{{ routes.cart_url }}" method="post" class="cart-form" novalidate>
+        <div class="cart-items-container data-box">
+          <div class="data-box-header">//: ITEM_MANIFEST_DETAILS ://</div>
+          <div class="cart-items-grid">
+            {% for item in cart.items %}
+              <div class="cart-item{% if item.product.product_type == 'Transmission Log' %} transmission-log-item{% endif %}" data-cart-item="{{ item.key }}">
+                <div class="item-image">
+                  {% if item.image %}
+                    <img src="{{ item.image | image_url: width: 150 }}" 
+                         alt="{{ item.image.alt | escape | default: item.product.title | escape }}"
+                         loading="lazy"
+                         width="150"
+                         height="{{ 150 | divided_by: item.image.aspect_ratio | round }}">
+                  {% else %}
+                    <div class="item-image-placeholder">
+                      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                    </div>
+                  {% endif %}
+                  
+                  {% if item.product.product_type == 'Transmission Log' %}
+                    <div class="item-badge archive-badge">[ARCHIVE]</div>
+                    {% if item.product.metafields.transmission_log.entry_number %}
+                      <div class="item-badge entry-badge">[#{{ item.product.metafields.transmission_log.entry_number }}]</div>
+                    {% endif %}
+                  {% endif %}
+                </div>
 
-  <input type="submit" name="checkout" value="{{ 'cart.checkout' | t }}">
-</form>
+                <div class="item-details">
+                  <div class="item-header">
+                    <h3 class="item-title">
+                      <a href="{{ item.product.url }}">{{ item.product.title }}</a>
+                    </h3>
+                    {% if item.product.product_type == 'Transmission Log' %}
+                      <span class="archive-notice">[REFERENCE_ONLY]</span>
+                    {% endif %}
+                  </div>
+
+                  {% if item.product.has_only_default_variant == false %}
+                    <div class="item-variants">
+                      {% for option in item.options_with_values %}
+                        <div class="variant-info">
+                          <span class="variant-label">{{ option.name }}:</span>
+                          <span class="variant-value">{{ option.value }}</span>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+
+                  {% if item.properties.size > 0 %}
+                    <div class="item-properties">
+                      {% for property in item.properties %}
+                        {% assign property_first_char = property.first | slice: 0 %}
+                        {% unless property.last == blank or property_first_char == '_' %}
+                          <div class="property-info">
+                            <span class="property-label">{{ property.first }}:</span>
+                            <span class="property-value">{{ property.last }}</span>
+                          </div>
+                        {% endunless %}
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+
+                  <div class="item-pricing">
+                    {% if item.original_price != item.final_price %}
+                      <span class="item-price-compare">{{ item.original_price | money }}</span>
+                    {% endif %}
+                    <span class="item-price-current">{{ item.final_price | money }}</span>
+                    {% if item.quantity > 1 %}
+                      <span class="item-price-total">({{ item.final_line_price | money }} total)</span>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="item-controls">
+                  {% if item.product.product_type == 'Transmission Log' %}
+                    <div class="archive-controls">
+                      <span class="archive-status">[NOT_AVAILABLE_FOR_PURCHASE]</span>
+                      <a href="{{ item.url_to_remove }}" class="btn btn-secondary btn-remove" aria-label="Remove {{ item.product.title | escape }} from cart">
+                        [REMOVE_FROM_MANIFEST]
+                      </a>
+                    </div>
+                  {% else %}
+                    <div class="quantity-controls">
+                      <label for="updates_{{ item.key }}" class="quantity-label">[QTY]</label>
+                      <div class="quantity-input-group">
+                        <button type="button" class="btn-qty qty-decrease" data-key="{{ item.key }}" aria-label="Decrease quantity">-</button>
+                        <input type="number" 
+                               name="updates[]" 
+                               id="updates_{{ item.key }}"
+                               class="quantity-input" 
+                               value="{{ item.quantity }}" 
+                               min="0" 
+                               data-key="{{ item.key }}"
+                               aria-label="Quantity for {{ item.product.title | escape }}">
+                        <button type="button" class="btn-qty qty-increase" data-key="{{ item.key }}" aria-label="Increase quantity">+</button>
+                      </div>
+                    </div>
+                    
+                    <a href="{{ item.url_to_remove }}" class="btn btn-secondary btn-remove" aria-label="Remove {{ item.product.title | escape }} from cart">
+                      [REMOVE]
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="cart-footer">
+          <div class="cart-actions data-box">
+            <div class="data-box-header">//: CHECKOUT_PROTOCOL ://</div>
+            <div class="checkout-content">
+              <div class="cart-totals">
+                <div class="total-row">
+                  <span class="total-label">[SUBTOTAL]</span>
+                  <span class="total-value">{{ cart.total_price | money }}</span>
+                </div>
+                <div class="total-row shipping-note">
+                  <span class="shipping-label">[SHIPPING_CALCULATED_AT_CHECKOUT]</span>
+                </div>
+              </div>
+              
+              <div class="checkout-buttons">
+                <button type="submit" name="update" class="btn btn-secondary btn-update">
+                  [UPDATE_MANIFEST]
+                </button>
+                <button type="submit" name="checkout" class="btn btn-cta-primary btn-checkout">
+                  [INITIATE_CHECKOUT_SEQUENCE]
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    {% else %}
+      <div class="empty-cart data-box">
+        <div class="data-box-header">//: INVENTORY_STATUS ://</div>
+        <div class="empty-cart-content">
+          <div class="empty-icon">[◉]</div>
+          <h2 class="empty-title">INVENTORY MANIFEST EMPTY</h2>
+          <p class="empty-message">
+            Your armory inventory is currently empty. Browse our catalog to add items to your manifest.
+          </p>
+          <div class="empty-actions">
+            <a href="{{ routes.collections_url }}" class="btn btn-cta">
+              [ACCESS_CATALOG]
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+.cart-interface-section {
+  padding-top: calc(var(--header-height) + 2rem);
+  min-height: 60vh;
+}
+
+.cart-header .cart-stats {
+  padding: 1.5rem;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(0, 255, 255, 0.05);
+  border: 1px solid var(--color-accent-cyan);
+  border-radius: 4px;
+}
+
+.stat-label {
+  font-family: var(--font-family-primary);
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.stat-value {
+  font-family: var(--font-family-primary);
+  color: var(--color-accent-cyan);
+  font-weight: bold;
+}
+
+.stat-value.terminal-green-glow {
+  color: var(--color-accent-green);
+  text-shadow: 0 0 5px var(--color-accent-green);
+}
+
+.stat-value.status-1 {
+  color: var(--color-accent-green);
+}
+
+.stat-value.status-0 {
+  color: var(--color-accent-red);
+}
+
+.cart-items-container {
+  margin: 2rem 0;
+}
+
+.cart-items-grid {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 150px 1fr auto;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.cart-item:hover {
+  border-color: var(--color-accent-cyan);
+  background: rgba(0, 255, 255, 0.02);
+}
+
+.transmission-log-item {
+  border-color: var(--color-accent-magenta);
+  background: rgba(255, 0, 255, 0.02);
+}
+
+.transmission-log-item:hover {
+  border-color: var(--color-accent-cyan);
+}
+
+.item-image {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-secondary-dark);
+}
+
+.item-badge {
+  position: absolute;
+  top: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-family: var(--font-family-primary);
+  font-weight: bold;
+  z-index: 2;
+}
+
+.archive-badge {
+  left: 0.5rem;
+  background: var(--color-accent-cyan);
+  color: var(--color-background);
+}
+
+.entry-badge {
+  right: 0.5rem;
+  background: var(--color-accent-magenta);
+  color: var(--color-background);
+}
+
+.item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.item-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.item-title {
+  font-family: var(--font-family-primary);
+  color: var(--color-accent-yellow);
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.item-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.item-title a:hover {
+  color: var(--color-accent-cyan);
+}
+
+.archive-notice {
+  font-family: var(--font-family-primary);
+  font-size: 0.75rem;
+  color: var(--color-accent-magenta);
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--color-accent-magenta);
+  background: rgba(255, 0, 255, 0.1);
+}
+
+.item-variants,
+.item-properties {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.variant-info,
+.property-info {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.variant-label,
+.property-label {
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-primary);
+}
+
+.variant-value,
+.property-value {
+  color: var(--color-text-primary);
+}
+
+.item-pricing {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.item-price-compare {
+  color: var(--color-text-secondary);
+  text-decoration: line-through;
+}
+
+.item-price-current {
+  color: var(--color-accent-green);
+  font-family: var(--font-family-primary);
+  font-weight: bold;
+  font-size: 1.125rem;
+}
+
+.item-price-total {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.item-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.quantity-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.quantity-label {
+  font-family: var(--font-family-primary);
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.quantity-input-group {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border-primary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.quantity-input {
+  width: 60px;
+  padding: 0.5rem;
+  text-align: center;
+  background: var(--color-background-input);
+  border: none;
+  color: var(--color-text-primary);
+  font-family: var(--font-family-primary);
+}
+
+.quantity-input:focus {
+  outline: none;
+  background: rgba(0, 255, 255, 0.1);
+}
+
+.btn-qty {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-secondary-dark);
+  border: none;
+  color: var(--color-accent-cyan);
+  font-family: var(--font-family-primary);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-qty:hover {
+  background: var(--color-accent-cyan);
+  color: var(--color-background);
+}
+
+.archive-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  text-align: center;
+}
+
+.archive-status {
+  font-family: var(--font-family-primary);
+  font-size: 0.75rem;
+  color: var(--color-accent-red);
+  padding: 0.5rem;
+  border: 1px solid var(--color-accent-red);
+  background: rgba(255, 68, 68, 0.1);
+  border-radius: 4px;
+}
+
+.btn-remove {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+}
+
+.cart-footer {
+  margin-top: 2rem;
+}
+
+.checkout-content {
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: end;
+}
+
+.cart-totals {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.total-row:last-child {
+  border-bottom: none;
+}
+
+.shipping-note {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.total-label,
+.shipping-label {
+  font-family: var(--font-family-primary);
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.total-value {
+  font-family: var(--font-family-primary);
+  color: var(--color-accent-green);
+  font-weight: bold;
+  font-size: 1.25rem;
+  text-shadow: 0 0 5px var(--color-accent-green);
+}
+
+.checkout-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.btn-update,
+.btn-checkout {
+  white-space: nowrap;
+  min-width: 200px;
+}
+
+.empty-cart-content {
+  padding: 3rem;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  color: var(--color-accent-cyan);
+  margin-bottom: 1.5rem;
+}
+
+.empty-title {
+  font-family: var(--font-family-primary);
+  color: var(--color-accent-cyan);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.empty-message {
+  color: var(--color-text-secondary);
+  margin-bottom: 2rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.empty-actions {
+  margin-top: 2rem;
+}
+
+@media (max-width: 989px) {
+  .cart-item {
+    grid-template-columns: 120px 1fr;
+    grid-template-rows: auto auto;
+  }
+  
+  .item-controls {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .checkout-content {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .checkout-buttons {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .cart-item {
+    grid-template-columns: 100px 1fr;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .item-image {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .stat-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .checkout-buttons {
+    flex-direction: column;
+  }
+  
+  .btn-update,
+  .btn-checkout {
+    min-width: auto;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Quantity control functionality
+  const quantityButtons = document.querySelectorAll('.btn-qty');
+  
+  quantityButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const key = this.dataset.key;
+      const input = document.querySelector(`input[data-key="${key}"]`);
+      const isIncrease = this.classList.contains('qty-increase');
+      
+      let currentValue = parseInt(input.value) || 0;
+      
+      if (isIncrease) {
+        currentValue++;
+      } else {
+        currentValue = Math.max(0, currentValue - 1);
+      }
+      
+      input.value = currentValue;
+      
+      // Auto-submit form after quantity change
+      setTimeout(() => {
+        input.closest('form').submit();
+      }, 300);
+    });
+  });
+  
+  // Auto-submit on quantity input change
+  const quantityInputs = document.querySelectorAll('.quantity-input');
+  quantityInputs.forEach(input => {
+    let timeout;
+    input.addEventListener('input', function() {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        this.closest('form').submit();
+      }, 1000);
+    });
+  });
+});
+</script>
 
 {% schema %}
 {
-  "name": "t:general.cart",
-  "settings": []
+  "name": "Cart",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Cart Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": false
+    }
+  ]
 }
 {% endschema %}
