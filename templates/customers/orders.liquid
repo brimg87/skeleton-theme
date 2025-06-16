@@ -1,0 +1,267 @@
+{% comment %}
+  Customer Orders List Template
+  Shows all customer orders with filtering and status display
+{% endcomment %}
+
+<section class="orders-interface-section section-padding">
+  <div class="container">
+    
+    <!-- Account Navigation -->
+    <nav class="breadcrumb-trail" aria-label="Account navigation">
+      <div class="container">
+        <a href="{{ routes.account_url }}" class="breadcrumb-link">[ACCOUNT_CORE]</a>
+        <span class="breadcrumb-separator"> > </span>
+        <span class="breadcrumb-current">[ORDER_HISTORY]</span>
+      </div>
+    </nav>
+
+    <!-- Orders Header -->
+    <div class="orders-header data-box">
+      <div class="data-box-header">//: ORDER_HISTORY_DATABASE ://</div>
+      <div class="orders-header-content">
+        
+        <div class="account-info">
+          <h1 class="page-title">ORDER MANIFEST</h1>
+          <div class="account-details">
+            <span class="account-label">[OPERATIVE:]</span>
+            <span class="account-name">{{ customer.first_name }} {{ customer.last_name }}</span>
+          </div>
+        </div>
+
+        <div class="orders-stats">
+          <div class="stat-item">
+            <span class="stat-value">{{ customer.orders_count }}</span>
+            <span class="stat-label">[TOTAL_ORDERS]</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ customer.total_spent | money }}</span>
+            <span class="stat-label">[TOTAL_SPENT]</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    {% if customer.orders.size > 0 %}
+      
+      <!-- Orders List -->
+      <div class="orders-list data-box">
+        <div class="data-box-header">//: ORDER_RECORDS ://</div>
+        <div class="orders-content">
+          
+          {% paginate customer.orders by 10 %}
+            
+            <div class="orders-grid">
+              {% for order in customer.orders %}
+                <article class="order-card">
+                  
+                  <div class="order-card-header">
+                    <div class="order-number">
+                      <span class="order-label">[ORDER:]</span>
+                      <span class="order-value">#{{ order.order_number }}</span>
+                    </div>
+                    
+                    <div class="order-date">
+                      <span class="date-label">[DATE:]</span>
+                      <span class="date-value">{{ order.created_at | date: '%m.%d.%Y' }}</span>
+                    </div>
+                  </div>
+
+                  <div class="order-status-display">
+                    <div class="status-grid">
+                      
+                      <div class="status-item">
+                        <span class="status-label">[PAYMENT:]</span>
+                        <span class="status-value status-{{ order.financial_status }}">
+                          {% case order.financial_status %}
+                            {% when 'pending' %}
+                              PENDING
+                            {% when 'authorized' %}
+                              AUTHORIZED
+                            {% when 'paid' %}
+                              CONFIRMED
+                            {% when 'partially_paid' %}
+                              PARTIAL
+                            {% when 'refunded' %}
+                              REFUNDED
+                            {% when 'voided' %}
+                              VOIDED
+                            {% else %}
+                              {{ order.financial_status | upcase }}
+                          {% endcase %}
+                        </span>
+                      </div>
+
+                      <div class="status-item">
+                        <span class="status-label">[SHIPMENT:]</span>
+                        <span class="status-value status-{{ order.fulfillment_status }}">
+                          {% case order.fulfillment_status %}
+                            {% when 'fulfilled' %}
+                              SHIPPED
+                            {% when 'partial' %}
+                              PARTIAL
+                            {% when 'unfulfilled' %}
+                              PROCESSING
+                            {% else %}
+                              {{ order.fulfillment_status | upcase }}
+                          {% endcase %}
+                        </span>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div class="order-summary">
+                    <div class="items-count">
+                      <span class="items-label">[ITEMS:]</span>
+                      <span class="items-value">{{ order.line_items.size }}</span>
+                    </div>
+                    
+                    <div class="order-total">
+                      <span class="total-label">[TOTAL:]</span>
+                      <span class="total-value">{{ order.total_price | money }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Order Items Preview -->
+                  <div class="order-items-preview">
+                    {% for line_item in order.line_items limit: 3 %}
+                      <div class="preview-item">
+                        {% if line_item.image %}
+                          <img src="{{ line_item.image | image_url: width: 60 }}" 
+                               alt="{{ line_item.title | escape }}" 
+                               class="preview-image">
+                        {% else %}
+                          <div class="preview-placeholder">[◉]</div>
+                        {% endif %}
+                        
+                        <div class="preview-details">
+                          <div class="preview-title">{{ line_item.title | truncate: 30 }}</div>
+                          <div class="preview-qty">Qty: {{ line_item.quantity }}</div>
+                        </div>
+                      </div>
+                    {% endfor %}
+                    
+                    {% if order.line_items.size > 3 %}
+                      <div class="more-items">
+                        +{{ order.line_items.size | minus: 3 }} more items
+                      </div>
+                    {% endif %}
+                  </div>
+
+                  <div class="order-actions">
+                    <a href="{{ order.customer_url }}" class="btn btn-cta">
+                      [VIEW_DETAILS]
+                    </a>
+                    
+                    {% if order.fulfillment_status == 'fulfilled' %}
+                      {% assign tracking_available = false %}
+                      {% for line_item in order.line_items %}
+                        {% if line_item.fulfillment.tracking_url %}
+                          {% assign tracking_available = true %}
+                          {% break %}
+                        {% endif %}
+                      {% endfor %}
+                      
+                      {% if tracking_available %}
+                        <a href="{{ order.customer_url }}#tracking" class="btn btn-secondary">
+                          [TRACK]
+                        </a>
+                      {% endif %}
+                    {% endif %}
+                  </div>
+
+                </article>
+              {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if paginate.pages > 1 %}
+              <div class="orders-pagination">
+                <div class="pagination-terminal">
+                  
+                  {% if paginate.previous %}
+                    <a href="{{ paginate.previous.url }}" class="pagination-btn">
+                      [◄ PREVIOUS]
+                    </a>
+                  {% endif %}
+
+                  <div class="pagination-info">
+                    <span class="page-indicator">[PAGE: {{ paginate.current_page }}/{{ paginate.pages }}]</span>
+                    <span class="orders-indicator">[SHOWING: {{ paginate.current_offset | plus: 1 }}-{{ paginate.current_offset | plus: paginate.page_size | at_most: customer.orders_count }} OF {{ customer.orders_count }}]</span>
+                  </div>
+
+                  {% if paginate.next %}
+                    <a href="{{ paginate.next.url }}" class="pagination-btn">
+                      [NEXT ►]
+                    </a>
+                  {% endif %}
+
+                </div>
+              </div>
+            {% endif %}
+
+          {% endpaginate %}
+
+        </div>
+      </div>
+
+    {% else %}
+      
+      <!-- Empty Orders State -->
+      <div class="empty-orders data-box">
+        <div class="data-box-header">//: ORDER_HISTORY_EMPTY ://</div>
+        <div class="empty-orders-content">
+          
+          <div class="empty-icon">[◎]</div>
+          <h2 class="empty-title">NO ORDERS FOUND</h2>
+          <p class="empty-message">
+            Your order manifest is currently empty. Start building your tactical loadout by browsing our equipment catalog.
+          </p>
+          
+          <div class="empty-actions">
+            <a href="{{ routes.collections_url }}" class="btn btn-cta-primary">
+              [ACCESS_CATALOG]
+            </a>
+          </div>
+          
+        </div>
+      </div>
+
+    {% endif %}
+
+    <!-- Account Actions -->
+    <div class="account-actions data-box">
+      <div class="data-box-header">//: ACCOUNT_PROTOCOLS ://</div>
+      <div class="actions-content">
+        
+        <div class="action-buttons">
+          <a href="{{ routes.account_url }}" class="btn btn-secondary">
+            [ACCOUNT_OVERVIEW]
+          </a>
+          
+          <a href="{{ routes.account_addresses_url }}" class="btn btn-secondary">
+            [ADDRESSES]
+          </a>
+          
+          <a href="/pages/contact" class="btn btn-secondary">
+            [SUPPORT]
+          </a>
+        </div>
+
+        <div class="help-info">
+          <h3>//: NEED_ASSISTANCE ://</h3>
+          <p>Questions about your orders? Our tactical support team is standing by.</p>
+          <p><strong>Response Time:</strong> &lt; 12 hours for standard inquiries</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% comment %}
+  Additional CSS is included in the main stylesheet under:
+  /* === CUSTOMER ACCOUNT & ORDER TRACKING === */
+{% endcomment %} 

@@ -1,0 +1,334 @@
+{% comment %}
+  Customer Order Detail Template
+  Shows individual order details with tracking and status
+  
+  Available order object properties:
+  - order.order_number, order.email, order.phone
+  - order.created_at, order.financial_status, order.fulfillment_status
+  - order.line_items, order.shipping_address, order.billing_address
+  - order.total_price, order.subtotal_price, order.tax_price, order.shipping_price
+  - order.discount_applications, order.transactions
+{% endcomment %}
+
+<section class="order-detail-interface-section section-padding">
+  <div class="container">
+    
+    <!-- Order Breadcrumbs -->
+    <nav class="breadcrumb-trail" aria-label="Order navigation">
+      <div class="container">
+        <a href="{{ routes.account_url }}" class="breadcrumb-link">[ACCOUNT_CORE]</a>
+        <span class="breadcrumb-separator"> > </span>
+        <a href="{{ routes.account_url }}#orders" class="breadcrumb-link">[ORDER_HISTORY]</a>
+        <span class="breadcrumb-separator"> > </span>
+        <span class="breadcrumb-current">[ORDER_{{ order.order_number }}]</span>
+      </div>
+    </nav>
+
+    <!-- Order Header -->
+    <div class="order-header data-box">
+      <div class="data-box-header">//: ORDER_FILE_{{ order.order_number }} ://</div>
+      <div class="order-header-content">
+        
+        <div class="order-title-section">
+          <h1 class="order-title">ORDER #{{ order.order_number }}</h1>
+          <div class="order-timestamp">
+            <span class="timestamp-label">[PLACED:]</span>
+            <span class="timestamp-value">{{ order.created_at | date: '%B %d, %Y at %I:%M %p' }}</span>
+          </div>
+        </div>
+
+        <div class="order-status-grid">
+          <div class="status-panel">
+            <div class="status-header">[PAYMENT_STATUS]</div>
+            <div class="status-indicator status-{{ order.financial_status }}">
+              {% case order.financial_status %}
+                {% when 'pending' %}
+                  [PAYMENT_PENDING]
+                {% when 'authorized' %}
+                  [PAYMENT_AUTHORIZED]
+                {% when 'paid' %}
+                  [PAYMENT_CONFIRMED]
+                {% when 'partially_paid' %}
+                  [PAYMENT_PARTIAL]
+                {% when 'refunded' %}
+                  [PAYMENT_REFUNDED]
+                {% when 'voided' %}
+                  [PAYMENT_VOIDED]
+                {% else %}
+                  [{{ order.financial_status | upcase }}]
+              {% endcase %}
+            </div>
+          </div>
+
+          <div class="status-panel">
+            <div class="status-header">[FULFILLMENT_STATUS]</div>
+            <div class="status-indicator status-{{ order.fulfillment_status }}">
+              {% case order.fulfillment_status %}
+                {% when 'fulfilled' %}
+                  [SHIPPED_COMPLETE]
+                {% when 'partial' %}
+                  [SHIPPED_PARTIAL]
+                {% when 'unfulfilled' %}
+                  [PROCESSING]
+                {% else %}
+                  [{{ order.fulfillment_status | upcase }}]
+              {% endcase %}
+            </div>
+          </div>
+
+          {% if order.fulfillment_status == 'fulfilled' %}
+            <div class="status-panel">
+              <div class="status-header">[TRACKING_STATUS]</div>
+              <div class="status-indicator status-active">
+                [TRACKING_AVAILABLE]
+              </div>
+            </div>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="order-items-section data-box">
+      <div class="data-box-header">//: MANIFEST_CONTENTS ://</div>
+      <div class="order-items-grid">
+        
+        {% for line_item in order.line_items %}
+          <article class="order-item">
+            
+            <!-- Item Visual -->
+            <div class="item-visual">
+              {% if line_item.image %}
+                <div class="item-image">
+                  <img src="{{ line_item.image | image_url: width: 120 }}" 
+                       alt="{{ line_item.title | escape }}" 
+                       width="120" 
+                       height="120">
+                </div>
+              {% else %}
+                <div class="item-image-placeholder">
+                  <div class="placeholder-icon">[◉]</div>
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Item Details -->
+            <div class="item-details">
+              
+              <div class="item-header">
+                <h3 class="item-title">{{ line_item.title }}</h3>
+                {% if line_item.product.product_type %}
+                  <div class="item-type">[{{ line_item.product.product_type | upcase }}]</div>
+                {% endif %}
+              </div>
+
+              {% if line_item.variant_title and line_item.variant_title != 'Default Title' %}
+                <div class="item-variants">
+                  <span class="variant-label">[CONFIGURATION:]</span>
+                  <span class="variant-value">{{ line_item.variant_title }}</span>
+                </div>
+              {% endif %}
+
+              <div class="item-specifications">
+                <div class="spec-row">
+                  <span class="spec-label">[QUANTITY:]</span>
+                  <span class="spec-value">{{ line_item.quantity }}</span>
+                </div>
+                
+                <div class="spec-row">
+                  <span class="spec-label">[UNIT_PRICE:]</span>
+                  <span class="spec-value">{{ line_item.price | money }}</span>
+                </div>
+
+                {% if line_item.original_price != line_item.price %}
+                  <div class="spec-row">
+                    <span class="spec-label">[ORIGINAL_PRICE:]</span>
+                    <span class="spec-value price-compare">{{ line_item.original_price | money }}</span>
+                  </div>
+                {% endif %}
+
+                <div class="spec-row total-row">
+                  <span class="spec-label">[LINE_TOTAL:]</span>
+                  <span class="spec-value price-total">{{ line_item.line_price | money }}</span>
+                </div>
+              </div>
+
+              <!-- Fulfillment Status -->
+              <div class="item-fulfillment">
+                {% assign line_fulfillment = line_item.fulfillment %}
+                {% if line_fulfillment %}
+                  <div class="fulfillment-status fulfilled">
+                    <span class="fulfillment-label">[STATUS:]</span>
+                    <span class="fulfillment-value">SHIPPED</span>
+                  </div>
+                  
+                  {% if line_fulfillment.tracking_number %}
+                    <div class="tracking-info">
+                      <span class="tracking-label">[TRACKING:]</span>
+                      {% if line_fulfillment.tracking_url %}
+                        <a href="{{ line_fulfillment.tracking_url }}" class="tracking-link" target="_blank">
+                          {{ line_fulfillment.tracking_number }}
+                        </a>
+                      {% else %}
+                        <span class="tracking-number">{{ line_fulfillment.tracking_number }}</span>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% else %}
+                  <div class="fulfillment-status processing">
+                    <span class="fulfillment-label">[STATUS:]</span>
+                    <span class="fulfillment-value">PROCESSING</span>
+                  </div>
+                {% endif %}
+              </div>
+
+            </div>
+
+          </article>
+        {% endfor %}
+
+      </div>
+    </div>
+
+    <!-- Order Summary Grid -->
+    <div class="order-summary-grid">
+      
+      <!-- Shipping Address -->
+      {% if order.shipping_address %}
+        <div class="address-panel data-box">
+          <div class="data-box-header">//: SHIPPING_DESTINATION ://</div>
+          <div class="address-content">
+            <div class="address-name">{{ order.shipping_address.name }}</div>
+            {% if order.shipping_address.company %}
+              <div class="address-company">{{ order.shipping_address.company }}</div>
+            {% endif %}
+            <div class="address-line">{{ order.shipping_address.address1 }}</div>
+            {% if order.shipping_address.address2 %}
+              <div class="address-line">{{ order.shipping_address.address2 }}</div>
+            {% endif %}
+            <div class="address-line">
+              {{ order.shipping_address.city }}, {{ order.shipping_address.province_code }} {{ order.shipping_address.zip }}
+            </div>
+            <div class="address-country">{{ order.shipping_address.country }}</div>
+            
+            {% if order.shipping_address.phone %}
+              <div class="contact-info">
+                <span class="contact-label">[COMM_CHANNEL:]</span>
+                <span class="contact-value">{{ order.shipping_address.phone }}</span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Billing Address -->
+      {% if order.billing_address %}
+        <div class="address-panel data-box">
+          <div class="data-box-header">//: BILLING_ADDRESS ://</div>
+          <div class="address-content">
+            <div class="address-name">{{ order.billing_address.name }}</div>
+            {% if order.billing_address.company %}
+              <div class="address-company">{{ order.billing_address.company }}</div>
+            {% endif %}
+            <div class="address-line">{{ order.billing_address.address1 }}</div>
+            {% if order.billing_address.address2 %}
+              <div class="address-line">{{ order.billing_address.address2 }}</div>
+            {% endif %}
+            <div class="address-line">
+              {{ order.billing_address.city }}, {{ order.billing_address.province_code }} {{ order.billing_address.zip }}
+            </div>
+            <div class="address-country">{{ order.billing_address.country }}</div>
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Order Totals -->
+      <div class="totals-panel data-box">
+        <div class="data-box-header">//: ORDER_TOTALS ://</div>
+        <div class="totals-content">
+          
+          <div class="total-row">
+            <span class="total-label">[SUBTOTAL:]</span>
+            <span class="total-value">{{ order.subtotal_price | money }}</span>
+          </div>
+
+          {% if order.total_discounts > 0 %}
+            <div class="total-row discount-row">
+              <span class="total-label">[DISCOUNTS:]</span>
+              <span class="total-value discount-value">-{{ order.total_discounts | money }}</span>
+            </div>
+          {% endif %}
+
+          {% for discount_application in order.discount_applications %}
+            <div class="discount-detail">
+              <span class="discount-code">[{{ discount_application.title | upcase }}]</span>
+            </div>
+          {% endfor %}
+
+          {% if order.tax_price > 0 %}
+            <div class="total-row">
+              <span class="total-label">[TAX:]</span>
+              <span class="total-value">{{ order.tax_price | money }}</span>
+            </div>
+          {% endif %}
+
+          {% if order.shipping_price > 0 %}
+            <div class="total-row">
+              <span class="total-label">[SHIPPING:]</span>
+              <span class="total-value">{{ order.shipping_price | money }}</span>
+            </div>
+          {% endif %}
+
+          <div class="total-row final-total">
+            <span class="total-label">[TOTAL_PAID:]</span>
+            <span class="total-value total-price">{{ order.total_price | money }}</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Order Actions -->
+    <div class="order-actions data-box">
+      <div class="data-box-header">//: ORDER_PROTOCOLS ://</div>
+      <div class="actions-content">
+        
+        <div class="action-buttons">
+          <a href="{{ routes.account_url }}" class="btn btn-secondary">
+            [RETURN_TO_ACCOUNT]
+          </a>
+          
+          {% if order.fulfillment_status == 'fulfilled' %}
+            {% for line_item in order.line_items %}
+              {% if line_item.fulfillment.tracking_url %}
+                <a href="{{ line_item.fulfillment.tracking_url }}" class="btn btn-cta" target="_blank">
+                  [TRACK_SHIPMENT]
+                </a>
+                {% break %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+
+          <a href="/pages/contact" class="btn btn-secondary">
+            [CONTACT_SUPPORT]
+          </a>
+        </div>
+
+        <div class="order-help">
+          <h3>//: SUPPORT_PROTOCOLS ://</h3>
+          <p>Need assistance with this order? Our tactical support team is available 24/7.</p>
+          <p><strong>Reference Order #{{ order.order_number }}</strong> when contacting support for faster processing.</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% comment %}
+  Additional CSS is included in the main stylesheet under:
+  /* === CUSTOMER ACCOUNT & ORDER TRACKING === */
+{% endcomment %} 

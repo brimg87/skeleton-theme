@@ -1,0 +1,353 @@
+{% comment %}
+  Post-Purchase Thank You Enhancement Section
+  
+  This section provides additional content for the thank you page through
+  Shopify's Additional Scripts functionality (Settings > Checkout > Order processing > Additional scripts)
+  
+  The script in this file should be added to Additional Scripts in Shopify admin.
+  This follows current best practices since checkout.liquid is deprecated.
+{% endcomment %}
+
+<script>
+// Terminal-themed Thank You Page Enhancement
+// Add this script to: Settings > Checkout > Order processing > Additional scripts
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Enhanced Thank You Content with Starside Armory Terminal Styling
+  const terminalStyles = `
+    <style>
+    .starside-thank-you {
+      font-family: 'Share Tech Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      background: linear-gradient(135deg, #0a0f1f 0%, #0a0a0a 100%);
+      color: #00ffff;
+      padding: 2rem;
+      margin: 2rem 0;
+      border: 2px solid #00ffff;
+      clip-path: polygon(0 10px, 10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px));
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .starside-thank-you::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 255, 255, 0.03) 2px,
+          rgba(0, 255, 255, 0.03) 4px
+        );
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    .starside-thank-you > * {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .terminal-header {
+      color: #00ff00;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px #00ff00;
+      border-bottom: 1px solid #00ff00;
+      padding-bottom: 0.5rem;
+    }
+    
+    .confirmation-message {
+      color: #ffffff;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    
+    .order-summary-terminal {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 1rem;
+      border-left: 3px solid #ff00ff;
+      margin: 1rem 0;
+      clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+    }
+    
+    .status-indicators {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    
+    .status-item {
+      background: rgba(0, 255, 255, 0.1);
+      padding: 0.75rem;
+      border: 1px solid #336c85;
+      clip-path: polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px), 0 5px);
+    }
+    
+    .status-label {
+      color: #94a3b8;
+      font-size: 0.875rem;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    
+    .status-value {
+      color: #00ffff;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+    
+    .next-steps {
+      background: rgba(255, 255, 0, 0.1);
+      padding: 1rem;
+      border-left: 3px solid #ffff00;
+      margin-top: 1.5rem;
+      clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+    }
+    
+    .next-steps h3 {
+      color: #ffff00;
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+    }
+    
+    .action-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    
+    .terminal-btn {
+      background: transparent;
+      border: 2px solid #00ffff;
+      color: #00ffff;
+      padding: 0.5rem 1rem;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-family: inherit;
+      font-size: 0.875rem;
+      clip-path: polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px), 0 5px);
+      transition: all 0.3s ease;
+    }
+    
+    .terminal-btn:hover {
+      background: #00ffff;
+      color: #0a0f1f;
+      box-shadow: 0 0 15px #00ffff;
+    }
+    
+    .terminal-btn.primary {
+      border-color: #00ff00;
+      color: #00ff00;
+    }
+    
+    .terminal-btn.primary:hover {
+      background: #00ff00;
+      color: #0a0f1f;
+      box-shadow: 0 0 15px #00ff00;
+    }
+    
+    .support-info {
+      background: rgba(255, 0, 255, 0.1);
+      padding: 1rem;
+      border-left: 3px solid #ff00ff;
+      margin-top: 1.5rem;
+      clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+    }
+    
+    .support-info h3 {
+      color: #ff00ff;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+    
+    .glitch-text {
+      position: relative;
+      animation: glitch 2s infinite;
+    }
+    
+    @keyframes glitch {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(-1px, 1px); }
+      40% { transform: translate(-1px, -1px); }
+      60% { transform: translate(1px, 1px); }
+      80% { transform: translate(1px, -1px); }
+    }
+    
+    @media (max-width: 768px) {
+      .starside-thank-you {
+        padding: 1rem;
+        margin: 1rem 0;
+      }
+      
+      .action-links {
+        flex-direction: column;
+      }
+      
+      .status-indicators {
+        grid-template-columns: 1fr;
+      }
+    }
+    </style>
+  `;
+
+  // Thank You Content
+  const thankYouContent = `
+    <div class="starside-thank-you">
+      <h2 class="terminal-header glitch-text">//: ORDER_CONFIRMED ://</h2>
+      
+      <div class="confirmation-message">
+        <p><strong>[TRANSMISSION_RECEIVED]</strong></p>
+        <p>Your order has been successfully processed and entered into our armory manifest. Our tactical logistics team is preparing your equipment for deployment.</p>
+      </div>
+
+      <div class="order-summary-terminal">
+        <div class="status-indicators">
+          <div class="status-item">
+            <span class="status-label">[ORDER_STATUS]</span>
+            <span class="status-value">CONFIRMED</span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">[PROCESSING_QUEUE]</span>
+            <span class="status-value">ACTIVE</span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">[ESTIMATED_DEPLOYMENT]</span>
+            <span class="status-value">3-5 BUSINESS_DAYS</span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">[TRACKING_STATUS]</span>
+            <span class="status-value">PENDING</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="next-steps">
+        <h3>//: NEXT_PROTOCOLS ://</h3>
+        <p>• Confirmation transmission sent to your specified data-port<br>
+        • Order tracking will activate upon shipment initialization<br>
+        • Delivery notifications will be transmitted via secure channels</p>
+        
+        <div class="action-links">
+          <a href="/account/orders" class="terminal-btn primary">[TRACK_ORDER]</a>
+          <a href="/collections/all" class="terminal-btn">[CONTINUE_BROWSING]</a>
+          <a href="/pages/support" class="terminal-btn">[TACTICAL_SUPPORT]</a>
+        </div>
+      </div>
+
+      <div class="support-info">
+        <h3>//: SUPPORT_CHANNEL ://</h3>
+        <p>Need assistance? Our tactical support team is standing by 24/7.</p>
+        <p><strong>Emergency Channel:</strong> support@starsidearmory.com</p>
+        <p><strong>Response Time:</strong> &lt; 12 hours for standard inquiries</p>
+      </div>
+    </div>
+  `;
+
+  // Inject styles and content
+  document.head.insertAdjacentHTML('beforeend', terminalStyles);
+  
+  // Check if we're on a thank you page
+  if (window.location.pathname.includes('/thank') || window.location.pathname.includes('/orders/') && window.Shopify && window.Shopify.checkout) {
+    // Find the checkout content area and add our custom content
+    const checkoutContent = document.querySelector('.main-content') || 
+                           document.querySelector('.content') || 
+                           document.querySelector('.checkout-content') ||
+                           document.querySelector('.order-confirmation') ||
+                           document.body;
+    
+    if (checkoutContent) {
+      checkoutContent.insertAdjacentHTML('beforeend', thankYouContent);
+    }
+  }
+});
+
+// For use with Shopify's Additional Scripts method:
+if (typeof Shopify !== 'undefined' && Shopify.Checkout && Shopify.Checkout.OrderStatus) {
+  Shopify.Checkout.OrderStatus.addContentBox(
+    '<h2 style="color: #00ff00; font-family: Share Tech Mono, monospace; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px #00ff00;">//: MISSION_COMPLETE ://</h2>',
+    '<div style="font-family: Share Tech Mono, monospace; color: #00ffff; background: linear-gradient(135deg, #0a0f1f 0%, #0a0a0a 100%); padding: 1.5rem; border: 2px solid #00ffff; clip-path: polygon(0 10px, 10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px));">',
+    '<p style="color: #ffffff; margin-bottom: 1rem;"><strong>[TRANSMISSION_ACKNOWLEDGED]</strong></p>',
+    '<p style="color: #ffffff; margin-bottom: 1rem;">Your tactical equipment order has been successfully logged in our armory system. Expect deployment within standard logistics timeframe.</p>',
+    '<div style="background: rgba(0, 255, 255, 0.1); padding: 1rem; border-left: 3px solid #00ffff; margin: 1rem 0;">',
+    '<p style="color: #00ffff; margin: 0;"><strong>[STATUS:]</strong> Order Processing<br><strong>[QUEUE_POSITION:]</strong> Priority<br><strong>[ESTIMATED_DEPLOYMENT:]</strong> 3-5 Business Days</p>',
+    '</div>',
+    '<p style="color: #ffff00; margin-top: 1rem;"><strong>//: SUPPORT_AVAILABLE_24_7 ://</strong></p>',
+    '</div>'
+  );
+}
+</script>
+
+{% comment %}
+  INSTRUCTIONS FOR IMPLEMENTATION:
+  
+  1. Copy the JavaScript code above (everything between <script> tags)
+  2. Go to Shopify Admin > Settings > Checkout
+  3. Scroll down to "Order processing" section
+  4. Find "Additional scripts" textarea
+  5. Paste the script code there
+  6. Save
+  
+  This will add terminal-themed content to all thank you pages while maintaining
+  Shopify's checkout conversion optimizations.
+  
+  For Shopify Plus stores, additional customizations can be made through
+  checkout.liquid template modifications.
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Checkout Thank You Enhancement",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Implementation Instructions"
+    },
+    {
+      "type": "paragraph",
+      "content": "This section contains the script to enhance your thank you page. Copy the JavaScript code from this file and add it to Settings > Checkout > Order processing > Additional scripts in your Shopify admin."
+    },
+    {
+      "type": "text",
+      "id": "support_email",
+      "label": "Support Email",
+      "default": "support@starsidearmory.com"
+    },
+    {
+      "type": "text",
+      "id": "response_time",
+      "label": "Support Response Time",
+      "default": "< 12 hours"
+    },
+    {
+      "type": "url",
+      "id": "track_orders_url",
+      "label": "Track Orders URL",
+      "default": "/account/orders"
+    },
+    {
+      "type": "url",
+      "id": "continue_shopping_url",
+      "label": "Continue Shopping URL", 
+      "default": "/collections/all"
+    },
+    {
+      "type": "url",
+      "id": "support_page_url",
+      "label": "Support Page URL",
+      "default": "/pages/support"
+    }
+  ]
+}
+{% endschema %} 
