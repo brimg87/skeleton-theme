@@ -1,0 +1,293 @@
+{% comment %}
+  About Maker Section
+  Personal bio and story of the proprietor/maker
+{% endcomment %}
+
+<section class="about-maker-section section-padding">
+  <div class="container">
+    <div class="maker-content data-box">
+      <div class="data-box-header">
+        //: {{ section.settings.section_title | default: 'PROPRIETOR_PROFILE' }} ://
+      </div>
+      
+      <div class="data-box-content">
+        <div class="maker-profile-grid">
+          {% if section.settings.maker_image != blank %}
+            <div class="maker-visual">
+              <div class="maker-image-container">
+                <img src="{{ section.settings.maker_image | image_url: width: 600 }}"
+                     srcset="{{ section.settings.maker_image | image_url: width: 300 }} 300w,
+                             {{ section.settings.maker_image | image_url: width: 600 }} 600w,
+                             {{ section.settings.maker_image | image_url: width: 900 }} 900w"
+                     sizes="(max-width: 767px) 100vw, 50vw"
+                     alt="{{ section.settings.maker_image.alt | default: section.settings.maker_name }}"
+                     loading="lazy">
+                {% if section.settings.show_image_overlay %}
+                  <div class="image-overlay-data">
+                    <span class="overlay-text">{{ section.settings.image_overlay_text | default: '[CLASSIFIED]' }}</span>
+                  </div>
+                {% endif %}
+              </div>
+              
+              {% if section.settings.show_credentials %}
+                <div class="maker-credentials">
+                  <div class="credentials-title">[CREDENTIALS]</div>
+                  {% for block in section.blocks %}
+                    {% case block.type %}
+                      {% when 'credential' %}
+                        {% if block.settings.credential_text != blank %}
+                          <div class="credential-item" {{ block.shopify_attributes }}>
+                            <span class="credential-marker">></span>
+                            <span class="credential-text">{{ block.settings.credential_text }}</span>
+                          </div>
+                        {% endif %}
+                    {% endcase %}
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          <div class="maker-details">
+            {% if section.settings.maker_name != blank %}
+              <h2 class="maker-name">{{ section.settings.maker_name }}</h2>
+            {% endif %}
+
+            {% if section.settings.maker_title != blank %}
+              <div class="maker-title">{{ section.settings.maker_title }}</div>
+            {% endif %}
+
+            {% if section.settings.maker_bio != blank %}
+              <div class="maker-bio">
+                {{ section.settings.maker_bio }}
+              </div>
+            {% endif %}
+
+            {% if section.settings.show_stats %}
+              <div class="maker-stats-grid">
+                {% if section.settings.stat_1_label != blank %}
+                  <div class="stat-item">
+                    <div class="stat-value">{{ section.settings.stat_1_value }}</div>
+                    <div class="stat-label">{{ section.settings.stat_1_label }}</div>
+                  </div>
+                {% endif %}
+                {% if section.settings.stat_2_label != blank %}
+                  <div class="stat-item">
+                    <div class="stat-value">{{ section.settings.stat_2_value }}</div>
+                    <div class="stat-label">{{ section.settings.stat_2_label }}</div>
+                  </div>
+                {% endif %}
+                {% if section.settings.stat_3_label != blank %}
+                  <div class="stat-item">
+                    <div class="stat-value">{{ section.settings.stat_3_value }}</div>
+                    <div class="stat-label">{{ section.settings.stat_3_label }}</div>
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+
+            {% if section.settings.maker_quote != blank %}
+              <div class="maker-quote">
+                <div class="quote-text">"{{ section.settings.maker_quote }}"</div>
+                {% if section.settings.maker_name != blank %}
+                  <div class="quote-attribution">- {{ section.settings.maker_name }}</div>
+                {% endif %}
+              </div>
+            {% endif %}
+
+            {% if section.settings.contact_cta_text != blank and section.settings.contact_cta_url != blank %}
+              <div class="maker-cta">
+                <a href="{{ section.settings.contact_cta_url }}" class="btn btn-cta">
+                  {{ section.settings.contact_cta_text }}
+                </a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About Maker",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Header"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section title",
+      "default": "PROPRIETOR_PROFILE"
+    },
+    {
+      "type": "header",
+      "content": "Maker Information"
+    },
+    {
+      "type": "text",
+      "id": "maker_name",
+      "label": "Maker name",
+      "default": "PRESTON YARGER"
+    },
+    {
+      "type": "text",
+      "id": "maker_title",
+      "label": "Maker title/role",
+      "default": "[CHIEF_TACTICAL_ENGINEER]"
+    },
+    {
+      "type": "richtext",
+      "id": "maker_bio",
+      "label": "Maker biography",
+      "default": "<p>With over two decades of experience in tactical equipment design and manufacturing, Preston brings unparalleled expertise to every piece that leaves the Starside Armory workshop.</p>"
+    },
+    {
+      "type": "textarea",
+      "id": "maker_quote",
+      "label": "Maker quote",
+      "default": "Every piece of equipment we create could mean the difference between mission success and failure. That responsibility drives everything we do."
+    },
+    {
+      "type": "header",
+      "content": "Maker Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "maker_image",
+      "label": "Maker photo"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image_overlay",
+      "label": "Show image overlay",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "image_overlay_text",
+      "label": "Image overlay text",
+      "default": "[CLASSIFIED]"
+    },
+    {
+      "type": "header",
+      "content": "Statistics"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stats",
+      "label": "Show statistics",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "stat_1_value",
+      "label": "Statistic 1 value",
+      "default": "20+"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_label",
+      "label": "Statistic 1 label",
+      "default": "YEARS_EXPERIENCE"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_value",
+      "label": "Statistic 2 value",
+      "default": "500+"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_label",
+      "label": "Statistic 2 label",
+      "default": "DESIGNS_CREATED"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_value",
+      "label": "Statistic 3 value",
+      "default": "100%"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_label",
+      "label": "Statistic 3 label",
+      "default": "MISSION_DEDICATION"
+    },
+    {
+      "type": "header",
+      "content": "Credentials"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_credentials",
+      "label": "Show credentials",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Contact CTA"
+    },
+    {
+      "type": "text",
+      "id": "contact_cta_text",
+      "label": "Contact button text",
+      "default": "[INITIATE_CONTACT]"
+    },
+    {
+      "type": "url",
+      "id": "contact_cta_url",
+      "label": "Contact button URL"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "credential",
+      "name": "Credential",
+      "settings": [
+        {
+          "type": "text",
+          "id": "credential_text",
+          "label": "Credential",
+          "default": "Certified Tactical Equipment Specialist"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Maker",
+      "blocks": [
+        {
+          "type": "credential",
+          "settings": {
+            "credential_text": "Certified Tactical Equipment Specialist"
+          }
+        },
+        {
+          "type": "credential",
+          "settings": {
+            "credential_text": "Advanced Materials Engineering"
+          }
+        },
+        {
+          "type": "credential",
+          "settings": {
+            "credential_text": "Military Contract Manufacturing"
+          }
+        },
+        {
+          "type": "credential",
+          "settings": {
+            "credential_text": "Precision Fabrication Expert"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %} 

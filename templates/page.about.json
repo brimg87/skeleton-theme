@@ -30,18 +30,83 @@
             "title": "EXPANSION_PROTOCOL",
             "description": "Expanded operations and began serving elite tactical units across the Pacific Northwest."
           }
+        },
+        "principle-1": {
+          "type": "founding_principle",
+          "settings": {
+            "principle_text": "PRECISION_ABOVE_ALL"
+          }
+        },
+        "principle-2": {
+          "type": "founding_principle",
+          "settings": {
+            "principle_text": "INNOVATION_THROUGH_DEDICATION"
+          }
+        },
+        "principle-3": {
+          "type": "founding_principle",
+          "settings": {
+            "principle_text": "QUALITY_WITHOUT_COMPROMISE"
+          }
+        },
+        "principle-4": {
+          "type": "founding_principle",
+          "settings": {
+            "principle_text": "CUSTOMER_MISSION_SUCCESS"
+          }
         }
       },
       "block_order": [
         "timeline-1",
         "timeline-2",
-        "timeline-3"
+        "timeline-3",
+        "principle-1",
+        "principle-2",
+        "principle-3",
+        "principle-4"
+      ],
+      "settings": {}
+    },
+    "about-maker": {
+      "type": "about-maker",
+      "blocks": {
+        "credential-1": {
+          "type": "credential",
+          "settings": {
+            "credential_text": "Certified Tactical Equipment Specialist"
+          }
+        },
+        "credential-2": {
+          "type": "credential",
+          "settings": {
+            "credential_text": "Advanced Materials Engineering"
+          }
+        },
+        "credential-3": {
+          "type": "credential",
+          "settings": {
+            "credential_text": "Military Contract Manufacturing"
+          }
+        },
+        "credential-4": {
+          "type": "credential",
+          "settings": {
+            "credential_text": "Precision Fabrication Expert"
+          }
+        }
+      },
+      "block_order": [
+        "credential-1",
+        "credential-2",
+        "credential-3",
+        "credential-4"
       ],
       "settings": {}
     }
   },
   "order": [
     "about-hero",
-    "about-origin"
+    "about-origin",
+    "about-maker"
   ]
 } 

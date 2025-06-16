@@ -3885,6 +3885,193 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
   }
 }
 
+/* About Maker Section */
+.about-maker-section {
+  padding: 3rem 0;
+}
+
+.maker-profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.maker-visual {
+  position: relative;
+}
+
+.maker-image-container {
+  position: relative;
+  border: 2px solid var(--color-accent-cyan);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--color-secondary-dark);
+  margin-bottom: 2rem;
+}
+
+.maker-image-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.maker-credentials {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 4px;
+  padding: 1.5rem;
+}
+
+.credentials-title {
+  font-family: var(--font-family-primary);
+  color: var(--color-accent-magenta);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.credential-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.credential-item:last-child {
+  border-bottom: none;
+}
+
+.credential-marker {
+  color: var(--color-accent-cyan);
+  font-family: var(--font-family-primary);
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.credential-text {
+  font-family: var(--font-family-secondary);
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+}
+
+.maker-details {
+  padding-top: 0.5rem;
+}
+
+.maker-name {
+  font-family: var(--font-family-primary);
+  color: var(--color-accent-yellow);
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.maker-title {
+  font-family: var(--font-family-secondary);
+  color: var(--color-accent-cyan);
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.maker-bio {
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.maker-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.maker-stats-grid .stat-item {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(0, 255, 255, 0.05);
+  border: 1px solid var(--color-accent-cyan);
+  border-radius: 4px;
+}
+
+.maker-stats-grid .stat-value {
+  font-family: var(--font-family-primary);
+  font-size: 1.2rem;
+  color: var(--color-accent-green);
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.maker-stats-grid .stat-label {
+  font-family: var(--font-family-secondary);
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+.maker-quote {
+  background: rgba(0, 0, 0, 0.2);
+  border-left: 3px solid var(--color-accent-magenta);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-radius: 4px;
+}
+
+.quote-text {
+  font-size: 1.1rem;
+  color: var(--color-text-primary);
+  font-style: italic;
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+}
+
+.quote-attribution {
+  font-family: var(--font-family-primary);
+  color: var(--color-accent-magenta);
+  font-size: 0.9rem;
+  text-align: right;
+}
+
+.maker-cta {
+  margin-top: 2rem;
+}
+
+/* Responsive Design for Maker Section */
+@media (max-width: 989px) {
+  .maker-profile-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .maker-name {
+    font-size: 1.5rem;
+  }
+  
+  .maker-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .maker-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .credential-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+}
+
 .article-actions {
     margin-top: auto;
 }

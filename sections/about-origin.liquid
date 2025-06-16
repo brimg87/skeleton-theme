@@ -44,16 +44,18 @@
           <div class="founding-principles">
             <h3 class="principles-title">{{ section.settings.principles_title | default: '[FOUNDING_PRINCIPLES]' }}</h3>
             <div class="principles-grid">
-              {% for i in (1..4) %}
-                {% assign principle_setting = 'principle_' | append: i %}
-                {% assign principle = section.settings[principle_setting] %}
-                
-                {% if principle != blank %}
-                  <div class="principle-item">
-                    <span class="principle-marker">[{{ i }}]</span>
-                    <span class="principle-text">{{ principle }}</span>
-                  </div>
-                {% endif %}
+              {% assign principle_count = 0 %}
+              {% for block in section.blocks %}
+                {% case block.type %}
+                  {% when 'founding_principle' %}
+                    {% if block.settings.principle_text != blank %}
+                      {% assign principle_count = principle_count | plus: 1 %}
+                      <div class="principle-item" {{ block.shopify_attributes }}>
+                        <span class="principle-marker">[{{ principle_count }}]</span>
+                        <span class="principle-text">{{ block.settings.principle_text }}</span>
+                      </div>
+                    {% endif %}
+                {% endcase %}
               {% endfor %}
             </div>
           </div>
@@ -116,30 +118,7 @@
       "label": "Principles section title",
       "default": "[FOUNDING_PRINCIPLES]"
     },
-    {
-      "type": "text",
-      "id": "principle_1",
-      "label": "Principle 1",
-      "default": "PRECISION_ABOVE_ALL"
-    },
-    {
-      "type": "text",
-      "id": "principle_2",
-      "label": "Principle 2",
-      "default": "INNOVATION_THROUGH_DEDICATION"
-    },
-    {
-      "type": "text",
-      "id": "principle_3",
-      "label": "Principle 3",
-      "default": "QUALITY_WITHOUT_COMPROMISE"
-    },
-    {
-      "type": "text",
-      "id": "principle_4",
-      "label": "Principle 4",
-      "default": "CUSTOMER_MISSION_SUCCESS"
-    },
+
     {
       "type": "header",
       "content": "Closing"
@@ -175,6 +154,18 @@
           "default": "Established in the heart of Oregon with a vision to revolutionize tactical equipment manufacturing."
         }
       ]
+    },
+    {
+      "type": "founding_principle",
+      "name": "Founding Principle",
+      "settings": [
+        {
+          "type": "text",
+          "id": "principle_text",
+          "label": "Principle",
+          "default": "PRECISION_ABOVE_ALL"
+        }
+      ]
     }
   ],
   "presets": [
@@ -203,6 +194,30 @@
             "year": "2091",
             "title": "EXPANSION_PROTOCOL",
             "description": "Expanded operations and began serving elite tactical units across the Pacific Northwest."
+          }
+        },
+        {
+          "type": "founding_principle",
+          "settings": {
+            "principle_text": "PRECISION_ABOVE_ALL"
+          }
+        },
+        {
+          "type": "founding_principle",
+          "settings": {
+            "principle_text": "INNOVATION_THROUGH_DEDICATION"
+          }
+        },
+        {
+          "type": "founding_principle",
+          "settings": {
+            "principle_text": "QUALITY_WITHOUT_COMPROMISE"
+          }
+        },
+        {
+          "type": "founding_principle",
+          "settings": {
+            "principle_text": "CUSTOMER_MISSION_SUCCESS"
           }
         }
       ]
