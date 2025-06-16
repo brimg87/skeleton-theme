@@ -326,13 +326,25 @@ document.addEventListener('DOMContentLoaded', function() {
             input.addEventListener('change', updateVariant);
         });
         
+        // Initialize with current selection on page load
+        updateVariant();
+        
         function updateVariant() {
             const selectedOptions = {};
+            
+            // Collect selected options more reliably
             variantInputs.forEach(input => {
                 const optionName = input.name.replace('options[', '').replace(']', '');
-                selectedOptions[optionName] = input.value;
+                if (input.type === 'radio') {
+                    if (input.checked) {
+                        selectedOptions[optionName] = input.value;
+                    }
+                } else {
+                    selectedOptions[optionName] = input.value;
+                }
             });
             
+            // Find matching variant
             const selectedVariant = variants.find(variant => {
                 return variant.options.every((option, index) => {
                     const optionName = productOptions[index];
@@ -341,10 +353,11 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             if (selectedVariant) {
-                // Update hidden variant ID
+                // Update hidden variant ID - this is the crucial part!
                 const variantIdInput = productForm.querySelector('.product-variant-id');
                 if (variantIdInput) {
                     variantIdInput.value = selectedVariant.id;
+                    console.log('Updated variant ID to:', selectedVariant.id); // Debug logging
                 }
                 
                 // Update price
@@ -379,6 +392,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else if (quantityInput) {
                     quantityInput.removeAttribute('max');
                 }
+            } else {
+                console.log('No matching variant found for options:', selectedOptions); // Debug logging
             }
         }
         
