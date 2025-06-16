@@ -7,40 +7,10 @@
     "about-origin": {
       "type": "about-origin",
       "settings": {}
-    },
-    "about-mission": {
-      "type": "about-mission",
-      "settings": {}
-    },
-    "about-team": {
-      "type": "about-team",
-      "settings": {}
-    },
-    "about-technology": {
-      "type": "about-technology",
-      "settings": {}
-    },
-    "about-location": {
-      "type": "about-location",
-      "settings": {}
-    },
-    "about-community": {
-      "type": "about-community",
-      "settings": {}
-    },
-    "about-cta": {
-      "type": "about-cta",
-      "settings": {}
     }
   },
   "order": [
     "about-hero",
-    "about-origin", 
-    "about-mission",
-    "about-team",
-    "about-technology",
-    "about-location",
-    "about-community",
-    "about-cta"
+    "about-origin"
   ]
 } 
