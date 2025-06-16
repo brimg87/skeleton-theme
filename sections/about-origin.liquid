@@ -19,28 +19,23 @@
 
         {% if section.settings.show_timeline %}
           <div class="origin-timeline">
-            {% for i in (1..6) %}
-              {% assign year_setting = 'timeline_' | append: i | append: '_year' %}
-              {% assign title_setting = 'timeline_' | append: i | append: '_title' %}
-              {% assign desc_setting = 'timeline_' | append: i | append: '_description' %}
-              
-              {% assign year = section.settings[year_setting] %}
-              {% assign title = section.settings[title_setting] %}
-              {% assign description = section.settings[desc_setting] %}
-              
-              {% if year != blank and title != blank %}
-                <div class="timeline-item">
-                  <div class="timeline-marker">
-                    <span class="timeline-year">{{ year }}</span>
-                  </div>
-                  <div class="timeline-content">
-                    <h3 class="timeline-title">{{ title }}</h3>
-                    {% if description != blank %}
-                      <div class="timeline-description">{{ description }}</div>
-                    {% endif %}
-                  </div>
-                </div>
-              {% endif %}
+            {% for block in section.blocks %}
+              {% case block.type %}
+                {% when 'timeline_entry' %}
+                  {% if block.settings.year != blank and block.settings.title != blank %}
+                    <div class="timeline-item" {{ block.shopify_attributes }}>
+                      <div class="timeline-marker">
+                        <span class="timeline-year">{{ block.settings.year }}</span>
+                      </div>
+                      <div class="timeline-content">
+                        <h3 class="timeline-title">{{ block.settings.title }}</h3>
+                        {% if block.settings.description != blank %}
+                          <div class="timeline-description">{{ block.settings.description }}</div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  {% endif %}
+              {% endcase %}
             {% endfor %}
           </div>
         {% endif %}
@@ -104,105 +99,7 @@
       "label": "Show timeline",
       "default": true
     },
-    {
-      "type": "text",
-      "id": "timeline_1_year",
-      "label": "Timeline 1 - Year",
-      "default": "2087"
-    },
-    {
-      "type": "text",
-      "id": "timeline_1_title",
-      "label": "Timeline 1 - Title",
-      "default": "THE_FOUNDING"
-    },
-    {
-      "type": "textarea",
-      "id": "timeline_1_description",
-      "label": "Timeline 1 - Description",
-      "default": "Established in the heart of Oregon with a vision to revolutionize tactical equipment manufacturing."
-    },
-    {
-      "type": "text",
-      "id": "timeline_2_year",
-      "label": "Timeline 2 - Year",
-      "default": "2089"
-    },
-    {
-      "type": "text",
-      "id": "timeline_2_title",
-      "label": "Timeline 2 - Title",
-      "default": "FIRST_BREAKTHROUGH"
-    },
-    {
-      "type": "textarea",
-      "id": "timeline_2_description",
-      "label": "Timeline 2 - Description",
-      "default": "Development of our signature precision manufacturing process, setting new industry standards."
-    },
-    {
-      "type": "text",
-      "id": "timeline_3_year",
-      "label": "Timeline 3 - Year",
-      "default": "2091"
-    },
-    {
-      "type": "text",
-      "id": "timeline_3_title",
-      "label": "Timeline 3 - Title",
-      "default": "EXPANSION_PROTOCOL"
-    },
-    {
-      "type": "textarea",
-      "id": "timeline_3_description",
-      "label": "Timeline 3 - Description",
-      "default": "Expanded operations and began serving elite tactical units across the Pacific Northwest."
-    },
-    {
-      "type": "text",
-      "id": "timeline_4_year",
-      "label": "Timeline 4 - Year"
-    },
-    {
-      "type": "text",
-      "id": "timeline_4_title",
-      "label": "Timeline 4 - Title"
-    },
-    {
-      "type": "textarea",
-      "id": "timeline_4_description",
-      "label": "Timeline 4 - Description"
-    },
-    {
-      "type": "text",
-      "id": "timeline_5_year",
-      "label": "Timeline 5 - Year"
-    },
-    {
-      "type": "text",
-      "id": "timeline_5_title",
-      "label": "Timeline 5 - Title"
-    },
-    {
-      "type": "textarea",
-      "id": "timeline_5_description",
-      "label": "Timeline 5 - Description"
-    },
-    {
-      "type": "text",
-      "id": "timeline_6_year",
-      "label": "Timeline 6 - Year"
-    },
-    {
-      "type": "text",
-      "id": "timeline_6_title",
-      "label": "Timeline 6 - Title"
-    },
-    {
-      "type": "textarea",
-      "id": "timeline_6_description",
-      "label": "Timeline 6 - Description"
-    },
+
     {
       "type": "header",
       "content": "Founding Principles"
@@ -254,9 +151,61 @@
       "default": "<p>From these humble beginnings, Starside Armory has grown into a beacon of excellence, continuing to push the boundaries of what's possible in tactical equipment design.</p>"
     }
   ],
+  "blocks": [
+    {
+      "type": "timeline_entry",
+      "name": "Timeline Entry",
+      "settings": [
+        {
+          "type": "text",
+          "id": "year",
+          "label": "Year",
+          "default": "2087"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "THE_FOUNDING"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Established in the heart of Oregon with a vision to revolutionize tactical equipment manufacturing."
+        }
+      ]
+    }
+  ],
   "presets": [
     {
-      "name": "About Origin"
+      "name": "About Origin",
+      "blocks": [
+        {
+          "type": "timeline_entry",
+          "settings": {
+            "year": "2087",
+            "title": "THE_FOUNDING",
+            "description": "Established in the heart of Oregon with a vision to revolutionize tactical equipment manufacturing."
+          }
+        },
+        {
+          "type": "timeline_entry",
+          "settings": {
+            "year": "2089",
+            "title": "FIRST_BREAKTHROUGH",
+            "description": "Development of our signature precision manufacturing process, setting new industry standards."
+          }
+        },
+        {
+          "type": "timeline_entry",
+          "settings": {
+            "year": "2091",
+            "title": "EXPANSION_PROTOCOL",
+            "description": "Expanded operations and began serving elite tactical units across the Pacific Northwest."
+          }
+        }
+      ]
     }
   ]
 }
