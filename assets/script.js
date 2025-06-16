@@ -312,12 +312,13 @@ document.addEventListener('DOMContentLoaded', function() {
         productForms.forEach((productForm, index) => {
             console.log('Processing form', index + 1, ':', productForm);
             
-            const formId = String(productForm.id || '');
+            const formId = productForm.getAttribute('id') || '';
             if (!formId || !formId.includes('product-form-')) {
-                console.log('Skipping form without proper ID. Form ID:', formId, 'Type:', typeof productForm.id);
+                console.log('Skipping form without proper ID. Form ID:', formId, 'Type:', typeof formId);
                 return;
             }
             const sectionId = formId.replace('product-form-', '');
+            console.log('Processing form with section ID:', sectionId);
         const variantInputs = productForm.querySelectorAll('input[name^="options"], select[name^="options"]');
         const priceElement = document.querySelector(`#ProductPrice-${sectionId}`);
         const addToCartButton = productForm.querySelector('[type="submit"]');
