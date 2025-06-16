@@ -843,6 +843,14 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 .transmission-log-card {
     border: 2px solid var(--color-accent-cyan);
     background: rgba(0, 255, 255, 0.02);
+    box-shadow: 0 4px 20px rgba(0, 255, 255, 0.15);
+    transition: all 0.3s ease;
+}
+
+.transmission-log-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 255, 255, 0.25);
+    border-color: var(--color-accent-magenta);
 }
 
 .transmission-log-card .product-image {
@@ -1018,10 +1026,23 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 /* Collection Page Layout */
 .collection-content-wrapper {
     display: grid;
-    grid-template-columns: minmax(250px, 1fr) 3fr;
-    gap: var(--space-lg);
+    grid-template-columns: minmax(280px, 1fr) 3fr;
+    gap: 2.5rem;
     margin-top: var(--space-lg);
     width: 100%;
+}
+
+/* Enhanced Collection Styling */
+.section-main-collection {
+    padding-top: 0;
+}
+
+.collection-header {
+    margin-bottom: 3rem;
+}
+
+.collection-content {
+    gap: 2rem;
 }
 
 .collection-filters-sidebar {
@@ -1029,6 +1050,11 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
     top: calc(var(--header-height) + var(--space-md));
     height: fit-content;
     width: 100%;
+    background: rgba(0, 255, 255, 0.03);
+    border: 1px solid var(--color-accent-cyan);
+    border-radius: 8px;
+    padding: 2rem;
+    backdrop-filter: blur(5px);
 }
 
 .collection-products-main {
@@ -1051,11 +1077,12 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 }
 
 .filter-group-title {
-    font-family: var(--font-family-secondary);
+    font-family: var(--font-family-primary);
     font-size: var(--font-size-sm);
     color: var(--color-accent-cyan);
     margin-bottom: var(--space-sm);
     text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
 .filter-values-list {
