@@ -213,19 +213,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Quantity Selector Buttons
-    const quantityInput = document.getElementById('quantity');
-    // Scope buttons to the product data area to avoid conflicts if .qty-btn is used elsewhere
+    // Quantity Selector Buttons (Product Page)
+    // Use a more flexible approach to find quantity inputs with dynamic IDs
     const productDataArea = document.querySelector('.product-data');
-    if (quantityInput && productDataArea) {
+    if (productDataArea) {
         const qtyDecreaseButtons = productDataArea.querySelectorAll('.qty-btn[data-action="decrease"]');
         const qtyIncreaseButtons = productDataArea.querySelectorAll('.qty-btn[data-action="increase"]');
 
         if (qtyDecreaseButtons.length > 0 && qtyIncreaseButtons.length > 0) {
             qtyDecreaseButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    let currentValue = parseInt(quantityInput.value);
-                    if (currentValue > parseInt(quantityInput.min)) {
+                    // Find the quantity input in the same quantity-selector container
+                    const quantityInput = this.parentNode.querySelector('.quantity-input');
+                    if (!quantityInput) return;
+                    
+                    let currentValue = parseInt(quantityInput.value) || 1;
+                    const minVal = parseInt(quantityInput.min) || 1;
+                    if (currentValue > minVal) {
                         quantityInput.value = currentValue - 1;
                     }
                 });
@@ -233,7 +237,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
             qtyIncreaseButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    let currentValue = parseInt(quantityInput.value);
+                    // Find the quantity input in the same quantity-selector container
+                    const quantityInput = this.parentNode.querySelector('.quantity-input');
+                    if (!quantityInput) return;
+                    
+                    let currentValue = parseInt(quantityInput.value) || 1;
                     // Check against max attribute if it exists, otherwise allow increase
                     const maxVal = quantityInput.hasAttribute('max') ? parseInt(quantityInput.max) : Infinity;
                     if (currentValue < maxVal) {
