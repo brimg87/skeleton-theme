@@ -327,6 +327,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Get variant data from the form's data attribute
         const variantsData = productForm.dataset.variants;
+        const optionsData = productForm.dataset.options;
+        
+        console.log('Raw variants data:', variantsData ? variantsData.substring(0, 200) + '...' : 'null');
+        console.log('Raw options data:', optionsData ? optionsData.substring(0, 100) + '...' : 'null');
+        
         if (!variantsData) {
             console.log('No variants data found for form:', productForm);
             return;
@@ -335,9 +340,12 @@ document.addEventListener('DOMContentLoaded', function() {
         let variants, productOptions;
         try {
             variants = JSON.parse(variantsData);
-            productOptions = JSON.parse(productForm.dataset.options || '[]');
+            productOptions = JSON.parse(optionsData || '[]');
+            console.log('Parsed successfully - variants:', variants.length, 'options:', productOptions);
         } catch (e) {
             console.error('Failed to parse variant data:', e);
+            console.error('Raw variants data causing error:', variantsData);
+            console.error('Raw options data causing error:', optionsData);
             return;
         }
         
