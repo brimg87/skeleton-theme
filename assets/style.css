@@ -3,6 +3,9 @@
     /* All CSS variables are defined in snippets/css-variables.liquid */
     /* This includes colors, typography, spacing, borders, transitions, z-indexes, layout, and clip-paths */
     /* This ensures proper fallback when CSS variables are not supported */
+    
+    /* Fallback values for CSS variables compatibility */
+    --fallback-color-primary: #0a0f1f;
 }
 
 /* === GLOBAL RESETS & BASE STYLES === */
