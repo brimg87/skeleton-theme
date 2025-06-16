@@ -23,12 +23,14 @@
         "title": "// SYSTEM_CATEGORIES //"
       }
     },
-    "about_us": { 
+    "system_message": { 
   "type": "custom-message-block", 
   "settings": {
-    "title": "// PROPRIETOR_PROFILE: PRESTON_YARGER //", 
-    "content_text": "<p>Hello! I'm Curtis, also known as Crater in some circles. I was born on Earth, but left as soon as possible to sail the stars. Alas, my corrected organic eyesight made spaceflight academy tricky, ultimately earning me a nickname, expulsion, and a pile of debt. It turns out it costs A LOT to re-establish the orbit of a moon.</p>", 
-    "cta_label": "Learn More" 
+    "title": "// SYSTEM_ANNOUNCEMENT //", 
+    "data_header": "PRIORITY_TRANSMISSION",
+    "content_text": "<p>Welcome to Starside Armory's tactical equipment network. Our advanced manufacturing protocols ensure every piece meets the highest standards for field operations and mission-critical scenarios.</p><p>Browse our inventory categories above or explore our featured items to find your next tactical advantage.</p>", 
+    "cta_label": "[EXPLORE_ARSENAL]",
+    "cta_link": "/collections/all"
   }
 },
     "newsletter": {
@@ -44,7 +46,7 @@
     "main",
     "featured_products",
     "categories_banner",
-    "about_us",
+    "system_message",
     "newsletter"
   ]
 }
