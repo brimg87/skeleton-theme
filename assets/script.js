@@ -326,8 +326,8 @@ document.addEventListener('DOMContentLoaded', function() {
             input.addEventListener('change', updateVariant);
         });
         
-        // Initialize with current selection on page load
-        updateVariant();
+        // Initialize with current selection on page load (with slight delay to ensure DOM is ready)
+        setTimeout(updateVariant, 100);
         
         function updateVariant() {
             const selectedOptions = {};
@@ -344,6 +344,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
+            console.log('Selected options:', selectedOptions); // Debug logging
+            console.log('Available variants:', variants); // Debug logging
+            console.log('Product options:', productOptions); // Debug logging
+            
             // Find matching variant
             const selectedVariant = variants.find(variant => {
                 return variant.options.every((option, index) => {
@@ -353,11 +357,22 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             if (selectedVariant) {
+                console.log('Found matching variant:', selectedVariant); // Debug logging
+                
                 // Update hidden variant ID - this is the crucial part!
                 const variantIdInput = productForm.querySelector('.product-variant-id');
                 if (variantIdInput) {
+                    const oldValue = variantIdInput.value;
                     variantIdInput.value = selectedVariant.id;
-                    console.log('Updated variant ID to:', selectedVariant.id); // Debug logging
+                    console.log('Updated variant ID from', oldValue, 'to:', selectedVariant.id); // Debug logging
+                } else {
+                    console.error('Could not find variant ID input field!'); // Debug logging
+                }
+                
+                // Update SKU display
+                const skuElement = document.querySelector('.id-value');
+                if (skuElement) {
+                    skuElement.textContent = selectedVariant.sku || 'N/A';
                 }
                 
                 // Update price
@@ -368,6 +383,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         style: 'currency',
                         currency: currencyCode
                     }).format(selectedVariant.price / 100);
+                    // Also update the content attribute for structured data
+                    priceElement.setAttribute('content', selectedVariant.price / 100);
                 }
                 
                 // Update availability
@@ -392,8 +409,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else if (quantityInput) {
                     quantityInput.removeAttribute('max');
                 }
+                
+                // Update stock indicator
+                const stockIndicator = document.querySelector('.stock-indicator');
+                if (stockIndicator) {
+                    let stockText = '//:STOCK_LEVEL: ';
+                    if (selectedVariant.inventory_management === 'shopify' && selectedVariant.inventory_quantity <= 0) {
+                        stockText += '[DEPLETED]';
+                    } else if (selectedVariant.inventory_quantity < 5 && selectedVariant.inventory_quantity > 0) {
+                        stockText += `[LOW: ${selectedVariant.inventory_quantity}]`;
+                    } else {
+                        stockText += '[AVAILABLE]';
+                    }
+                    stockIndicator.textContent = stockText;
+                }
             } else {
                 console.log('No matching variant found for options:', selectedOptions); // Debug logging
+                console.log('Trying to match against:', variants.map(v => ({ id: v.id, options: v.options }))); // Debug logging
             }
         }
         
