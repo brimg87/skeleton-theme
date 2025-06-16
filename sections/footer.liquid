@@ -75,7 +75,10 @@
         <p>{{ section.settings.lore_line_2 | default: 'HXC_SATCOM 1234ASDF' }}</p>
       </div>
       <div class="footer-copyright">
-        <p>{{ section.settings.copyright_text | default: '&copy; {year} {shop_name}' | replace: '{year}', 'now' | date: "%Y" | replace: '{shop_name}', shop.name }}</p>
+        {% assign copyright_text = section.settings.copyright_text | default: '&copy; {year} {shop_name}' %}
+        {% assign current_year = 'now' | date: "%Y" %}
+        {% assign final_copyright = copyright_text | replace: '{year}', current_year | replace: '{shop_name}', shop.name %}
+        <p>{{ final_copyright }}</p>
       </div>
     </div>
   </div>
