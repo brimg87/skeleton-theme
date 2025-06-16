@@ -304,197 +304,40 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- 6. Product Page Functionality ---
-    // Product variant selection functionality
-    try {
-        const productForms = document.querySelectorAll('form[data-type="add-to-cart-form"]');
-        console.log('Found', productForms.length, 'product forms');
-        
-        productForms.forEach((productForm, index) => {
-            console.log('Processing form', index + 1, ':', productForm);
+    // Simple quantity selector functionality for product pages
+    const qtyButtons = document.querySelectorAll('.qty-btn');
+    qtyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const action = this.dataset.action;
+            const input = this.parentNode.querySelector('.quantity-input');
+            if (!input) return;
             
-            const formId = productForm.getAttribute('id') || '';
-            if (!formId || !formId.includes('product-form-')) {
-                console.log('Skipping form without proper ID. Form ID:', formId, 'Type:', typeof formId);
-                return;
+            let value = parseInt(input.value) || 1;
+            
+            if (action === 'increase') {
+                value++;
+                if (input.max && value > parseInt(input.max)) {
+                    value = parseInt(input.max);
+                }
+            } else if (action === 'decrease' && value > 1) {
+                value--;
             }
-            const sectionId = formId.replace('product-form-', '');
-            console.log('Processing form with section ID:', sectionId);
-        // Use form-scoped selectors instead of section ID-based ones (Shopify best practice)
-        const variantInputs = productForm.querySelectorAll('input[name^="options"], select[name^="options"]');
-        const priceElement = productForm.closest('.product-interface-section')?.querySelector('[id^="ProductPrice-"]');
-        const addToCartButton = productForm.querySelector('[type="submit"]');
-        const quantityInput = productForm.querySelector('input[name="quantity"]');
-        
-        // Get variant data from the form's data attribute
-        const variantsData = productForm.dataset.variants;
-        const optionsData = productForm.dataset.options;
-        
-        console.log('Raw variants data:', variantsData ? variantsData.substring(0, 200) + '...' : 'null');
-        console.log('Raw options data:', optionsData ? optionsData.substring(0, 100) + '...' : 'null');
-        
-        if (!variantsData) {
-            console.log('No variants data found for form:', productForm);
-            return;
-        }
-        
-        let variants, productOptions;
-        try {
-            variants = JSON.parse(variantsData);
-            productOptions = JSON.parse(optionsData || '[]');
-            console.log('Parsed successfully - variants:', variants.length, 'options:', productOptions);
-        } catch (e) {
-            console.error('Failed to parse variant data:', e);
-            console.error('Raw variants data causing error:', variantsData);
-            console.error('Raw options data causing error:', optionsData);
-            return;
-        }
-        
-        // Update variant when options change
-        variantInputs.forEach(input => {
-            input.addEventListener('change', updateVariant);
-        });
-        
-        // Initialize with current selection on page load (with slight delay to ensure DOM is ready)
-        setTimeout(updateVariant, 100);
-        
-        function updateVariant() {
-            const selectedOptions = {};
             
-            // Collect selected options more reliably
-            variantInputs.forEach(input => {
-                if (!input.name || !input.name.includes('options[')) return;
-                
-                const optionName = input.name.replace('options[', '').replace(']', '');
-                if (input.type === 'radio') {
-                    if (input.checked) {
-                        selectedOptions[optionName] = input.value;
-                    }
-                } else {
-                    selectedOptions[optionName] = input.value;
-                }
-            });
-            
-            console.log('Selected options:', selectedOptions); // Debug logging
-            console.log('Available variants:', variants.length, 'variants'); // Debug logging
-            console.log('Product options:', productOptions); // Debug logging
-            
-            // Find matching variant
-            const selectedVariant = variants.find(variant => {
-                return variant.options.every((option, index) => {
-                    const optionName = productOptions[index];
-                    return selectedOptions[optionName] === option;
-                });
-            });
-            
-            if (selectedVariant) {
-                console.log('Found matching variant:', selectedVariant); // Debug logging
-                
-                // Update hidden variant ID - this is the crucial part!
-                const variantIdInput = productForm.querySelector('.product-variant-id');
-                if (variantIdInput) {
-                    const oldValue = variantIdInput.value;
-                    variantIdInput.value = selectedVariant.id;
-                    console.log('Updated variant ID from', oldValue, 'to:', selectedVariant.id); // Debug logging
-                } else {
-                    console.error('Could not find variant ID input field!'); // Debug logging
-                }
-                
-                // Update SKU display (scoped to current product section)
-                const productSection = productForm.closest('.product-interface-section');
-                const skuElement = productSection?.querySelector('.id-value');
-                if (skuElement) {
-                    skuElement.textContent = selectedVariant.sku || 'N/A';
-                }
-                
-                // Update price
-                if (priceElement) {
-                    const currency = document.documentElement.lang || 'en';
-                    const currencyCode = productForm.dataset.currency || 'USD';
-                    priceElement.textContent = new Intl.NumberFormat(currency, {
-                        style: 'currency',
-                        currency: currencyCode
-                    }).format(selectedVariant.price / 100);
-                    // Also update the content attribute for structured data
-                    priceElement.setAttribute('content', selectedVariant.price / 100);
-                }
-                
-                // Update availability
-                if (addToCartButton) {
-                    const btnText = addToCartButton.querySelector('.btn-text');
-                    if (selectedVariant.available) {
-                        addToCartButton.disabled = false;
-                        if (btnText) {
-                            btnText.textContent = addToCartButton.dataset.addText || '[ADD_TO_INVENTORY_CORE]';
-                        }
-                    } else {
-                        addToCartButton.disabled = true;
-                        if (btnText) {
-                            btnText.textContent = addToCartButton.dataset.soldOutText || '[ASSET_UNAVAILABLE]';
-                        }
-                    }
-                }
-                
-                // Update quantity max if inventory tracking
-                if (quantityInput && selectedVariant.inventory_management === 'shopify' && selectedVariant.inventory_policy === 'deny') {
-                    quantityInput.max = selectedVariant.inventory_quantity;
-                } else if (quantityInput) {
-                    quantityInput.removeAttribute('max');
-                }
-                
-                // Update stock indicator (scoped to current product section)
-                const stockIndicator = productSection?.querySelector('.stock-indicator');
-                if (stockIndicator) {
-                    let stockText = '//:STOCK_LEVEL: ';
-                    if (selectedVariant.inventory_management === 'shopify' && selectedVariant.inventory_quantity <= 0) {
-                        stockText += '[DEPLETED]';
-                    } else if (selectedVariant.inventory_quantity < 5 && selectedVariant.inventory_quantity > 0) {
-                        stockText += `[LOW: ${selectedVariant.inventory_quantity}]`;
-                    } else {
-                        stockText += '[AVAILABLE]';
-                    }
-                    stockIndicator.textContent = stockText;
-                }
-            } else {
-                console.log('No matching variant found for options:', selectedOptions); // Debug logging
-                console.log('Trying to match against:', variants.map(v => ({ id: v.id, options: v.options }))); // Debug logging
-            }
-        }
-        
-        // Quantity selector functionality for product pages
-        const qtyButtons = productForm.querySelectorAll('.qty-btn');
-        qtyButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const action = this.dataset.action;
-                const input = this.parentNode.querySelector('.quantity-input');
-                if (!input) return;
-                
-                let value = parseInt(input.value) || 1;
-                
-                if (action === 'increase') {
-                    value++;
-                    if (input.max && value > parseInt(input.max)) {
-                        value = parseInt(input.max);
-                    }
-                } else if (action === 'decrease' && value > 1) {
-                    value--;
-                }
-                
-                input.value = value;
-            });
-        });
-        
-        // Form submission with loading state
-        productForm.addEventListener('submit', function() {
-            if (addToCartButton) {
-                addToCartButton.classList.add('loading');
-                addToCartButton.disabled = true;
-            }
+            input.value = value;
         });
     });
     
-    } catch (error) {
-        console.error('Error in product page functionality:', error);
-    }
+    // Form submission with loading state
+    const productForms = document.querySelectorAll('form[data-type="add-to-cart-form"]');
+    productForms.forEach(form => {
+        form.addEventListener('submit', function() {
+            const addButton = this.querySelector('[type="submit"]');
+            if (addButton) {
+                addButton.classList.add('loading');
+                addButton.disabled = true;
+            }
+        });
+    });
     
     // Media gallery functionality
     const thumbnailButtons = document.querySelectorAll('.thumbnail-btn');

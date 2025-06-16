@@ -214,7 +214,7 @@
               <div class="price-content">
                 <span class="price-label">ACQUISITION_COST:</span>
                 <div class="price-display">
-                  <span class="product-price-detail terminal-green-glow" id="ProductPrice-{{ section.id }}" itemprop="price" content="{{ product.selected_or_first_available_variant.price | divided_by: 100.0 }}">
+                  <span class="product-price-detail terminal-green-glow" id="price-{{ section.id }}" itemprop="price" content="{{ product.selected_or_first_available_variant.price | divided_by: 100.0 }}">
                     {{ product.selected_or_first_available_variant.price | money }}
                   </span>
                   {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
@@ -258,11 +258,12 @@
             </div>
 
             <!-- Product Form -->
-            {%- form 'product', product, id: "product-form-{{ section.id }}", class: "product-form", novalidate: 'novalidate', data-type: 'add-to-cart-form', data-variants: "{{ product.variants | json | escape }}", data-options: "{{ product.options | json | escape }}", data-currency: "{{ cart.currency.iso_code }}" -%}
+            {%- form 'product', product, id: "product-form-{{ section.id }}", class: "product-form", novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
               <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" class="product-variant-id">
               
               <!-- Variant Selection -->
               {% unless product.has_only_default_variant %}
+                <variant-selects class="no-js-hidden" data-section="{{ section.id }}" data-url="{{ product.url }}" data-update-url="true">
                 <div class="variant-selection data-box">
                   <div class="data-box-header">//:CONFIGURATION_OPTIONS://</div>
                   <div class="variant-content">
@@ -304,6 +305,10 @@
                     {% endfor %}
                   </div>
                 </div>
+                <script type="application/json">
+                  {{ product.variants | json }}
+                </script>
+                </variant-selects>
               {% endunless %}
 
               <!-- Actions Block -->
@@ -353,6 +358,141 @@
                 </div>
               </div>
             {%- endform -%}
+
+            <script>
+              class VariantSelects extends HTMLElement {
+                constructor() {
+                  super();
+                  this.addEventListener('change', this.onVariantChange);
+                }
+
+                onVariantChange() {
+                  this.updateOptions();
+                  this.updateMasterId();
+                  this.updateVariantInput();
+                  this.updatePickupAvailability();
+                  this.removeErrorMessage();
+
+                  if (!this.currentVariant) {
+                    this.toggleAddButton(true, '', false);
+                    this.setUnavailable();
+                  } else {
+                    this.updateMedia();
+                    this.updateURL();
+                    this.updateVariantInfo();
+                    this.renderProductInfo();
+                    this.toggleAddButton(!this.currentVariant.available, window.variantStrings.soldOut);
+                  }
+                }
+
+                updateOptions() {
+                  this.options = Array.from(this.querySelectorAll('select, input[type="radio"]:checked'), (select) => select.value);
+                }
+
+                updateMasterId() {
+                  this.currentVariant = this.getVariantData().find((variant) => {
+                    return !variant.options.map((option, index) => {
+                      return this.options[index] === option;
+                    }).includes(false);
+                  });
+                }
+
+                updateVariantInput() {
+                  const productForms = document.querySelectorAll(`#product-form-${this.dataset.section}, #product-form-installment`);
+                  productForms.forEach((productForm) => {
+                    const input = productForm.querySelector('input[name="id"]');
+                    input.value = this.currentVariant?.id || '';
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                  });
+                }
+
+                renderProductInfo() {
+                  if (!this.currentVariant) return;
+                  
+                  const priceElement = document.getElementById(`price-${this.dataset.section}`);
+                  if (priceElement) {
+                    priceElement.innerHTML = this.getPrice();
+                  }
+
+                  const skuElement = document.querySelector('.id-value');
+                  if (skuElement) {
+                    skuElement.textContent = this.currentVariant.sku || 'N/A';
+                  }
+                }
+
+                getPrice() {
+                  return `<span class="product-price-detail terminal-green-glow">${Shopify.formatMoney(this.currentVariant.price, window.cartStrings.money_format)}</span>`;
+                }
+
+                toggleAddButton(disable = true, text, modifyClass = true) {
+                  const productForm = document.getElementById(`product-form-${this.dataset.section}`);
+                  if (!productForm) return;
+
+                  const addButton = productForm.querySelector('[name="add"]');
+                  const addButtonText = productForm.querySelector('.btn-text');
+
+                  if (!addButton) return;
+
+                  if (disable) {
+                    addButton.setAttribute('disabled', 'disabled');
+                    if (text) addButtonText.textContent = text;
+                  } else {
+                    addButton.removeAttribute('disabled');
+                    addButtonText.textContent = window.variantStrings.addToCart || '[ADD_TO_INVENTORY_CORE]';
+                  }
+                }
+
+                setUnavailable() {
+                  const addButton = document.querySelector(`#product-form-${this.dataset.section} [name="add"]`);
+                  const addButtonText = document.querySelector(`#product-form-${this.dataset.section} .btn-text`);
+                  const price = document.getElementById(`price-${this.dataset.section}`);
+                  
+                  if (!addButton) return;
+                  
+                  addButtonText.textContent = window.variantStrings.unavailable || '[ASSET_UNAVAILABLE]';
+                  if (price) price.classList.add('visibility-hidden');
+                }
+
+                getVariantData() {
+                  this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
+                  return this.variantData;
+                }
+
+                updateURL() {
+                  if (!this.currentVariant || this.dataset.updateUrl === 'false') return;
+                  window.history.replaceState({}, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
+                }
+
+                updateMedia() {
+                  if (!this.currentVariant?.featured_media) return;
+                  
+                  const mediaGallery = document.querySelector('.product-media-gallery');
+                  if (!mediaGallery) return;
+
+                  const newMedia = mediaGallery.querySelector(`[data-media-id="${this.currentVariant.featured_media.id}"]`);
+                  if (!newMedia) return;
+
+                  const mainMedia = mediaGallery.querySelector('.main-media-container img');
+                  if (mainMedia) {
+                    mainMedia.src = this.currentVariant.featured_media.preview_image.src;
+                    mainMedia.alt = this.currentVariant.featured_media.preview_image.alt;
+                  }
+                }
+              }
+
+              customElements.define('variant-selects', VariantSelects);
+
+              // Initialize variant strings
+              window.variantStrings = {
+                addToCart: {{ 'products.product.add_to_cart' | t | json }},
+                soldOut: {{ 'products.product.sold_out' | t | json }},
+                unavailable: {{ 'products.product.unavailable' | t | json }}
+              };
+
+              window.cartStrings = {
+                money_format: {{ shop.money_format | json }}
+              };
+            </script>
 
             {% if section.settings.show_social_sharing %}
               <div class="social-sharing data-box">
