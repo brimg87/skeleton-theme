@@ -319,10 +319,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             const sectionId = formId.replace('product-form-', '');
             console.log('Processing form with section ID:', sectionId);
+        // Use form-scoped selectors instead of section ID-based ones (Shopify best practice)
         const variantInputs = productForm.querySelectorAll('input[name^="options"], select[name^="options"]');
-        const priceElement = document.querySelector(`#ProductPrice-${sectionId}`);
+        const priceElement = productForm.closest('.product-interface-section')?.querySelector('[id^="ProductPrice-"]');
         const addToCartButton = productForm.querySelector('[type="submit"]');
-        const quantityInput = productForm.querySelector(`#Quantity-${sectionId}`);
+        const quantityInput = productForm.querySelector('input[name="quantity"]');
         
         // Get variant data from the form's data attribute
         const variantsData = productForm.dataset.variants;
@@ -390,8 +391,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error('Could not find variant ID input field!'); // Debug logging
                 }
                 
-                // Update SKU display
-                const skuElement = document.querySelector('.id-value');
+                // Update SKU display (scoped to current product section)
+                const productSection = productForm.closest('.product-interface-section');
+                const skuElement = productSection?.querySelector('.id-value');
                 if (skuElement) {
                     skuElement.textContent = selectedVariant.sku || 'N/A';
                 }
@@ -431,8 +433,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     quantityInput.removeAttribute('max');
                 }
                 
-                // Update stock indicator
-                const stockIndicator = document.querySelector('.stock-indicator');
+                // Update stock indicator (scoped to current product section)
+                const stockIndicator = productSection?.querySelector('.stock-indicator');
                 if (stockIndicator) {
                     let stockText = '//:STOCK_LEVEL: ';
                     if (selectedVariant.inventory_management === 'shopify' && selectedVariant.inventory_quantity <= 0) {
