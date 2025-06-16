@@ -1,0 +1,155 @@
+{% comment %}
+  Contact Page Template
+  Cyberpunk orbital station themed contact interface
+{% endcomment %}
+
+<section class="contact-interface-section section-padding">
+  <div class="container">
+    
+    <!-- Contact Header -->
+    <header class="contact-header data-box">
+      <div class="data-box-header">//: COMMUNICATION_PROTOCOL ://</div>
+      <div class="contact-header-content">
+        <h1 class="contact-title">ORBITAL_CONTACT_INTERFACE</h1>
+        
+        <div class="station-info">
+          <div class="station-location">
+            <span class="location-label">[CURRENT_COORDINATES]</span>
+            <span class="location-data">JORMUNGANDR_ORBITAL_STATION / SUITE_733-8</span>
+          </div>
+          <div class="uplink-info">
+            <span class="uplink-label">[LEOPOST_UPLINK]</span>
+            <span class="uplink-data">JOS.140.15.8.733</span>
+          </div>
+        </div>
+
+        <div class="transmission-notice">
+          <div class="notice-item">
+            <span class="notice-icon">[⚠]</span>
+            <span class="notice-text">Earth-Kuiper communication delay: >14 hours roundtrip</span>
+          </div>
+          <div class="notice-item">
+            <span class="notice-icon">[!]</span>
+            <span class="notice-text">Custom commissions currently unavailable</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Contact Form -->
+    <div class="contact-form-container data-box">
+      <div class="data-box-header">//: TRANSMISSION_INTERFACE ://</div>
+      <div class="contact-form-content">
+        
+        {% form 'contact' %}
+          {% if form.posted_successfully? %}
+            <div class="form-success">
+              <div class="success-header">[TRANSMISSION_ACKNOWLEDGED]</div>
+              <p>Message successfully transmitted to orbital station. Expect response within standard communication window.</p>
+            </div>
+          {% endif %}
+
+          {% if form.errors %}
+            <div class="form-errors data-box">
+              <div class="data-box-header">//: TRANSMISSION_ERROR ://</div>
+              <div class="error-content">
+                {{ form.errors | default_errors }}
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="ContactFormName" class="form-label">[SENDER_IDENTIFICATION]</label>
+              <input type="text" 
+                     id="ContactFormName" 
+                     name="contact[name]" 
+                     class="form-input"
+                     placeholder="Enter your callsign or designation"
+                     required>
+            </div>
+
+            <div class="form-group">
+              <label for="ContactFormEmail" class="form-label">[RETURN_CHANNEL]</label>
+              <input type="email" 
+                     id="ContactFormEmail" 
+                     name="contact[email]" 
+                     class="form-input"
+                     placeholder="your.dataport@network.domain"
+                     required>
+            </div>
+
+            <div class="form-group">
+              <label for="ContactFormSubject" class="form-label">[TRANSMISSION_PRIORITY]</label>
+              <select id="ContactFormSubject" name="contact[subject]" class="form-select">
+                <option value="">Select transmission type</option>
+                <option value="General Inquiry">[GENERAL_INQUIRY]</option>
+                <option value="Product Question">[PRODUCT_SPECIFICATIONS]</option>
+                <option value="Order Status">[ORDER_STATUS_REQUEST]</option>
+                <option value="Technical Support">[TECHNICAL_ASSISTANCE]</option>
+                <option value="Partnership">[ALLIANCE_PROPOSAL]</option>
+                <option value="Other">[CLASSIFIED_MATTER]</option>
+              </select>
+            </div>
+
+            <div class="form-group form-group-full">
+              <label for="ContactFormMessage" class="form-label">[MESSAGE_PAYLOAD]</label>
+              <textarea id="ContactFormMessage" 
+                        name="contact[body]" 
+                        class="form-textarea"
+                        rows="6"
+                        placeholder="Compose your transmission. Include relevant details for faster processing."
+                        required></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-cta-primary">
+                [TRANSMIT_MESSAGE]
+              </button>
+            </div>
+          </div>
+        {% endform %}
+      </div>
+    </div>
+
+    <!-- Additional Contact Info -->
+    <div class="contact-info-grid">
+      
+      <!-- Response Times -->
+      <div class="info-block data-box">
+        <div class="data-box-header">//: RESPONSE_PROTOCOLS ://</div>
+        <div class="info-content">
+          <div class="response-item">
+            <span class="response-type">[STANDARD_INQUIRIES]</span>
+            <span class="response-time">24-48 hours</span>
+          </div>
+          <div class="response-item">
+            <span class="response-type">[TECHNICAL_SUPPORT]</span>
+            <span class="response-time">12-24 hours</span>
+          </div>
+          <div class="response-item">
+            <span class="response-type">[URGENT_MATTERS]</span>
+            <span class="response-time">Priority queue</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alternative Channels -->
+      <div class="info-block data-box">
+        <div class="data-box-header">//: ALTERNATIVE_CHANNELS ://</div>
+        <div class="info-content">
+          <div class="channel-item">
+            <span class="channel-type">[SOCIAL_NETWORK]</span>
+            <a href="#" class="channel-link">@starside_armory</a>
+          </div>
+          <div class="channel-item">
+            <span class="channel-type">[EMERGENCY_ONLY]</span>
+            <span class="channel-info">Use contact form</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section> 
