@@ -18,11 +18,7 @@
   }
 {%- endstyle -%}
 
-<section class="{{ text_align_class }} section-padding"
-  {% if section.settings.background_color != blank %}
-    style="background-color: {{ section.settings.background_color }};"
-  {% endif %}
->
+<section class="section-newsletter-signup {{ text_align_class }} section-padding">
   <div class="container">
     {%- if section.settings.title != blank -%}
       <h2 class="section-title" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>

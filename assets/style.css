@@ -2091,9 +2091,9 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 
 /* ===== NEWSLETTER SIGNUP CYBERPUNK STYLES ===== */
 .section-newsletter-signup {
-  background: linear-gradient(135deg, var(--color-primary-dark) 0%, rgba(10, 15, 31, 0.95) 100%);
-  border-top: 1px solid var(--color-accent-cyan);
-  border-bottom: 1px solid var(--color-accent-cyan);
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, rgba(10, 15, 31, 0.95) 100%) !important;
+  border-top: 1px solid var(--color-accent-cyan) !important;
+  border-bottom: 1px solid var(--color-accent-cyan) !important;
   position: relative;
   overflow: hidden;
 }
@@ -2134,13 +2134,14 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 }
 
 .section-newsletter-signup .signup-form-fields .form-input {
-  background: rgba(10, 15, 31, 0.8);
-  border: 1px solid var(--color-accent-cyan);
-  color: var(--color-accent-cyan);
-  font-family: var(--font-family-secondary);
-  padding: 1rem 1.5rem;
-  border-radius: 0;
-  transition: all 0.3s ease;
+  background: rgba(10, 15, 31, 0.8) !important;
+  border: 2px solid var(--color-accent-cyan) !important;
+  color: var(--color-accent-cyan) !important;
+  font-family: var(--font-family-secondary) !important;
+  padding: 1rem 1.5rem !important;
+  border-radius: 0 !important;
+  transition: all 0.3s ease !important;
+  clip-path: var(--clip-path-input) !important;
 }
 
 .section-newsletter-signup .signup-form-fields .form-input:focus {
@@ -2156,23 +2157,26 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 }
 
 .section-newsletter-signup .signup-form-fields .btn-cta {
-  background: linear-gradient(135deg, var(--color-accent-magenta) 0%, var(--color-accent-cyan) 100%);
-  border: 1px solid var(--color-accent-magenta);
-  color: var(--color-primary-dark);
-  font-family: var(--font-family-secondary);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 1rem 2rem;
-  border-radius: 0;
-  transition: all 0.3s ease;
-  white-space: nowrap;
+  background: linear-gradient(135deg, var(--color-accent-magenta) 0%, var(--color-accent-cyan) 100%) !important;
+  border: 2px solid var(--color-accent-magenta) !important;
+  color: var(--color-primary-dark) !important;
+  font-family: var(--font-family-secondary) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  padding: 1rem 2rem !important;
+  border-radius: 0 !important;
+  transition: all 0.3s ease !important;
+  white-space: nowrap !important;
+  clip-path: var(--clip-path-button) !important;
+  box-shadow: 0 0 10px rgba(255, 0, 255, 0.3) !important;
 }
 
 .section-newsletter-signup .signup-form-fields .btn-cta:hover {
-  background: linear-gradient(135deg, var(--color-accent-cyan) 0%, var(--color-accent-magenta) 100%);
-  box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, var(--color-accent-cyan) 0%, var(--color-accent-magenta) 100%) !important;
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.6), 0 0 30px rgba(0, 255, 255, 0.3) !important;
+  transform: translateY(-2px) !important;
+  border-color: var(--color-accent-cyan) !important;
 }
 
 .section-newsletter-signup .form-success {
