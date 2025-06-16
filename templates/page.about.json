@@ -6,6 +6,37 @@
     },
     "about-origin": {
       "type": "about-origin",
+      "blocks": {
+        "timeline-1": {
+          "type": "timeline_entry",
+          "settings": {
+            "year": "2087",
+            "title": "THE_FOUNDING",
+            "description": "Established in the heart of Oregon with a vision to revolutionize tactical equipment manufacturing."
+          }
+        },
+        "timeline-2": {
+          "type": "timeline_entry",
+          "settings": {
+            "year": "2089",
+            "title": "FIRST_BREAKTHROUGH",
+            "description": "Development of our signature precision manufacturing process, setting new industry standards."
+          }
+        },
+        "timeline-3": {
+          "type": "timeline_entry",
+          "settings": {
+            "year": "2091",
+            "title": "EXPANSION_PROTOCOL",
+            "description": "Expanded operations and began serving elite tactical units across the Pacific Northwest."
+          }
+        }
+      },
+      "block_order": [
+        "timeline-1",
+        "timeline-2",
+        "timeline-3"
+      ],
       "settings": {}
     }
   },
