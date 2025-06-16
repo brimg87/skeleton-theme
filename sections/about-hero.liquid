@@ -1,0 +1,228 @@
+{% comment %}
+  About Hero Section
+  Dramatic introduction to Starside Armory with cyberpunk styling
+{% endcomment %}
+
+<section class="about-hero-section section-padding">
+  <div class="container">
+    <div class="about-hero-content">
+      
+      {% if section.settings.show_terminal_header %}
+        <div class="terminal-header">
+          <span class="terminal-prompt">[STARSIDE_ARMORY]$</span>
+          <span class="terminal-command">{{ section.settings.terminal_command | default: 'initialize_about_protocol.exe' }}</span>
+        </div>
+      {% endif %}
+
+      <div class="hero-main-content">
+        {% if section.settings.hero_title != blank %}
+          <h1 class="about-hero-title{% if section.settings.enable_glitch %} glitch-hero{% endif %}"
+              {% if section.settings.enable_glitch %}data-text="{{ section.settings.hero_title }}"{% endif %}>
+            {{ section.settings.hero_title }}
+          </h1>
+        {% endif %}
+
+        {% if section.settings.hero_subtitle != blank %}
+          <div class="about-hero-subtitle">
+            {{ section.settings.hero_subtitle }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.hero_description != blank %}
+          <div class="about-hero-description">
+            {{ section.settings.hero_description }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.show_stats %}
+          <div class="hero-stats-grid">
+            {% if section.settings.stat_1_label != blank %}
+              <div class="stat-item">
+                <div class="stat-value">{{ section.settings.stat_1_value }}</div>
+                <div class="stat-label">{{ section.settings.stat_1_label }}</div>
+              </div>
+            {% endif %}
+            {% if section.settings.stat_2_label != blank %}
+              <div class="stat-item">
+                <div class="stat-value">{{ section.settings.stat_2_value }}</div>
+                <div class="stat-label">{{ section.settings.stat_2_label }}</div>
+              </div>
+            {% endif %}
+            {% if section.settings.stat_3_label != blank %}
+              <div class="stat-item">
+                <div class="stat-value">{{ section.settings.stat_3_value }}</div>
+                <div class="stat-label">{{ section.settings.stat_3_label }}</div>
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% if section.settings.cta_text != blank and section.settings.cta_url != blank %}
+          <div class="hero-cta">
+            <a href="{{ section.settings.cta_url }}" class="btn btn-cta-primary">
+              {{ section.settings.cta_text }}
+            </a>
+          </div>
+        {% endif %}
+      </div>
+
+      {% if section.settings.hero_image != blank %}
+        <div class="hero-visual">
+          <div class="hero-image-container">
+            <img src="{{ section.settings.hero_image | image_url: width: 800 }}"
+                 srcset="{{ section.settings.hero_image | image_url: width: 400 }} 400w,
+                         {{ section.settings.hero_image | image_url: width: 800 }} 800w,
+                         {{ section.settings.hero_image | image_url: width: 1200 }} 1200w"
+                 sizes="(max-width: 767px) 100vw, 50vw"
+                 alt="{{ section.settings.hero_image.alt | default: section.settings.hero_title }}"
+                 loading="eager">
+            {% if section.settings.show_image_overlay %}
+              <div class="image-overlay-data">
+                <span class="overlay-text">{{ section.settings.image_overlay_text | default: '[CLASSIFIED]' }}</span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About Hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Terminal Header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_terminal_header",
+      "label": "Show terminal header",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "terminal_command",
+      "label": "Terminal command",
+      "default": "initialize_about_protocol.exe"
+    },
+    {
+      "type": "header",
+      "content": "Hero Content"
+    },
+    {
+      "type": "text",
+      "id": "hero_title",
+      "label": "Hero title",
+      "default": "STARSIDE ARMORY"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_glitch",
+      "label": "Enable glitch effect on title",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "hero_subtitle",
+      "label": "Hero subtitle",
+      "default": "[ADVANCED_TACTICAL_SOLUTIONS_PROVIDER]"
+    },
+    {
+      "type": "richtext",
+      "id": "hero_description",
+      "label": "Hero description",
+      "default": "<p>Forging the future of tactical excellence in the heart of Oregon. Where cutting-edge technology meets uncompromising craftsmanship.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Statistics"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stats",
+      "label": "Show statistics",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "stat_1_value",
+      "label": "Statistic 1 value",
+      "default": "2087"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_label",
+      "label": "Statistic 1 label",
+      "default": "YEAR_ESTABLISHED"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_value",
+      "label": "Statistic 2 value",
+      "default": "99.7%"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_label",
+      "label": "Statistic 2 label",
+      "default": "PRECISION_RATING"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_value",
+      "label": "Statistic 3 value",
+      "default": "∞"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_label",
+      "label": "Statistic 3 label",
+      "default": "INNOVATION_POTENTIAL"
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA button text",
+      "default": "[EXPLORE_ARSENAL]"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "CTA button URL"
+    },
+    {
+      "type": "header",
+      "content": "Hero Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image_overlay",
+      "label": "Show image overlay",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "image_overlay_text",
+      "label": "Image overlay text",
+      "default": "[CLASSIFIED]"
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Hero"
+    }
+  ]
+}
+{% endschema %} 

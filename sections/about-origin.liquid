@@ -1,0 +1,263 @@
+{% comment %}
+  About Origin Section
+  Timeline-style backstory of Starside Armory's founding
+{% endcomment %}
+
+<section class="about-origin-section section-padding">
+  <div class="container">
+    <div class="origin-content data-box">
+      <div class="data-box-header">
+        //: {{ section.settings.section_title | default: 'ORIGIN_PROTOCOL' }} ://
+      </div>
+      
+      <div class="data-box-content">
+        {% if section.settings.intro_text != blank %}
+          <div class="origin-intro">
+            {{ section.settings.intro_text }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.show_timeline %}
+          <div class="origin-timeline">
+            {% for i in (1..6) %}
+              {% assign year_setting = 'timeline_' | append: i | append: '_year' %}
+              {% assign title_setting = 'timeline_' | append: i | append: '_title' %}
+              {% assign desc_setting = 'timeline_' | append: i | append: '_description' %}
+              
+              {% assign year = section.settings[year_setting] %}
+              {% assign title = section.settings[title_setting] %}
+              {% assign description = section.settings[desc_setting] %}
+              
+              {% if year != blank and title != blank %}
+                <div class="timeline-item">
+                  <div class="timeline-marker">
+                    <span class="timeline-year">{{ year }}</span>
+                  </div>
+                  <div class="timeline-content">
+                    <h3 class="timeline-title">{{ title }}</h3>
+                    {% if description != blank %}
+                      <div class="timeline-description">{{ description }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {% if section.settings.show_founding_principles %}
+          <div class="founding-principles">
+            <h3 class="principles-title">{{ section.settings.principles_title | default: '[FOUNDING_PRINCIPLES]' }}</h3>
+            <div class="principles-grid">
+              {% for i in (1..4) %}
+                {% assign principle_setting = 'principle_' | append: i %}
+                {% assign principle = section.settings[principle_setting] %}
+                
+                {% if principle != blank %}
+                  <div class="principle-item">
+                    <span class="principle-marker">[{{ i }}]</span>
+                    <span class="principle-text">{{ principle }}</span>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if section.settings.closing_text != blank %}
+          <div class="origin-closing">
+            {{ section.settings.closing_text }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About Origin",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Header"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section title",
+      "default": "ORIGIN_PROTOCOL"
+    },
+    {
+      "type": "richtext",
+      "id": "intro_text",
+      "label": "Introduction text",
+      "default": "<p>Every legend has a beginning. The Starside Armory story starts in the neon-lit workshops of 2087, where vision met innovation.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Timeline"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_timeline",
+      "label": "Show timeline",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "timeline_1_year",
+      "label": "Timeline 1 - Year",
+      "default": "2087"
+    },
+    {
+      "type": "text",
+      "id": "timeline_1_title",
+      "label": "Timeline 1 - Title",
+      "default": "THE_FOUNDING"
+    },
+    {
+      "type": "textarea",
+      "id": "timeline_1_description",
+      "label": "Timeline 1 - Description",
+      "default": "Established in the heart of Oregon with a vision to revolutionize tactical equipment manufacturing."
+    },
+    {
+      "type": "text",
+      "id": "timeline_2_year",
+      "label": "Timeline 2 - Year",
+      "default": "2089"
+    },
+    {
+      "type": "text",
+      "id": "timeline_2_title",
+      "label": "Timeline 2 - Title",
+      "default": "FIRST_BREAKTHROUGH"
+    },
+    {
+      "type": "textarea",
+      "id": "timeline_2_description",
+      "label": "Timeline 2 - Description",
+      "default": "Development of our signature precision manufacturing process, setting new industry standards."
+    },
+    {
+      "type": "text",
+      "id": "timeline_3_year",
+      "label": "Timeline 3 - Year",
+      "default": "2091"
+    },
+    {
+      "type": "text",
+      "id": "timeline_3_title",
+      "label": "Timeline 3 - Title",
+      "default": "EXPANSION_PROTOCOL"
+    },
+    {
+      "type": "textarea",
+      "id": "timeline_3_description",
+      "label": "Timeline 3 - Description",
+      "default": "Expanded operations and began serving elite tactical units across the Pacific Northwest."
+    },
+    {
+      "type": "text",
+      "id": "timeline_4_year",
+      "label": "Timeline 4 - Year"
+    },
+    {
+      "type": "text",
+      "id": "timeline_4_title",
+      "label": "Timeline 4 - Title"
+    },
+    {
+      "type": "textarea",
+      "id": "timeline_4_description",
+      "label": "Timeline 4 - Description"
+    },
+    {
+      "type": "text",
+      "id": "timeline_5_year",
+      "label": "Timeline 5 - Year"
+    },
+    {
+      "type": "text",
+      "id": "timeline_5_title",
+      "label": "Timeline 5 - Title"
+    },
+    {
+      "type": "textarea",
+      "id": "timeline_5_description",
+      "label": "Timeline 5 - Description"
+    },
+    {
+      "type": "text",
+      "id": "timeline_6_year",
+      "label": "Timeline 6 - Year"
+    },
+    {
+      "type": "text",
+      "id": "timeline_6_title",
+      "label": "Timeline 6 - Title"
+    },
+    {
+      "type": "textarea",
+      "id": "timeline_6_description",
+      "label": "Timeline 6 - Description"
+    },
+    {
+      "type": "header",
+      "content": "Founding Principles"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_founding_principles",
+      "label": "Show founding principles",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "principles_title",
+      "label": "Principles section title",
+      "default": "[FOUNDING_PRINCIPLES]"
+    },
+    {
+      "type": "text",
+      "id": "principle_1",
+      "label": "Principle 1",
+      "default": "PRECISION_ABOVE_ALL"
+    },
+    {
+      "type": "text",
+      "id": "principle_2",
+      "label": "Principle 2",
+      "default": "INNOVATION_THROUGH_DEDICATION"
+    },
+    {
+      "type": "text",
+      "id": "principle_3",
+      "label": "Principle 3",
+      "default": "QUALITY_WITHOUT_COMPROMISE"
+    },
+    {
+      "type": "text",
+      "id": "principle_4",
+      "label": "Principle 4",
+      "default": "CUSTOMER_MISSION_SUCCESS"
+    },
+    {
+      "type": "header",
+      "content": "Closing"
+    },
+    {
+      "type": "richtext",
+      "id": "closing_text",
+      "label": "Closing text",
+      "default": "<p>From these humble beginnings, Starside Armory has grown into a beacon of excellence, continuing to push the boundaries of what's possible in tactical equipment design.</p>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Origin"
+    }
+  ]
+}
+{% endschema %} 
