@@ -23,6 +23,12 @@
     {%- if section.settings.title != blank -%}
       <h2 class="section-title" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
     {%- endif -%}
+    
+    {%- if section.settings.description != blank -%}
+      <div class="section-subheader">
+        <p class="terminal-subtext">{{ section.settings.description }}</p>
+      </div>
+    {%- endif -%}
 
     {%- form 'customer', class: 'signup-form' -%}
       <input type="hidden" name="contact[tags]" value="newsletter">
@@ -65,7 +71,13 @@
       "type": "text",
       "id": "title",
       "label": "Heading",
-      "default": "// SUBSCRIBE FOR INTEL_DROPS & NEW_SCHEMATICS //"
+      "default": "// TRANSMISSION_UPLINK //"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Join the resistance network for classified updates and tactical intelligence."
     },
     {
       "type": "text",
