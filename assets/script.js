@@ -244,4 +244,55 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // --- 5. Cart Page Quantity Controls ---
+    // Cart quantity control functionality
+    const cartQuantityButtons = document.querySelectorAll('.btn-qty');
+    
+    if (cartQuantityButtons.length > 0) {
+        cartQuantityButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const key = this.dataset.key;
+                const input = document.querySelector(`input[data-key="${key}"]`);
+                const isIncrease = this.classList.contains('qty-increase');
+                
+                if (!input) return;
+                
+                let currentValue = parseInt(input.value) || 0;
+                
+                if (isIncrease) {
+                    currentValue++;
+                } else {
+                    currentValue = Math.max(0, currentValue - 1);
+                }
+                
+                input.value = currentValue;
+                
+                // Auto-submit form after quantity change
+                setTimeout(() => {
+                    const form = input.closest('form');
+                    if (form) {
+                        form.submit();
+                    }
+                }, 300);
+            });
+        });
+    }
+    
+    // Auto-submit on cart quantity input change
+    const cartQuantityInputs = document.querySelectorAll('.quantity-input');
+    if (cartQuantityInputs.length > 0) {
+        cartQuantityInputs.forEach(input => {
+            let timeout;
+            input.addEventListener('input', function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    const form = this.closest('form');
+                    if (form) {
+                        form.submit();
+                    }
+                }, 1000);
+            });
+        });
+    }
+
 }); // End of DOMContentLoaded
