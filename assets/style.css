@@ -7160,44 +7160,55 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 }
 
 /* === PASSWORD PAGE STYLES === */
-.password-page body {
+html.password-page body {
   background: var(--color-primary-dark);
   font-family: var(--font-family-body);
   color: var(--color-text-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
-.password-container {
-  max-width: 400px;
+html.password-page .password-container {
+  max-width: 500px;
+  width: 100%;
   margin: 0 auto;
   padding: var(--space-lg);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.terminal-frame {
+html.password-page .access-terminal {
   background-color: var(--color-background);
   border: var(--border-width-thin) solid var(--color-border-primary);
   clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
   box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
-}
-
-.access-terminal {
-  background-color: var(--color-background);
-  border: var(--border-width-thin) solid var(--color-border-primary);
   padding: var(--space-lg);
-  margin-bottom: var(--space-md);
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
-.store-name {
+html.password-page .store-name {
   font-size: var(--font-size-h2);
   color: var(--color-accent-yellow);
   margin-bottom: var(--space-md);
+  font-family: var(--font-family-primary);
 }
 
-.access-form {
+html.password-page .access-form {
   margin-top: var(--space-lg);
+  width: 100%;
 }
 
-.access-input {
+html.password-page .access-input {
   width: 100%;
   padding: var(--space-sm);
   margin-bottom: var(--space-md);
@@ -7205,9 +7216,10 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
   border: var(--border-width-thin) solid var(--color-border-primary);
   color: var(--color-text-primary);
   font-family: var(--font-family-body);
+  font-size: var(--font-size-base);
 }
 
-.access-btn {
+html.password-page .access-btn {
   background-color: var(--color-accent-magenta);
   color: var(--color-text-on-accent);
   border: none;
@@ -7216,10 +7228,13 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
   font-family: var(--font-family-secondary);
   text-transform: uppercase;
   cursor: pointer;
+  width: 100%;
+  clip-path: var(--clip-path-button);
 }
 
-.access-btn:hover {
+html.password-page .access-btn:hover {
   background-color: var(--color-accent-cyan);
+  box-shadow: 0 0 10px var(--color-accent-cyan);
 }
 
 .access-errors {
