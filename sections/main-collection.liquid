@@ -51,7 +51,7 @@
                             {% endif %}
                           {% else %}
                             {% comment %} Standard handling for other filters {% endcomment %}
-                            <a href="{{ value.active | ternary: value.url_to_remove, value.url_to_add }}" 
+                            <a href="{% if value.active %}{{ value.url_to_remove }}{% else %}{{ value.url_to_add }}{% endif %}" 
                                class="filter-link {% if value.active %}active{% endif %}"
                                {% if value.count == 0 and value.active == false %}disabled{% endif %}
                                aria-label="Filter by {{ value.label | escape }}, {{ value.count }} products">
@@ -135,7 +135,7 @@
           <div class="product-grid collection-product-grid" role="main" aria-label="Product list">
             {%- if collection.products.size > 0 -%}
               {%- for product in collection.products -%}
-                <article class="product-card{% if product.product_type == 'Transmission Log' %} transmission-log-card{% endif %}" aria-labelledby="product-title-{{ product.id }}" itemscope itemtype="http://schema.org/Product">
+                <article class="product-card{% if product.product_type == 'Transmission Log' %} transmission-log-card{% endif %}" aria-labelledby="product-title-{{ product.id }}" itemscope itemtype="https://schema.org/Product">
                   <div class="product-image">
                     <a href="{{ product.url | within: collection }}" aria-label="View {{ product.title | escape }} details">
                       {% if product.featured_image %}
@@ -185,7 +185,7 @@
                           <span class="archive-notice">[REFERENCE_ONLY]</span>
                         </div>
                       {% else %}
-                        <div class="product-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                        <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
                           <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
                           <meta itemprop="price" content="{{ product.price | divided_by: 100.0 }}">
                           {% if product.compare_at_price > product.price and section.settings.show_compare_prices %}
@@ -195,9 +195,9 @@
                           {% endif %}
                           <span class="product-price-current">{{ product.price | money }}</span>
                           {% if product.available %}
-                            <link itemprop="availability" href="http://schema.org/InStock">
+                            <link itemprop="availability" href="https://schema.org/InStock">
                           {% else %}
-                            <link itemprop="availability" href="http://schema.org/OutOfStock">
+                            <link itemprop="availability" href="https://schema.org/OutOfStock">
                           {% endif %}
                         </div>
                       {% endif %}

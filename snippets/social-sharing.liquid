@@ -1,0 +1,70 @@
+{% comment %}
+  Social Sharing Component - Starside Armory Theme
+  
+  Usage: {% render 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product.featured_image %}
+  
+  Parameters:
+  - share_title: Title to share
+  - share_permalink: URL to share
+  - share_image: Image to share (optional)
+{% endcomment %}
+
+{%- assign share_url = shop.url | append: share_permalink -%}
+{%- assign encoded_title = share_title | url_encode -%}
+{%- assign encoded_url = share_url | url_encode -%}
+
+<div class="data-box-header">//: SHARE_INTEL ://</div>
+<div class="social-content">
+  <div class="share-buttons">
+    
+    {% comment %} Twitter/X Share {% endcomment %}
+    <a href="https://twitter.com/intent/tweet?text={{ encoded_title }}&amp;url={{ encoded_url }}" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       class="share-button share-twitter"
+       aria-label="Share on Twitter">
+      <span class="share-label">[TWITTER_BROADCAST]</span>
+    </a>
+    
+    {% comment %} Facebook Share {% endcomment %}
+    <a href="https://www.facebook.com/sharer/sharer.php?u={{ encoded_url }}" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       class="share-button share-facebook"
+       aria-label="Share on Facebook">
+      <span class="share-label">[FACEBOOK_UPLINK]</span>
+    </a>
+    
+    {% comment %} Pinterest Share {% endcomment %}
+    {%- if share_image -%}
+      {%- assign pinterest_image = share_image | image_url: width: 1200 | prepend: 'https:' -%}
+      <a href="https://pinterest.com/pin/create/button/?url={{ encoded_url }}&amp;media={{ pinterest_image | url_encode }}&amp;description={{ encoded_title }}" 
+         target="_blank" 
+         rel="noopener noreferrer" 
+         class="share-button share-pinterest"
+         aria-label="Share on Pinterest">
+        <span class="share-label">[PINTEREST_ARCHIVE]</span>
+      </a>
+    {%- endif -%}
+    
+    {% comment %} Email Share {% endcomment %}
+    <a href="mailto:?subject={{ encoded_title }}&amp;body=Check this out: {{ encoded_url }}" 
+       class="share-button share-email"
+       aria-label="Share via email">
+      <span class="share-label">[EMAIL_TRANSMISSION]</span>
+    </a>
+    
+    {% comment %} Copy Link {% endcomment %}
+    <button type="button" 
+            class="share-button share-copy" 
+            data-url="{{ share_url }}"
+            aria-label="Copy link to clipboard">
+      <span class="share-label">[COPY_LINK]</span>
+    </button>
+  </div>
+  
+  <div class="share-url-display">
+    <span class="url-label">DIRECT_LINK:</span>
+    <span class="url-value">{{ share_url }}</span>
+  </div>
+</div> 

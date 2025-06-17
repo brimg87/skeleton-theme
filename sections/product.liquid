@@ -20,7 +20,7 @@
 
 <section id="product-{{ section.id }}" class="product-interface-section section-padding{% if section.settings.color_scheme != 'background-1' %} color-{{ section.settings.color_scheme }}{% endif %}" 
          style="--section-padding-top: {{ section.settings.padding_top }}px; --section-padding-bottom: {{ section.settings.padding_bottom }}px;"
-         itemscope itemtype="http://schema.org/Product">
+         itemscope itemtype="https://schema.org/Product">
   
   <div class="{% if section.settings.full_width %}page-width-desktop{% else %}container{% endif %}">
     <div class="product-layout" style="--product-media-width: {{ section.settings.media_width }}%;">
@@ -134,7 +134,7 @@
           <div class="product-info-content">
             
             {% if section.settings.show_vendor and product.vendor != blank %}
-              <div class="product-vendor" itemprop="brand" itemscope itemtype="http://schema.org/Brand">
+              <div class="product-vendor" itemprop="brand" itemscope itemtype="https://schema.org/Brand">
                 <span itemprop="name">{{ product.vendor }}</span>
               </div>
             {% endif %}
@@ -209,7 +209,7 @@
             {% endif %}
 
             <!-- Price Block -->
-            <div class="price-block data-box" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+            <div class="price-block data-box" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
               <div class="data-box-header">//:TRANSACTION_MODULE://</div>
               <div class="price-content">
                 <span class="price-label">ACQUISITION_COST:</span>
@@ -237,9 +237,9 @@
                 
                 <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
                 {% if product.selected_or_first_available_variant.available %}
-                  <link itemprop="availability" href="http://schema.org/InStock">
-                {% else %}
-                  <link itemprop="availability" href="http://schema.org/OutOfStock">
+                                  <link itemprop="availability" href="https://schema.org/InStock">
+              {% else %}
+                <link itemprop="availability" href="https://schema.org/OutOfStock">
                 {% endif %}
                 
                 {% if section.settings.show_inventory %}
@@ -370,7 +370,6 @@
                   this.updateOptions();
                   this.updateMasterId();
                   this.updateVariantInput();
-                  this.updatePickupAvailability();
                   this.removeErrorMessage();
 
                   if (!this.currentVariant) {
@@ -379,10 +378,21 @@
                   } else {
                     this.updateMedia();
                     this.updateURL();
-                    this.updateVariantInfo();
                     this.renderProductInfo();
                     this.toggleAddButton(!this.currentVariant.available, window.variantStrings.soldOut);
                   }
+                }
+
+                updatePickupAvailability() {
+                  // Placeholder for pickup availability functionality
+                }
+
+                removeErrorMessage() {
+                  // Placeholder for error message removal
+                }
+
+                updateVariantInfo() {
+                  // Placeholder for variant info updates
                 }
 
                 updateOptions() {
@@ -390,19 +400,37 @@
                 }
 
                 updateMasterId() {
+                  console.log('Looking for variant with options:', this.options);
                   this.currentVariant = this.getVariantData().find((variant) => {
                     return !variant.options.map((option, index) => {
                       return this.options[index] === option;
                     }).includes(false);
                   });
+                  console.log('Found variant:', this.currentVariant?.id, this.currentVariant?.title);
                 }
 
                 updateVariantInput() {
+                  console.log('[VARIANT DEBUG] Updating variant input for variant:', this.currentVariant?.id);
                   const productForms = document.querySelectorAll(`#product-form-${this.dataset.section}, #product-form-installment`);
+                  console.log('[VARIANT DEBUG] Found product forms:', productForms.length);
+                  
                   productForms.forEach((productForm) => {
                     const input = productForm.querySelector('input[name="id"]');
-                    input.value = this.currentVariant?.id || '';
-                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                    console.log('[VARIANT DEBUG] Found variant input:', input, 'Current value:', input?.value);
+                    
+                    if (input && this.currentVariant) {
+                      const oldValue = input.value;
+                      input.value = this.currentVariant.id;
+                      console.log('[VARIANT DEBUG] Updated variant input from', oldValue, 'to:', input.value);
+                      
+                      // Trigger change event to notify other scripts
+                      input.dispatchEvent(new Event('change', { bubbles: true }));
+                      
+                      // Also update the form's data attribute for debugging
+                      productForm.dataset.selectedVariant = this.currentVariant.id;
+                    } else {
+                      console.warn('[VARIANT DEBUG] No variant input found or no current variant');
+                    }
                   });
                 }
 
@@ -421,7 +449,12 @@
                 }
 
                 getPrice() {
-                  return `<span class="product-price-detail terminal-green-glow">${Shopify.formatMoney(this.currentVariant.price, window.cartStrings.money_format)}</span>`;
+                  // Use basic formatting if Shopify.formatMoney is not available
+                  const price = this.currentVariant.price;
+                  const formatted = window.Shopify && window.Shopify.formatMoney 
+                    ? window.Shopify.formatMoney(price, window.cartStrings.money_format)
+                    : `$${(price / 100).toFixed(2)}`;
+                  return `<span class="product-price-detail terminal-green-glow">${formatted}</span>`;
                 }
 
                 toggleAddButton(disable = true, text, modifyClass = true) {
@@ -492,6 +525,21 @@
               window.cartStrings = {
                 money_format: {{ shop.money_format | json }}
               };
+              
+              // Debug helper - remove in production
+              window.debugVariantSelection = function() {
+                const variantSelects = document.querySelector('variant-selects');
+                const productForm = document.querySelector('#product-form-{{ section.id }}');
+                const variantInput = productForm?.querySelector('input[name="id"]');
+                
+                console.group('[VARIANT DEBUG] Current State');
+                console.log('Variant selects element:', variantSelects);
+                console.log('Current variant:', variantSelects?.currentVariant);
+                console.log('Product form:', productForm);
+                console.log('Variant input value:', variantInput?.value);
+                console.log('Form data test:', new FormData(productForm));
+                console.groupEnd();
+              };
             </script>
 
             {% if section.settings.show_social_sharing %}
@@ -522,13 +570,13 @@
 <div id="zoom-modal-{{ section.id }}" class="zoom-modal" aria-hidden="true">
   <div class="zoom-modal-content">
     <button type="button" class="zoom-close" aria-label="Close zoom">&times;</button>
-    <img id="zoom-image-{{ section.id }}" src="" alt="" class="zoom-image">
+    <img id="zoom-image-{{ section.id }}" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="" class="zoom-image" loading="lazy">
   </div>
 </div>
 
 <script type="application/ld+json">
 {
-  "@context": "http://schema.org/",
+        "@context": "https://schema.org/",
   "@type": "Product",
   "name": {{ product.title | json }},
   "url": {{ request.origin | append: product.url | json }},
@@ -548,7 +596,7 @@
     {% for variant in product.variants %}
       {
         "@type": "Offer",
-        "availability": "{% if variant.available %}http://schema.org/InStock{% else %}http://schema.org/OutOfStock{% endif %}",
+        "availability": "{% if variant.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
         "price": {{ variant.price | divided_by: 100.0 | json }},
         "priceCurrency": {{ cart.currency.iso_code | json }},
         "url": {{ request.origin | append: variant.url | json }}
@@ -702,7 +750,15 @@
       "type": "checkbox",
       "id": "show_social_sharing",
       "label": "Show social sharing buttons",
-      "default": false
+      "info": "Display cyberpunk-themed social sharing options",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_recommendations",
+      "label": "Show product recommendations",
+      "info": "AI-powered product recommendations based on this product",
+      "default": true
     },
     {
       "type": "checkbox",
@@ -776,5 +832,7 @@
 }
 {% endschema %}
 
-{% comment %} Recommended products section would typically be its own section file {% endcomment %}
-{% section 'product-recommendations' %}
+{% comment %} Product recommendations section - only show if enabled {% endcomment %}
+{% if section.settings.show_product_recommendations %}
+  {% section 'product-recommendations' %}
+{% endif %}

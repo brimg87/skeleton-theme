@@ -3,7 +3,7 @@
   Supports different article types: Update Log and Manuals & Guides
 {% endcomment %}
 
-<article class="article-interface-section section-padding" itemscope itemtype="http://schema.org/BlogPosting">
+<article class="article-interface-section section-padding" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="container">
     
     {%- if section.settings.show_breadcrumbs -%}
@@ -54,7 +54,7 @@
           
           <div class="meta-row">
             {%- if section.settings.show_author and article.author != blank -%}
-              <span class="article-author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+              <span class="article-author" itemprop="author" itemscope itemtype="https://schema.org/Person">
                 <span itemprop="name">[AUTHOR: {{ article.author | upcase }}]</span>
               </span>
             {%- endif -%}
@@ -138,6 +138,12 @@
               {%- endif -%}
             </div>
           </nav>
+        {%- endif -%}
+
+        {%- if section.settings.show_social_sharing -%}
+          <section class="social-sharing data-box" aria-label="Share this article">
+            {% render 'social-sharing', share_title: article.title, share_permalink: article.url, share_image: article.image %}
+          </section>
         {%- endif -%}
       </div>
     </main>
@@ -318,6 +324,17 @@
       "label": "Show article navigation",
       "default": true,
       "info": "Display previous/next article links"
+    },
+    {
+      "type": "header",
+      "content": "Social Sharing"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social_sharing",
+      "label": "Show social sharing buttons",
+      "default": true,
+      "info": "Display cyberpunk-themed social sharing options"
     },
     {
       "type": "header",

@@ -126,6 +126,13 @@ function initializeProductZoom() {
       console.log('ProductZoom: Skipping section without proper ID:', sectionIdRaw);
       return;
     }
+    
+    // Skip if section ID contains Liquid syntax (not processed)
+    if (sectionIdRaw.includes('{{') || sectionIdRaw.includes('}}')) {
+      console.log('ProductZoom: Skipping section with unprocessed Liquid syntax:', sectionIdRaw);
+      return;
+    }
+    
     const sectionId = sectionIdRaw.replace('product-', '');
     console.log('ProductZoom: Initializing for section ID:', sectionId);
     new ProductZoom(sectionId);

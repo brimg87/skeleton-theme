@@ -306,17 +306,175 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- 6. Product Page Functionality ---
     // (Quantity functionality handled above in product-specific section)
     
-    // Form submission with loading state
+    // --- 6. Add to Cart Functionality ---
+    // Enhanced add-to-cart with AJAX and proper error handling
     const productForms = document.querySelectorAll('form[data-type="add-to-cart-form"]');
     productForms.forEach(form => {
-        form.addEventListener('submit', function() {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            
             const addButton = this.querySelector('[type="submit"]');
+            const addButtonText = this.querySelector('.btn-text');
+            const formData = new FormData(this);
+            
+            // Show loading state
             if (addButton) {
                 addButton.classList.add('loading');
                 addButton.disabled = true;
+                if (addButtonText) {
+                    addButtonText.dataset.originalText = addButtonText.textContent;
+                    addButtonText.textContent = '[PROCESSING...]';
+                }
             }
+            
+            // Get the current variant ID from variant selector (more reliable than hidden input)
+            let variantId = null;
+            const variantSelects = form.querySelector('variant-selects');
+            
+            if (variantSelects && variantSelects.currentVariant) {
+                variantId = variantSelects.currentVariant.id;
+                console.log('[ADD TO CART] Got variant ID from variant selector:', variantId);
+            } else {
+                // Fallback to hidden input
+                variantId = formData.get('id');
+                console.log('[ADD TO CART] Fallback to hidden input variant ID:', variantId);
+            }
+            
+            const quantity = parseInt(formData.get('quantity')) || 1;
+            
+            console.log('[ADD TO CART] Form data:', Object.fromEntries(formData.entries()));
+            console.log('[ADD TO CART] Attempting to add variant:', variantId, 'quantity:', quantity);
+            
+            // Debug both sources
+            const hiddenInput = form.querySelector('input[name="id"]');
+            console.log('[ADD TO CART] Hidden input value:', hiddenInput?.value);
+            console.log('[ADD TO CART] Variant selector current variant:', variantSelects?.currentVariant);
+            
+            if (!variantId) {
+                console.error('[ADD TO CART] No variant ID found!');
+                showAddToCartError(addButton, addButtonText, 'No variant selected');
+                if (addButton) {
+                    addButton.classList.remove('loading');
+                    addButton.disabled = false;
+                }
+                return;
+            }
+            
+            // Make AJAX request to add item to cart
+            fetch('/cart/add.js', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    items: [{
+                        id: parseInt(variantId),
+                        quantity: quantity
+                    }]
+                })
+            })
+            .then(response => {
+                console.log('[ADD TO CART] Response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('[ADD TO CART] Response data:', data);
+                
+                if (data.status && data.status === 422) {
+                    // Handle errors (out of stock, etc.)
+                    console.error('[ADD TO CART] Error 422:', data);
+                    throw new Error(data.description || data.message || 'Unable to add item to cart');
+                }
+                
+                if (data.items && data.items.length > 0) {
+                    console.log('[ADD TO CART] Successfully added items:', data.items);
+                    // Success - update cart count and show feedback
+                    updateCartCount();
+                    showAddToCartSuccess(addButton, addButtonText);
+                    
+                    // Open cart drawer after successful add
+                    openCartDrawer();
+                } else {
+                    console.warn('[ADD TO CART] Unexpected response format:', data);
+                    // Still try to update cart count
+                    updateCartCount();
+                    showAddToCartSuccess(addButton, addButtonText);
+                }
+            })
+            .catch(error => {
+                console.error('Add to cart error:', error);
+                showAddToCartError(addButton, addButtonText, error.message);
+            })
+            .finally(() => {
+                // Remove loading state
+                if (addButton) {
+                    addButton.classList.remove('loading');
+                    addButton.disabled = false;
+                }
+            });
         });
     });
+    
+    // Helper function to update cart count
+    function updateCartCount() {
+        fetch('/cart.js')
+            .then(response => response.json())
+            .then(cart => {
+                console.log('[CART UPDATE] Current cart:', cart);
+                
+                // Update cart count in header
+                const cartCountElements = document.querySelectorAll('.cart-count');
+                cartCountElements.forEach(element => {
+                    element.textContent = cart.item_count;
+                    if (cart.item_count > 0) {
+                        element.style.display = 'inline-flex';
+                        element.classList.add('cart-updated');
+                        setTimeout(() => {
+                            element.classList.remove('cart-updated');
+                        }, 1000);
+                    } else {
+                        element.style.display = 'none';
+                    }
+                });
+                
+                // If we're on the cart page, refresh it to show updated items
+                if (window.location.pathname === '/cart') {
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                }
+            })
+            .catch(error => {
+                console.error('Error updating cart count:', error);
+            });
+    }
+    
+    // Show success feedback
+    function showAddToCartSuccess(button, buttonText) {
+        if (buttonText) {
+            buttonText.textContent = '[ADDED_TO_INVENTORY]';
+            setTimeout(() => {
+                if (buttonText.dataset.originalText) {
+                    buttonText.textContent = buttonText.dataset.originalText;
+                }
+            }, 2000);
+        }
+    }
+    
+    // Show error feedback  
+    function showAddToCartError(button, buttonText, errorMessage) {
+        if (buttonText) {
+            buttonText.textContent = '[ERROR_ADDING_ITEM]';
+            setTimeout(() => {
+                if (buttonText.dataset.originalText) {
+                    buttonText.textContent = buttonText.dataset.originalText;
+                }
+            }, 3000);
+        }
+        
+        // You could also show a toast notification here
+        console.error('Add to cart failed:', errorMessage);
+    }
     
     // Media gallery functionality
     const thumbnailButtons = document.querySelectorAll('.thumbnail-btn');
@@ -399,5 +557,266 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // --- 7. Social Sharing Functionality ---
+    // Copy to clipboard functionality for social sharing
+    const copyButtons = document.querySelectorAll('.share-copy');
+    
+    if (copyButtons.length > 0) {
+        copyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const url = this.dataset.url;
+                
+                // Use modern clipboard API if available
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(url).then(() => {
+                        showCopyFeedback(this);
+                    }).catch(() => {
+                        fallbackCopyToClipboard(url, this);
+                    });
+                } else {
+                    // Fallback for older browsers or non-secure contexts
+                    fallbackCopyToClipboard(url, this);
+                }
+            });
+        });
+    }
+    
+    // Helper function to show copy feedback
+    function showCopyFeedback(button) {
+        const label = button.querySelector('.share-label');
+        if (label) {
+            const originalText = label.textContent;
+            label.textContent = '[LINK_COPIED]';
+            setTimeout(() => {
+                label.textContent = originalText;
+            }, 2000);
+        }
+    }
+    
+    // Fallback copy function for older browsers
+    function fallbackCopyToClipboard(text, button) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            showCopyFeedback(button);
+        } catch (err) {
+            console.error('Failed to copy to clipboard:', err);
+        }
+        
+        document.body.removeChild(textArea);
+    }
+
+    // === CART DRAWER FUNCTIONALITY ===
+    
+    // Cart Drawer Functions
+    function openCartDrawer() {
+        console.log('[CART DRAWER] Opening cart drawer');
+        
+        // Create and show cart drawer if it doesn't exist
+        let cartDrawer = document.getElementById('cart-drawer');
+        if (!cartDrawer) {
+            createCartDrawer();
+            cartDrawer = document.getElementById('cart-drawer');
+        }
+        
+        // Fetch latest cart data and update drawer content
+        fetchCartAndUpdateDrawer();
+        
+        // Show the drawer
+        cartDrawer.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
+    
+    function closeCartDrawer() {
+        console.log('[CART DRAWER] Closing cart drawer');
+        const cartDrawer = document.getElementById('cart-drawer');
+        if (cartDrawer) {
+            cartDrawer.classList.remove('active');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+    }
+    
+    function createCartDrawer() {
+        const drawerHTML = `
+            <div id="cart-drawer" class="cart-drawer">
+                <div class="cart-drawer-overlay" onclick="closeCartDrawer()"></div>
+                <div class="cart-drawer-content">
+                    <div class="cart-drawer-header">
+                        <h2 class="cart-drawer-title">[INVENTORY_CORE]</h2>
+                        <button class="cart-drawer-close" onclick="closeCartDrawer()" aria-label="Close cart">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="cart-drawer-body">
+                        <div class="cart-drawer-loading">Loading inventory...</div>
+                    </div>
+                    <div class="cart-drawer-footer">
+                        <div class="cart-drawer-actions">
+                            <button class="btn btn-secondary" onclick="closeCartDrawer()">[CONTINUE_SHOPPING]</button>
+                            <a href="/cart" class="btn btn-primary">[VIEW_FULL_CART]</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', drawerHTML);
+        
+        // Add event listener for ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeCartDrawer();
+            }
+        });
+    }
+    
+    function fetchCartAndUpdateDrawer() {
+        fetch('/cart.js')
+            .then(response => response.json())
+            .then(cart => {
+                console.log('[CART DRAWER] Cart data:', cart);
+                updateCartDrawerContent(cart);
+            })
+            .catch(error => {
+                console.error('[CART DRAWER] Error fetching cart:', error);
+                updateCartDrawerContent({ items: [], total_price: 0, item_count: 0 });
+            });
+    }
+    
+    function updateCartDrawerContent(cart) {
+        const cartBody = document.querySelector('.cart-drawer-body');
+        if (!cartBody) return;
+        
+        if (cart.items.length === 0) {
+            cartBody.innerHTML = `
+                <div class="cart-drawer-empty">
+                    <p>Your inventory is empty</p>
+                    <p>Add items to your tactical loadout</p>
+                </div>
+            `;
+        } else {
+            let itemsHTML = '<div class="cart-drawer-items">';
+            cart.items.forEach(item => {
+                itemsHTML += `
+                    <div class="cart-drawer-item" data-key="${item.key}">
+                        <div class="cart-item-image">
+                            <img src="${item.image}" alt="${item.title}" loading="lazy">
+                        </div>
+                        <div class="cart-item-details">
+                            <h4 class="cart-item-title">${item.product_title}</h4>
+                            ${item.variant_title && item.variant_title !== 'Default Title' ? `<p class="cart-item-variant">${item.variant_title}</p>` : ''}
+                            <div class="cart-item-debug" style="font-size: 0.8em; color: #888; margin: 4px 0;">
+                                <span>Variant ID: ${item.variant_id}</span>
+                            </div>
+                            <div class="cart-item-quantity">
+                                <span>Qty: ${item.quantity}</span>
+                            </div>
+                        </div>
+                        <div class="cart-item-price">
+                            <span class="price">${formatMoney(item.final_line_price)}</span>
+                            <button class="cart-item-remove" onclick="removeCartItem('${item.key}')" aria-label="Remove item">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            itemsHTML += '</div>';
+            
+            itemsHTML += `
+                <div class="cart-drawer-summary">
+                    <div class="cart-total">
+                        <span>Total: ${formatMoney(cart.total_price)}</span>
+                    </div>
+                </div>
+            `;
+            
+            cartBody.innerHTML = itemsHTML;
+        }
+        
+        // Update drawer footer based on cart content
+        updateCartDrawerFooter(cart);
+    }
+    
+    function updateCartDrawerFooter(cart) {
+        const cartFooter = document.querySelector('.cart-drawer-footer .cart-drawer-actions');
+        if (!cartFooter) return;
+        
+        if (cart.items.length === 0) {
+            cartFooter.innerHTML = `
+                <button class="btn btn-primary" onclick="closeCartDrawer()">[CONTINUE_SHOPPING]</button>
+            `;
+        } else {
+            cartFooter.innerHTML = `
+                <button class="btn btn-secondary" onclick="closeCartDrawer()">[CONTINUE_SHOPPING]</button>
+                                        <a href="/cart" class="btn btn-primary">[INITIATE_CHECKOUT]</a>
+            `;
+        }
+    }
+    
+    function removeCartItem(key) {
+        console.log('[CART DRAWER] Removing item with key:', key);
+        
+        fetch('/cart/change.js', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: key,
+                quantity: 0
+            })
+        })
+        .then(response => response.json())
+        .then(cart => {
+            console.log('[CART DRAWER] Item removed, updated cart:', cart);
+            updateCartCount();
+            updateCartDrawerContent(cart);
+        })
+        .catch(error => {
+            console.error('[CART DRAWER] Error removing item:', error);
+        });
+    }
+    
+    // Helper function to format money
+    function formatMoney(cents) {
+        if (typeof window.Shopify !== 'undefined' && window.Shopify.formatMoney) {
+            return window.Shopify.formatMoney(cents);
+        }
+        // Fallback formatting
+        return '$' + (cents / 100).toFixed(2);
+    }
+    
+    // Make functions globally available
+    window.openCartDrawer = openCartDrawer;
+    window.closeCartDrawer = closeCartDrawer;
+    window.removeCartItem = removeCartItem;
+    
+    // Debug function for testing variant selection
+    window.debugVariantSelection = function() {
+        const currentVariant = getCurrentVariant();
+        console.log('Current variant:', currentVariant);
+        
+        const variantSelect = document.querySelector('select[name="id"]');
+        console.log('Variant select element:', variantSelect);
+        console.log('Selected value:', variantSelect ? variantSelect.value : 'No select found');
+        
+        return currentVariant;
+    };
 
 }); // End of DOMContentLoaded

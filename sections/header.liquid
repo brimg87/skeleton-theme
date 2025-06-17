@@ -63,13 +63,13 @@
           </a>
         {%- endif -%}
       {%- endif -%}
-      <a href="{{ routes.cart_url }}" class="ui-link cart-link">
+      <button onclick="openCartDrawer()" class="ui-link cart-link" aria-label="Open cart drawer">
         <span class="ui-icon">🛒</span>
         <span class="ui-label">[INVENTORY]</span>
         {% if cart.item_count > 0 %}
           <span class="cart-count">{{ cart.item_count }}</span>
         {% endif %}
-      </a>
+      </button>
     </div>
   </div>
 </header>

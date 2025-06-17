@@ -1,0 +1,26 @@
+{% comment %}
+  Product Rating Component - Starside Armory Theme
+  
+  Usage: {% render 'product-rating', product: product %}
+  
+  Parameters:
+  - product: Product object
+{% endcomment %}
+
+{%- if product.metafields.reviews.rating -%}
+  <div class="product-rating-display">
+    <span class="rating-value" aria-label="Rating: {{ product.metafields.reviews.rating }} out of 5">
+      [RATING: {{ product.metafields.reviews.rating }}/5.0]
+    </span>
+    {%- if product.metafields.reviews.count -%}
+      <span class="rating-count">
+        ({{ product.metafields.reviews.count }} {% if product.metafields.reviews.count == 1 %}review{% else %}reviews{% endif %})
+      </span>
+    {%- endif -%}
+  </div>
+{%- else -%}
+  {% comment %} No rating data available - could add "No reviews yet" or leave empty {% endcomment %}
+  <div class="product-rating-placeholder">
+    <span class="rating-none">[NO_TACTICAL_ASSESSMENTS]</span>
+  </div>
+{%- endif -%} 

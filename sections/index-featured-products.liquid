@@ -16,7 +16,7 @@
       {%- assign products_to_show = section.settings.products_to_show -%}
 
       {% for product in collection.products limit: products_to_show %}
-        <div class="product-card" itemscope itemtype="http://schema.org/Product">
+        <div class="product-card" itemscope itemtype="https://schema.org/Product">
           <div class="product-image">
             <a href="{{ product.url | within: collection }}" aria-label="{{ 'products.product.view_product' | t: product_title: product.title }}">
               {% if product.featured_image %}
@@ -53,7 +53,7 @@
               {% if section.settings.show_vendor and product.vendor != blank %}
                 <div class="product-vendor">{{ product.vendor }}</div>
               {% endif %}
-              <div class="product-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+              <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
                 <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
                 <meta itemprop="price" content="{{ product.price | divided_by: 100.0 }}">
                 {% if product.compare_at_price > product.price and section.settings.show_compare_prices %}
@@ -63,9 +63,9 @@
                 {% endif %}
                 <span class="product-price-current">{{ product.price | money }}</span>
                 {% if product.available %}
-                  <link itemprop="availability" href="http://schema.org/InStock">
-                {% else %}
-                  <link itemprop="availability" href="http://schema.org/OutOfStock">
+                                  <link itemprop="availability" href="https://schema.org/InStock">
+              {% else %}
+                <link itemprop="availability" href="https://schema.org/OutOfStock">
                 {% endif %}
               </div>
               {% if section.settings.show_rating and product.metafields.reviews.rating.value != blank %}

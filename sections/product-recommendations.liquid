@@ -1,0 +1,193 @@
+{% comment %}
+  Product Recommendations Section - Starside Armory Theme
+  
+  This section displays AI-powered product recommendations based on the current product.
+  Follows Shopify 2.0 standards and uses the Product Recommendations API.
+{% endcomment %}
+
+{%- if recommendations.performed and recommendations.products_count > 0 -%}
+  <section class="product-recommendations-section section-padding" 
+           data-section-id="{{ section.id }}"
+           data-section-type="product-recommendations"
+           data-product-id="{{ product.id }}">
+    
+    <div class="container">
+      <div class="data-box">
+        <div class="data-box-header">//: RELATED_INTEL_PROTOCOLS ://</div>
+        <div class="recommendations-content">
+          
+          {%- if section.settings.show_heading -%}
+            <h2 class="recommendations-title">
+              {{ section.settings.heading | default: 'RECOMMENDED_EQUIPMENT' }}
+            </h2>
+          {%- endif -%}
+          
+          {%- if section.settings.show_description and section.settings.description != blank -%}
+            <div class="recommendations-description">
+              {{ section.settings.description }}
+            </div>
+          {%- endif -%}
+          
+          <div class="product-grid recommendations-grid" 
+               style="--grid-desktop-columns: {{ section.settings.products_to_show | default: 4 }};">
+            
+            {%- for product in recommendations.products limit: section.settings.products_to_show -%}
+              <article class="product-card recommendation-card" 
+                       aria-labelledby="rec-product-title-{{ product.id }}" 
+                                               itemscope itemtype="https://schema.org/Product">
+                
+                <div class="product-image">
+                  <a href="{{ product.url }}" aria-label="View {{ product.title | escape }} details">
+                    {% if product.featured_image %}
+                      <div class="product-image-wrapper">
+                        <img src="{{ product.featured_image | image_url: width: 400 }}" 
+                             alt="{{ product.featured_image.alt | escape | default: product.title | escape }}"
+                             loading="lazy"
+                             width="400" 
+                             height="{{ 400 | divided_by: product.featured_image.aspect_ratio | round }}"
+                             sizes="(min-width: 990px) {{ 1200 | divided_by: section.settings.products_to_show }}px, (min-width: 750px) 50vw, 100vw"
+                             srcset="{{ product.featured_image | image_url: width: 200 }} 200w, 
+                                     {{ product.featured_image | image_url: width: 400 }} 400w, 
+                                     {{ product.featured_image | image_url: width: 600 }} 600w"
+                             itemprop="image">
+                      </div>
+                    {% else %}
+                      <div class="product-image-placeholder">
+                        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      </div>
+                    {% endif %}
+                    
+                    {% if product.compare_at_price > product.price and section.settings.show_sale_badges %}
+                      <div class="product-badge sale-badge">[TACTICAL_DISCOUNT]</div>
+                    {% endif %}
+                  </a>
+                </div>
+                
+                <div class="product-info">
+                  <div class="product-content">
+                    <h3 class="product-name h4" id="rec-product-title-{{ product.id }}" itemprop="name">
+                      <a href="{{ product.url }}">{{ product.title }}</a>
+                    </h3>
+                    
+                    <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                      <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
+                      <meta itemprop="price" content="{{ product.price | divided_by: 100.0 }}">
+                      
+                      {% if product.compare_at_price > product.price and section.settings.show_compare_prices %}
+                        <span class="visually-hidden">Regular price</span>
+                        <s class="product-price-compare">{{ product.compare_at_price | money }}</s>
+                        <span class="visually-hidden">Sale price</span>
+                      {% endif %}
+                      
+                      <span class="product-price-current">{{ product.price | money }}</span>
+                      
+                      {% if product.available %}
+                                      <link itemprop="availability" href="https://schema.org/InStock">
+            {% else %}
+              <link itemprop="availability" href="https://schema.org/OutOfStock">
+                      {% endif %}
+                    </div>
+                  </div>
+                  
+                  <div class="product-actions">
+                    {% if product.available %}
+                      <a href="{{ product.url }}" class="btn btn-cta btn-product" aria-describedby="rec-product-{{ product.id }}-price">
+                        [ANALYZE_EQUIPMENT]
+                      </a>
+                    {% else %}
+                      <button class="btn btn-cta btn-product disabled" disabled>
+                        [OUT_OF_STOCK]
+                      </button>
+                    {% endif %}
+                  </div>
+                </div>
+              </article>
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product recommendations",
+  "tag": "section",
+  "class": "section-product-recommendations",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Dynamic recommendations change and improve with time. [Learn more](https://help.shopify.com/en/themes/development/recommended-products)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_heading",
+      "default": true,
+      "label": "Show heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "RECOMMENDED_EQUIPMENT",
+      "label": "Heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "default": false,
+      "label": "Show description"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "label": "Number of products to show"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_compare_prices",
+      "default": true,
+      "label": "Show compare at prices"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sale_badges",
+      "default": true,
+      "label": "Show sale badges"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ]
+}
+{% endschema %} 

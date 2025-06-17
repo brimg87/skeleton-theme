@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0a0f1f">
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    {%- comment -%} Optimized font preconnections only when needed {%- endcomment -%}
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -36,7 +37,10 @@
 
     {% render 'css-variables' %}
     <link rel="stylesheet" href="{{ 'style.css' | asset_url }}">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    {%- comment -%} Optimized Google Fonts loading with display=swap for performance {%- endcomment -%}
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet"></noscript>
     
     {% comment %} Replace YOUR_KIT_CODE with actual FontAwesome kit ID {% endcomment %}
     {% comment %} <script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous" defer></script> {% endcomment %}
@@ -59,4 +63,4 @@
 
     <script src="{{ 'script.js' | asset_url }}" defer="defer"></script>
 </body>
-</html>
+</html>step

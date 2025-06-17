@@ -58,7 +58,7 @@
         {%- if blog.articles.size > 0 -%}
           <div class="articles-grid">
             {% for article in blog.articles %}
-              <article class="article-card" itemscope itemtype="http://schema.org/BlogPosting">
+              <article class="article-card" itemscope itemtype="https://schema.org/BlogPosting">
                 
                 {%- if article.image and section.settings.show_article_images -%}
                   <div class="article-image">

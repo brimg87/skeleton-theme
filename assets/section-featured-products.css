@@ -1,0 +1,81 @@
+/* === FEATURED PRODUCTS SECTION === */
+/* Additional styles specific to the featured products section */
+/* Note: Main product grid styles are in assets/style.css */
+
+.section-featured-products {
+  /* Specific overrides for featured products section if needed */
+}
+
+.featured-products-header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.featured-products-title {
+  color: var(--color-accent-cyan);
+  font-family: var(--font-family-primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.featured-products-description {
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-md);
+  margin-top: var(--space-md);
+}
+
+.featured-products-grid {
+  /* Uses global product-grid styles from main CSS */
+}
+
+.featured-cta {
+  text-align: center;
+  margin-top: var(--space-xl);
+}
+
+.featured-cta .btn {
+  padding: var(--space-md) var(--space-xl);
+  font-size: var(--font-size-lg);
+}
+
+/* Product rating styles (if enabled) */
+.product-rating-display {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-sm);
+  color: var(--color-accent-green);
+  margin-top: var(--space-xs);
+}
+
+.rating-value {
+  font-weight: var(--font-weight-bold);
+}
+
+.rating-count {
+  color: var(--color-text-secondary);
+  margin-left: var(--space-xs);
+}
+
+.product-rating-placeholder {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+  margin-top: var(--space-xs);
+}
+
+.rating-none {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 767px) {
+  .featured-products-title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .featured-products-description {
+    font-size: var(--font-size-base);
+  }
+} 
