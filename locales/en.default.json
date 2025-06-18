@@ -61,12 +61,13 @@
       "view_product": "View {{ product_title }}"
     }
   },
-  "search": {
-    "title": "SEARCH_INVENTORY",
-    "results_title": "SEARCH_RESULTS",
-    "placeholder": "Search inventory archives...",
-    "submit": "SEARCH",
-    "label": "Search",
+      "search": {
+      "title": "SEARCH_INVENTORY",
+      "results_title": "SEARCH_RESULTS",
+      "placeholder": "Search inventory archives...",
+      "submit": "SEARCH",
+      "close": "Close Search Interface",
+      "label": "SEARCH",
     "no_results_html": "No results found for \"<strong>{{ terms }}</strong>\"",
     "no_results_title": "NO_RESULTS_FOUND",
     "results_for_html": "{{ count }} results found for {{ terms }}",

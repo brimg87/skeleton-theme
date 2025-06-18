@@ -50,6 +50,10 @@
     </button>
 
     <div class="user-interface">
+      <button class="ui-link search-toggle" aria-label="Toggle search" aria-expanded="false">
+        <span class="ui-icon">🔍</span>
+        <span class="ui-label">[SEARCH]</span>
+      </button>
       {%- if shop.customer_accounts_enabled -%}
         {%- if customer -%}
           <a href="{{ routes.account_url }}" class="ui-link account-link">
@@ -59,7 +63,7 @@
         {%- else -%}
           <a href="{{ routes.account_login_url }}" class="ui-link account-link">
             <span class="ui-icon">👤</span>
-            <span class="ui-label">[LOGIN_TERMINAL]</span>
+            <span class="ui-label">[LOGIN]</span>
           </a>
         {%- endif -%}
       {%- endif -%}
@@ -70,6 +74,34 @@
           <span class="cart-count">{{ cart.item_count }}</span>
         {% endif %}
       </button>
+    </div>
+  </div>
+  
+  <!-- Mobile-first search interface -->
+  <div class="search-interface" id="searchInterface" aria-hidden="true">
+    <div class="search-interface-content">
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
+        <div class="search-input-group">
+          <input 
+            type="search" 
+            name="q" 
+            value="{{ search.terms | escape }}" 
+            placeholder="{{ 'search.placeholder' | t }}"
+            aria-label="{{ 'search.placeholder' | t }}"
+            class="search-input"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+          >
+          <button type="submit" class="search-submit-btn" aria-label="{{ 'search.submit' | t }}">
+            <span class="search-icon">🔍</span>
+          </button>
+          <button type="button" class="search-close-btn" aria-label="{{ 'search.close' | t }}">
+            <span class="close-icon">✕</span>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </header>

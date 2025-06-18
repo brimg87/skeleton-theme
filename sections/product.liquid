@@ -77,7 +77,8 @@
 
           {% if product.media.size > 1 and section.settings.show_thumbnails %}
             <div class="thumbnail-gallery" role="tablist" aria-label="Product media gallery">
-              {% for media in product.media limit: section.settings.max_thumbnails %}
+              {% assign max_thumbs = section.settings.max_thumbnails | default: 8 %}
+              {% for media in product.media limit: max_thumbs %}
                 <button type="button" 
                         class="thumbnail-btn {% if media == product.featured_media %}active{% endif %}" 
                         data-media-id="{{ media.id }}"
@@ -259,7 +260,7 @@
 
             <!-- Product Form -->
             {%- form 'product', product, id: "product-form-{{ section.id }}", class: "product-form", novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
-              <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" class="product-variant-id">
+              <input type="hidden" name="id" id="ProductSelect-{{ section.id }}" value="{{ product.selected_or_first_available_variant.id }}" class="product-variant-id">
               
               <!-- Variant Selection -->
               {% unless product.has_only_default_variant %}
@@ -400,36 +401,27 @@
                 }
 
                 updateMasterId() {
-                  console.log('Looking for variant with options:', this.options);
                   this.currentVariant = this.getVariantData().find((variant) => {
                     return !variant.options.map((option, index) => {
                       return this.options[index] === option;
                     }).includes(false);
                   });
-                  console.log('Found variant:', this.currentVariant?.id, this.currentVariant?.title);
                 }
 
                 updateVariantInput() {
-                  console.log('[VARIANT DEBUG] Updating variant input for variant:', this.currentVariant?.id);
                   const productForms = document.querySelectorAll(`#product-form-${this.dataset.section}, #product-form-installment`);
-                  console.log('[VARIANT DEBUG] Found product forms:', productForms.length);
                   
                   productForms.forEach((productForm) => {
                     const input = productForm.querySelector('input[name="id"]');
-                    console.log('[VARIANT DEBUG] Found variant input:', input, 'Current value:', input?.value);
                     
                     if (input && this.currentVariant) {
-                      const oldValue = input.value;
                       input.value = this.currentVariant.id;
-                      console.log('[VARIANT DEBUG] Updated variant input from', oldValue, 'to:', input.value);
                       
                       // Trigger change event to notify other scripts
                       input.dispatchEvent(new Event('change', { bubbles: true }));
                       
-                      // Also update the form's data attribute for debugging
+                      // Update the form's data attribute
                       productForm.dataset.selectedVariant = this.currentVariant.id;
-                    } else {
-                      console.warn('[VARIANT DEBUG] No variant input found or no current variant');
                     }
                   });
                 }
@@ -437,24 +429,66 @@
                 renderProductInfo() {
                   if (!this.currentVariant) return;
                   
+                  // Update price
                   const priceElement = document.getElementById(`price-${this.dataset.section}`);
                   if (priceElement) {
                     priceElement.innerHTML = this.getPrice();
                   }
 
+                  // Update compare at price
+                  const comparePriceElement = document.getElementById(`ComparePrice-${this.dataset.section}`);
+                  if (comparePriceElement) {
+                    if (this.currentVariant.compare_at_price > this.currentVariant.price) {
+                      comparePriceElement.style.display = 'inline';
+                      comparePriceElement.querySelector('s').textContent = this.formatMoney(this.currentVariant.compare_at_price);
+                    } else {
+                      comparePriceElement.style.display = 'none';
+                    }
+                  }
+
+                  // Update SKU
                   const skuElement = document.querySelector('.id-value');
                   if (skuElement) {
                     skuElement.textContent = this.currentVariant.sku || 'N/A';
                   }
+
+                  // Update inventory status
+                  const statusElement = document.querySelector('.status-value');
+                  if (statusElement) {
+                    if (this.currentVariant.available) {
+                      statusElement.textContent = '[AVAILABLE]';
+                      statusElement.className = 'diag-value status-value status-operational';
+                    } else {
+                      statusElement.textContent = '[OUT_OF_STOCK]';
+                      statusElement.className = 'diag-value status-value status-offline';
+                    }
+                  }
+
+                  // Update stock indicator if enabled
+                  const stockElement = document.querySelector('.stock-indicator');
+                  if (stockElement) {
+                    let stockText = '[AVAILABLE]';
+                    if (!this.currentVariant.available) {
+                      stockText = '[DEPLETED]';
+                    } else if (this.currentVariant.inventory_quantity < 5 && this.currentVariant.inventory_quantity > 0) {
+                      stockText = `[LOW: ${this.currentVariant.inventory_quantity}]`;
+                    }
+                    stockElement.innerHTML = `//:STOCK_LEVEL: ${stockText}`;
+                  }
                 }
 
                 getPrice() {
-                  // Use basic formatting if Shopify.formatMoney is not available
-                  const price = this.currentVariant.price;
-                  const formatted = window.Shopify && window.Shopify.formatMoney 
-                    ? window.Shopify.formatMoney(price, window.cartStrings.money_format)
-                    : `$${(price / 100).toFixed(2)}`;
+                  const formatted = this.formatMoney(this.currentVariant.price);
                   return `<span class="product-price-detail terminal-green-glow">${formatted}</span>`;
+                }
+
+                formatMoney(cents) {
+                  // Use Shopify's formatMoney if available, otherwise use basic formatting
+                  if (window.Shopify && window.Shopify.formatMoney) {
+                    return window.Shopify.formatMoney(cents, window.cartStrings.money_format);
+                  } else {
+                    return `$${(cents / 100).toFixed(2)}`;
+                  }
                 }
 
                 toggleAddButton(disable = true, text, modifyClass = true) {
@@ -505,10 +539,26 @@
                   const newMedia = mediaGallery.querySelector(`[data-media-id="${this.currentVariant.featured_media.id}"]`);
                   if (!newMedia) return;
 
-                  const mainMedia = mediaGallery.querySelector('.main-media-container img');
+                  // Update main media
+                  const mainMediaContainer = mediaGallery.querySelector('.main-media-container');
+                  const mainMedia = mainMediaContainer?.querySelector('img');
+                  
                   if (mainMedia) {
                     mainMedia.src = this.currentVariant.featured_media.preview_image.src;
                     mainMedia.alt = this.currentVariant.featured_media.preview_image.alt;
+                    mainMedia.dataset.zoom = this.currentVariant.featured_media.src;
+                  }
+
+                  // Update thumbnail active states
+                  const thumbnails = mediaGallery.querySelectorAll('.thumbnail-btn');
+                  thumbnails.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-selected', 'false');
+                  });
+                  
+                  if (newMedia) {
+                    newMedia.classList.add('active');
+                    newMedia.setAttribute('aria-selected', 'true');
                   }
                 }
               }
@@ -524,21 +574,6 @@
 
               window.cartStrings = {
                 money_format: {{ shop.money_format | json }}
-              };
-              
-              // Debug helper - remove in production
-              window.debugVariantSelection = function() {
-                const variantSelects = document.querySelector('variant-selects');
-                const productForm = document.querySelector('#product-form-{{ section.id }}');
-                const variantInput = productForm?.querySelector('input[name="id"]');
-                
-                console.group('[VARIANT DEBUG] Current State');
-                console.log('Variant selects element:', variantSelects);
-                console.log('Current variant:', variantSelects?.currentVariant);
-                console.log('Product form:', productForm);
-                console.log('Variant input value:', variantInput?.value);
-                console.log('Form data test:', new FormData(productForm));
-                console.groupEnd();
               };
             </script>
 
@@ -558,6 +593,95 @@
                   {% render 'pickup-availability', variant: product.selected_or_first_available_variant %}
                 </div>
               </div>
+            {% endif %}
+
+            {% if section.settings.show_product_tabs %}
+              <!-- Product Data Tabs -->
+              <div class="product-data-tabs data-box">
+                <div class="data-box-header">//:DATA_ARCHIVE://</div>
+              <div class="tab-headers">
+                <button class="tab-link active" data-tab="tab-specifications">SPECIFICATIONS</button>
+                <button class="tab-link" data-tab="tab-feedback">FEEDBACK</button>
+                <button class="tab-link" data-tab="tab-acquisition">ACQUISITION</button>
+              </div>
+              
+              <!-- Specifications Tab -->
+              <div id="tab-specifications" class="tab-content active">
+                {% if product.metafields.product_specs.class or product.metafields.product_specs.rarity or product.metafields.product_specs.materials or product.metafields.product_specs.dimensions_detailed %}
+                  <ul>
+                    {% if product.metafields.product_specs.class %}
+                      <li><strong>CLASS:</strong> {{ product.metafields.product_specs.class }}</li>
+                    {% endif %}
+                    {% if product.metafields.product_specs.rarity %}
+                      <li><strong>RARITY:</strong> {{ product.metafields.product_specs.rarity | upcase }}</li>
+                    {% endif %}
+                    {% if product.metafields.product_specs.materials %}
+                      <li><strong>MATERIALS:</strong> {{ product.metafields.product_specs.materials }}</li>
+                    {% endif %}
+                    {% if product.metafields.product_specs.dimensions_detailed %}
+                      <li><strong>DIMENSIONS:</strong> {{ product.metafields.product_specs.dimensions_detailed }}</li>
+                    {% endif %}
+                    {% if product.weight > 0 %}
+                      <li><strong>WEIGHT:</strong> {{ product.weight | weight_with_unit }}</li>
+                    {% endif %}
+                    {% if product.variants.first.barcode != blank %}
+                      <li><strong>BARCODE:</strong> {{ product.variants.first.barcode }}</li>
+                    {% endif %}
+                  </ul>
+                {% else %}
+                  <p>No detailed specifications available for this item.</p>
+                {% endif %}
+              </div>
+              
+              <!-- Feedback Tab (Reviews) -->
+              <div id="tab-feedback" class="tab-content">
+                {% if product.metafields.reviews.data %}
+                  {{ product.metafields.reviews.data }}
+                {% else %}
+                  <div class="feedback-entry">
+                    <div class="feedback-meta">
+                      <span class="user-id">AGENT_ALPHA_01</span>
+                      <span class="timestamp">2157.03.15</span>
+                    </div>
+                    <div class="feedback-text">
+                      Quality construction and reliable performance. Exceeded operational parameters during field testing.
+                    </div>
+                    <div class="feedback-rating">OPERATIONAL_RATING: 9.2/10</div>
+                  </div>
+                  
+                  <div class="feedback-entry">
+                    <div class="feedback-meta">
+                      <span class="user-id">BETA_OPERATIVE_07</span>
+                      <span class="timestamp">2157.02.28</span>
+                    </div>
+                    <div class="feedback-text">
+                      Excellent addition to the armory. Deployment was seamless and integration with existing systems was flawless.
+                    </div>
+                    <div class="feedback-rating">OPERATIONAL_RATING: 9.8/10</div>
+                  </div>
+                {% endif %}
+              </div>
+              
+              <!-- Acquisition Tab -->
+              <div id="tab-acquisition" class="tab-content">
+                <div class="protocol-title">ACQUISITION PROTOCOLS</div>
+                <ul class="protocol-list">
+                  <li><strong>SHIPPING:</strong> Standard delivery within 5-7 operational cycles</li>
+                  <li><strong>EXPEDITED:</strong> Priority delivery available for 2-3 cycles</li>
+                  <li><strong>SECURE_TRANSPORT:</strong> Encrypted package handling for sensitive items</li>
+                </ul>
+                
+                <div class="protocol-title">PAYMENT SYSTEMS</div>
+                <ul class="protocol-list">
+                  <li><strong>CREDITS:</strong> All major credit processing systems accepted</li>
+                  <li><strong>CRYPTO:</strong> Blockchain payment protocols supported</li>
+                  <li><strong>CORP_ACCOUNTS:</strong> Corporate and military billing available</li>
+                </ul>
+                
+                <div class="protocol-title">WARRANTY & SUPPORT</div>
+                                 <p>All items include standard operational warranty. Extended support contracts available through our <a href="/pages/contact">support terminal</a>.</p>
+               </div>
+             </div>
             {% endif %}
           </div>
         </div>
@@ -764,6 +888,13 @@
       "type": "checkbox",
       "id": "show_pickup_availability",
       "label": "Show pickup availability",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_tabs",
+      "label": "Show product data tabs",
+      "info": "Display specifications, feedback, and acquisition information tabs",
       "default": true
     },
     {

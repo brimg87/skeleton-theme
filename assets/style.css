@@ -1893,8 +1893,84 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
 }
 
 /* Utility classes for hiding navigation items when space is limited */
+/* === PROGRESSIVE NAVIGATION HIDING === */
+
+/* Extra Large Desktop - Hide lower priority items first (1700px and below) */
+@media screen and (max-width: 1700px) {
+  .nav-item.priority-low {
+    display: none;
+  }
+}
+
+/* Large Desktop - Tighter spacing starts early (1400px and below) */
+@media screen and (max-width: 1400px) {
+  .nav-list {
+    gap: 0.2rem;
+  }
+  
+  .nav-link {
+    padding: 0.4rem 0.5rem;
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Medium Desktop - Hide medium priority items (990px - 1199px) */
 @media screen and (max-width: 1199px) {
   .nav-item.hide-lg {
+    display: none;
+  }
+  
+  /* Even tighter spacing */
+  .nav-list {
+    gap: 0.1rem;
+  }
+  
+  .nav-link {
+    padding: 0.3rem 0.4rem;
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Compact Desktop - Danger zone optimization (990px - 1099px) */
+@media screen and (max-width: 1099px) and (min-width: 990px) {
+  .header-content {
+    grid-template-columns: minmax(200px, 0.8fr) 2fr minmax(200px, 0.8fr);
+    padding: 0 var(--space-md);
+  }
+  
+  .nav-list {
+    gap: 0.1rem;
+    justify-content: center;
+  }
+  
+  .nav-link {
+    padding: 0.3rem 0.4rem;
+    font-size: var(--font-size-xs);
+  }
+  
+  .ui-link {
+    padding: var(--space-xs) var(--space-sm);
+    min-width: 40px;
+    min-height: 40px;
+  }
+  
+  .ui-label {
+    font-size: var(--font-size-xs);
+  }
+  
+  /* Hide text labels on UI elements in tight space */
+  .user-interface .ui-label {
+    display: none;
+  }
+  
+  .user-interface .ui-link {
+    min-width: 36px;
+    min-height: 36px;
+    justify-content: center;
+  }
+  
+  /* Hide less important nav items */
+  .nav-item.hide-compact {
     display: none;
   }
 }
@@ -2294,6 +2370,168 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
    .dropdown-link:hover {
      padding-left: calc(var(--space-md) + var(--space-sm));
   }
+}
+
+/* ================================================
+   HEADER SEARCH INTERFACE - Mobile First
+   ================================================ */
+
+.search-interface {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  right: 0;
+  background-color: var(--color-secondary-dark);
+  border-bottom: var(--border-width-thin) solid var(--color-border-primary);
+  z-index: var(--z-index-modal);
+  
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-duration-normal) var(--transition-easing);
+}
+
+.search-interface.active {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.search-interface-content {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: var(--space-md);
+}
+
+.search-form {
+  width: 100%;
+}
+
+.search-input-group {
+  display: flex;
+  align-items: center;
+  position: relative;
+  background-color: var(--color-background-input);
+  border: var(--border-width-medium) solid var(--color-border-primary);
+  clip-path: var(--clip-path-input);
+  transition: border-color var(--transition-duration-normal) var(--transition-easing);
+}
+
+.search-input-group:focus-within {
+  border-color: var(--color-accent-cyan);
+  box-shadow: 0 0 8px var(--color-accent-cyan), 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.search-interface .search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-base);
+  color: var(--color-text-highlight);
+  outline: none;
+}
+
+.search-interface .search-input::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
+.search-submit-btn,
+.search-close-btn {
+  background: transparent;
+  border: none;
+  padding: var(--space-sm);
+  color: var(--color-accent-cyan);
+  cursor: pointer;
+  transition: color var(--transition-duration-normal) var(--transition-easing);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+.search-submit-btn:hover,
+.search-submit-btn:focus,
+.search-close-btn:hover,
+.search-close-btn:focus {
+  color: var(--color-accent-green);
+  outline: none;
+}
+
+.search-icon,
+.close-icon {
+  font-size: var(--font-size-lg);
+  line-height: 1;
+}
+
+/* Body scroll lock when search is active */
+body.search-active {
+  overflow: hidden;
+}
+
+/* Search overlay for mobile */
+.search-interface::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity var(--transition-duration-normal) var(--transition-easing);
+}
+
+.search-interface.active::before {
+  opacity: 1;
+}
+
+/* Desktop search improvements */
+@media screen and (min-width: 768px) {
+  .search-interface-content {
+    padding: var(--space-lg);
+  }
+  
+  .search-interface .search-input {
+    font-size: var(--font-size-md);
+    padding: var(--space-md) var(--space-lg);
+  }
+  
+  .search-submit-btn,
+  .search-close-btn {
+    padding: var(--space-md);
+    min-width: 50px;
+  }
+}
+
+/* Mobile search adjustments */
+@media screen and (max-width: 767px) {
+  .search-interface {
+    top: calc(var(--header-height) - 1px); /* Account for border */
+  }
+  
+  .search-interface-content {
+    padding: var(--space-md) var(--space-sm);
+  }
+  
+  .search-interface .search-input {
+    font-size: var(--font-size-sm);
+    padding: var(--space-sm);
+  }
+  
+  .search-submit-btn,
+  .search-close-btn {
+    padding: var(--space-sm);
+    min-width: 36px;
+  }
+}
+
+/* Large desktop - inline search option */
+@media screen and (min-width: 1400px) {
+  /* Optional: Could add always-visible search field for very large screens */
 }
 
 /* --- Hero Section --- */

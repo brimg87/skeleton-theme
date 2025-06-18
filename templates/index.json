@@ -13,7 +13,7 @@
       "type": "index-featured-products",
       "settings": {
         "title": "// FEATURED_ITEMS //",
-        "collection": "frontpage",
+        "collection": "all",
         "products_to_show": 4
       }
     },

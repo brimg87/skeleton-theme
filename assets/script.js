@@ -4,6 +4,98 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- 1. Global Site Functionalities ---
 
+    // Search Interface Toggle
+    const searchToggle = document.querySelector('.search-toggle');
+    const searchInterface = document.getElementById('searchInterface');
+    const searchInput = searchInterface?.querySelector('.search-input');
+    const searchCloseBtn = searchInterface?.querySelector('.search-close-btn');
+
+    console.log('Search elements found:', {
+        searchToggle: !!searchToggle,
+        searchInterface: !!searchInterface,
+        searchInput: !!searchInput,
+        searchCloseBtn: !!searchCloseBtn
+    });
+
+    if (searchToggle && searchInterface) {
+        // Open search interface
+        function openSearchInterface() {
+            // Close mobile menu if open
+            if (siteHeader && siteHeader.classList.contains('mobile-menu-open')) {
+                siteHeader.classList.remove('mobile-menu-open');
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                // Close any open dropdowns
+                document.querySelectorAll('.has-dropdown.dropdown-open').forEach(item => {
+                    item.classList.remove('dropdown-open');
+                });
+            }
+            
+            searchInterface.classList.add('active');
+            searchInterface.setAttribute('aria-hidden', 'false');
+            searchToggle.setAttribute('aria-expanded', 'true');
+            document.body.classList.add('search-active');
+            
+            // Focus the search input after a brief delay to ensure transition
+            setTimeout(() => {
+                if (searchInput) {
+                    searchInput.focus();
+                }
+            }, 100);
+        }
+
+        // Close search interface
+        function closeSearchInterface() {
+            searchInterface.classList.remove('active');
+            searchInterface.setAttribute('aria-hidden', 'true');
+            searchToggle.setAttribute('aria-expanded', 'false');
+            document.body.classList.remove('search-active');
+            
+            // Clear search input value when closing
+            if (searchInput) {
+                searchInput.value = '';
+            }
+        }
+
+        // Toggle search interface
+        searchToggle.addEventListener('click', function() {
+            console.log('Search toggle clicked');
+            const isOpen = searchInterface.classList.contains('active');
+            if (isOpen) {
+                console.log('Closing search interface');
+                closeSearchInterface();
+            } else {
+                console.log('Opening search interface');
+                openSearchInterface();
+            }
+        });
+
+        // Close search with close button
+        if (searchCloseBtn) {
+            searchCloseBtn.addEventListener('click', function() {
+                console.log('Search close button clicked');
+                closeSearchInterface();
+            });
+        }
+
+        // Close search on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && searchInterface.classList.contains('active')) {
+                closeSearchInterface();
+            }
+        });
+
+        // Close search when clicking outside
+        document.addEventListener('click', function(e) {
+            if (searchInterface.classList.contains('active') && 
+                !searchInterface.contains(e.target) && 
+                !searchToggle.contains(e.target)) {
+                closeSearchInterface();
+            }
+        });
+
+        // Functions are now handled via event listeners, no need for global scope
+    }
+
     // Mobile Menu Toggle
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const siteHeader = document.querySelector('.site-header');
@@ -20,6 +112,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     item.classList.remove('dropdown-open');
                 });
             } else {
+                // Close search interface if open
+                if (searchInterface && searchInterface.classList.contains('active')) {
+                    closeSearchInterface();
+                }
+                
                 siteHeader.classList.add('mobile-menu-open');
                 mobileMenuToggle.setAttribute('aria-expanded', 'true');
             }
@@ -478,7 +575,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Media gallery functionality
     const thumbnailButtons = document.querySelectorAll('.thumbnail-btn');
-    const mainMediaContainers = document.querySelectorAll('.main-media-container');
     
     thumbnailButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -505,55 +601,21 @@ document.addEventListener('DOMContentLoaded', function() {
             const mediaId = this.dataset.mediaId;
             
             if (mediaType === 'image') {
-                const newSrc = this.dataset.src;
-                const newSrcset = this.dataset.srcset;
                 const mainImage = mainMediaContainer.querySelector('img');
-                
                 if (mainImage) {
-                    mainImage.src = newSrc;
-                    if (newSrcset) {
-                        mainImage.srcset = newSrcset;
-                    }
-                    
-                    // Update zoom data if zoom is enabled
+                    mainImage.src = this.dataset.src;
+                    mainImage.srcset = this.dataset.srcset || '';
+                    mainImage.alt = this.querySelector('img')?.alt || '';
                     if (this.dataset.zoom) {
                         mainImage.dataset.zoom = this.dataset.zoom;
                     }
                 }
             } else if (mediaType === 'video') {
-                // Handle video switching
-                const videoHtml = this.dataset.videoHtml;
-                if (videoHtml) {
-                    const mediaContainer = mainMediaContainer.querySelector('.product-media');
-                    if (mediaContainer) {
-                        mediaContainer.innerHTML = videoHtml;
-                    }
-                }
+                mainMediaContainer.innerHTML = this.dataset.videoHtml;
             } else if (mediaType === 'external_video') {
-                // Handle external video switching
-                const externalVideoHtml = this.dataset.externalVideoHtml;
-                if (externalVideoHtml) {
-                    const mediaContainer = mainMediaContainer.querySelector('.product-media');
-                    if (mediaContainer) {
-                        mediaContainer.innerHTML = externalVideoHtml;
-                    }
-                }
+                mainMediaContainer.innerHTML = this.dataset.externalVideoHtml;
             } else if (mediaType === 'model') {
-                // Handle 3D model switching
-                const modelHtml = this.dataset.modelHtml;
-                if (modelHtml) {
-                    const mediaContainer = mainMediaContainer.querySelector('.product-media');
-                    if (mediaContainer) {
-                        mediaContainer.innerHTML = modelHtml;
-                    }
-                }
-            }
-            
-            // Update media container data attribute
-            const mediaContainer = mainMediaContainer.querySelector('.product-media');
-            if (mediaContainer) {
-                mediaContainer.dataset.mediaId = mediaId;
-                mediaContainer.dataset.mediaType = mediaType;
+                mainMediaContainer.innerHTML = this.dataset.modelHtml;
             }
         });
     });

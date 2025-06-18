@@ -90,49 +90,41 @@
       {% endfor %}
 
       {% if collection.products_count == 0 %}
-        <div class="collection-empty text-center">
-          <p class="h3">//:NO_PRODUCTS_IN_SELECTED_DATASTREAM//</p>
-          {% comment %} Show minimum number of placeholder cards when no products exist {% endcomment %}
-          {% for i in (1..section.settings.columns_desktop) %}
-            <div class="product-card placeholder">
-              <div class="product-image">
-                <div class="product-image-placeholder">
-                  {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
-                </div>
-              </div>
-              <div class="product-info">
-                <div class="product-content">
-                  <h3 class="product-name">EMPTY_SLOT</h3>
-                  <div class="product-price">€$ ---</div>
-                </div>
-                <div class="product-actions">
-                  <button class="btn btn-cta btn-product disabled" disabled>[OFFLINE]</button>
-                </div>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-      {% elsif collection.products_count < section.settings.columns_desktop %}
-        {% comment %} Show placeholder cards only if we have fewer than minimum products {% endcomment %}
-        {% assign remaining_slots = section.settings.columns_desktop | minus: collection.products_count %}
-        {% for i in (1..remaining_slots) %}
-          <div class="product-card placeholder">
-            <div class="product-image">
-              <div class="product-image-placeholder">
-                {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
-              </div>
-            </div>
+        {% comment %} Show placeholder cards based on the admin's products_to_show setting {% endcomment %}
+        {% for i in (1..section.settings.products_to_show) %}
+          <div class="product-card product-card-placeholder" style="border: none;">
+                          <div class="product-image" style="border: none;">
+               {%- assign image_height = section.settings.image_ratio -%}
+               {%- if section.settings.image_ratio == 'adapt' -%}
+                 {%- assign image_height = '100%' -%}
+               {%- endif -%}
+               <div class="product-image-wrapper" style="padding-bottom: {{ image_height }};">
+                 <div class="product-image-placeholder" style="border: 2px dashed var(--color-accent-cyan); opacity: 0.3;">
+                   {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
+                 </div>
+               </div>
+             </div>
             <div class="product-info">
               <div class="product-content">
-                <h3 class="product-name">EMPTY_SLOT</h3>
-                <div class="product-price">€$ ---</div>
+                <h3 class="product-name" style="opacity: 0.5;">EQUIPMENT_SLOT_{{ forloop.index }}</h3>
+                <div class="product-price" style="opacity: 0.5;">€$ ---</div>
               </div>
               <div class="product-actions">
-                <button class="btn btn-cta btn-product disabled" disabled>[OFFLINE]</button>
+                <button class="btn btn-cta btn-product disabled" disabled>[AWAITING_INVENTORY]</button>
               </div>
             </div>
           </div>
         {% endfor %}
+        {% if request.design_mode %}
+          <div class="collection-empty-admin" style="grid-column: 1 / -1; text-align: center; margin-top: var(--space-lg);">
+            <div class="data-box">
+              <div class="data-box-content">
+                <p><strong>Admin Notice:</strong> Add products to this collection to replace the placeholder cards above.</p>
+                <a href="/admin/products" class="btn btn-secondary mt-sm">[ADD_PRODUCTS]</a>
+              </div>
+            </div>
+          </div>
+        {% endif %}
       {% endif %}
     </div>
 
