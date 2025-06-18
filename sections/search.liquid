@@ -62,9 +62,14 @@
               <h2 class="empty-title">{{ 'search.no_results_title' | t | default: 'NO_RESULTS_FOUND' }}</h2>
             </div>
             <div class="empty-content">
-              <p class="empty-message">
-                {{ 'search.no_results_html' | t: terms: search.terms | default: "No results found for \"<strong>" | append: search.terms | append: "</strong>\". Check your spelling or try a different search term." }}
-              </p>
+                             <p class="empty-message">
+                 {% assign no_results_message = 'search.no_results_html' | t: terms: search.terms %}
+                 {% if no_results_message contains 'translation missing' %}
+                   No results found for "<strong>{{ search.terms }}</strong>". Check your spelling or try a different search term.
+                 {% else %}
+                   {{ no_results_message }}
+                 {% endif %}
+               </p>
               
               <div class="search-suggestions">
                 <h3 class="suggestions-title">{{ 'search.suggestions_title' | t | default: 'SEARCH_SUGGESTIONS:' }}</h3>
