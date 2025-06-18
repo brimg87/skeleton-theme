@@ -1,3 +1,4 @@
+
 {% comment %}
   This section is used in the search template to render search results for
   products, articles, and pages.
@@ -109,7 +110,7 @@
                     {{ 'search.results_found' | t | default: 'RESULTS_FOUND' }}
                   {% endif %}
                 </span>
-                <span class="search-terms">{{ 'search.for_terms' | t: terms: search.terms | default: 'FOR: "' | append: search.terms | append: '"' }}</span>
+                <span class="search-terms">{{ 'search.for_terms' | t: terms: search.terms }}</span>
               </div>
               {% if search.results_count > 20 %}
                 <div class="pagination-info">
