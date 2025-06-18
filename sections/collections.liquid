@@ -5,77 +5,88 @@
   https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
 {% endcomment %}
 
-<h1>{{ 'collections.title' | t }}</h1>
+<div class="collection-interface-section section-padding">
+  <div class="container">
+    {% if section.settings.show_heading %}
+      <h1 class="section-title" data-text="{{ 'collections.title' | t }}">
+        {{ 'collections.title' | t }}
+      </h1>
+    {% endif %}
 
-<div
-  class="collections {{ section.settings.grid_item_width }}"
-  style="--grid-gap: {{ section.settings.grid_gap }}px"
->
-  {% for collection in collections %}
-    <a class="collection-card" href="{{ collection.url }}">
-      {% if collection.featured_image %}
-        {% render 'image',
-          class: 'collection-card__image',
-          image: collection.featured_image,
-          width: 600,
-          height: 600,
-          crop: 'center'
-        %}
-      {% endif %}
+    <div class="collection-grid">
+      {% for collection in collections %}
+        <a class="collection-card" href="{{ collection.url }}">
+          <div class="collection-image-container">
+            {% if collection.featured_image %}
+              {% render 'image',
+                class: 'collection-image',
+                image: collection.featured_image,
+                width: 600,
+                height: 600,
+                crop: 'center'
+              %}
+            {% else %}
+              <div class="collection-image-placeholder">
+                <div class="collection-icon">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zM10 6a2 2 0 0 1 4 0v1h-4V6zm8 13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2v10z"/>
+                  </svg>
+                </div>
+              </div>
+            {% endif %}
+            
+            <div class="collection-overlay">
+              <div class="collection-stats">
+                <div class="product-count">
+                  {{ collection.products_count }}
+                  {% if collection.products_count == 1 %}
+                    {{ 'collections.general.item' | t }}
+                  {% else %}
+                    {{ 'collections.general.items' | t }}
+                  {% endif %}
+                </div>
+                <div class="status-indicator{% if collection.products_count == 0 %} status-empty{% endif %}">
+                  {% if collection.products_count == 0 %}
+                    {{ 'collections.general.no_products' | t }}
+                  {% else %}
+                    {{ 'collections.general.available' | t }}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
 
-      <div class="collection-card__content">
-        <p>{{ collection.title }}</p>
+          <div class="collection-info">
+            <h3 class="collection-title">{{ collection.title }}</h3>
 
-        {% if collection.description %}
-          <p>{{ collection.description | strip_html | truncatewords: 15 }}</p>
-        {% endif %}
-      </div>
-    </a>
-  {% endfor %}
+            {% if collection.description != blank %}
+              <p class="collection-description">{{ collection.description | strip_html | truncatewords: 15 }}</p>
+            {% endif %}
+
+            <div class="collection-cta">
+              <span>{{ 'collections.general.view_all' | t }}</span>
+              <span class="cta-arrow">→</span>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
 </div>
-
-{% stylesheet %}
-  .collections {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(var(--collection-card-size), 100%), 1fr));
-    gap: var(--grid-gap);
-  }
-  .collections--compact {
-    --collection-card-size: 160px;
-  }
-  .collections--full {
-    --collection-card-size: 280px;
-  }
-  .collection-card {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-{% endstylesheet %}
 
 {% schema %}
 {
   "name": "t:general.collections_grid",
   "settings": [
     {
-      "type": "select",
-      "id": "grid_item_width",
-      "label": "t:labels.grid_item_width",
-      "options": [
-        { "value": "collections--compact", "label": "t:options.size.small" },
-        { "value": "collections--full", "label": "t:options.size.large" }
-      ],
-      "default": "collections--full"
+      "type": "header",
+      "content": "Section"
     },
     {
-      "type": "range",
-      "id": "grid_gap",
-      "label": "t:labels.grid_gap",
-      "min": 0,
-      "max": 50,
-      "step": 5,
-      "unit": "px",
-      "default": 10
+      "type": "checkbox",
+      "id": "show_heading",
+      "label": "Show page heading",
+      "default": true
     }
   ],
   "presets": [{ "name": "t:general.collections_grid" }]

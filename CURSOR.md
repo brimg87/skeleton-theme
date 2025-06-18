@@ -1,3 +1,41 @@
+# 🚨 CRITICAL: SHOPIFY BEST PRACTICES FIRST
+
+## ⚠️ MANDATORY REVIEW PROCESS
+**BEFORE implementing ANY changes to this Shopify theme, you MUST:**
+
+1. **🔍 RESEARCH SHOPIFY BEST PRACTICES** using the Shopify MCP tools
+2. **📖 REVIEW official Shopify documentation** for the specific feature/change
+3. **🚫 NEVER use `!important` declarations** - use proper CSS specificity instead
+4. **🏗️ FOLLOW Shopify architecture patterns** (layouts for structure, sections for content)
+5. **📁 MAINTAIN clean file organization** - CSS in assets/style.css, JS in assets/script.js
+6. **🎯 USE semantic CSS class names** and proper variable systems
+7. **⚡ CONSIDER performance implications** of every change
+8. **🧪 TEST changes thoroughly** before committing
+
+## 🛡️ SHOPIFY ARCHITECTURE RULES
+- **Layouts**: Structure and HTML scaffolding only
+- **Sections**: Reusable content modules with styling
+- **Assets**: Single CSS file (style.css) and single JS file (script.js)
+- **Snippets**: Small, reusable Liquid code pieces
+- **CSS Variables**: Use the established color/spacing system
+- **Specificity**: Use `html.page-class` for page-specific overrides
+
+## 🚫 WHAT NOT TO DO
+- ❌ Never add `!important` declarations
+- ❌ Never create inline `<style>` or `<script>` tags in sections
+- ❌ Never hardcode colors or spacing values
+- ❌ Never create multiple CSS/JS files unnecessarily
+- ❌ Never skip the Shopify best practices research step
+
+## ✅ WHAT TO DO
+- ✅ Always use proper CSS specificity hierarchy
+- ✅ Always follow the established variable systems
+- ✅ Always maintain clean, semantic code
+- ✅ Always test on multiple devices/browsers
+- ✅ Always commit changes with descriptive messages
+
+---
+
 # Color System Documentation
 
 ## Overview
