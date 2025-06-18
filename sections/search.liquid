@@ -2,69 +2,316 @@
   This section is used in the search template to render search results for
   products, articles, and pages.
 
+  Following Shopify best practices:
+  - No inline styles - all CSS in main stylesheet
+  - Clear search experience with proper UX guidelines
+  - Support for different result types (products, articles, pages)
+  - Responsive design with cyberpunk theming
+  - Empty state messaging following 404 page patterns
+
   https://shopify.dev/docs/storefronts/themes/architecture/templates/search
 {% endcomment %}
 
-<h1>{{ 'search.title' | t }}</h1>
-
-<form action="{{ routes.search_url }}" method="get" role="search">
-  <input
-    type="search"
-    size="50"
-    name="q"
-    value="{{ search.terms | escape }}"
-    placeholder="{{ 'search.placeholder' | t }}"
-  >
-  <button type="submit">{{ 'search.submit' | t }}</button>
-</form>
-
-{% if search.performed %}
-  {% if search.results_count == 0 %}
-    <p>{{ 'search.no_results_html' | t: terms: search.terms }}</p>
-  {% else %}
-    <p>{{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}</p>
-
-    <div class="search-results">
-      {% paginate search.results by 20 %}
-        {% # Search result items may be an article, a page, or a product. %}
-        {% for result in search.results %}
-          <div class="search-result">
-            {% assign featured_image = result.featured_image | default: result.image %}
-            {% if featured_image %}
-              {% render 'image', class: 'search-result__image', image: featured_image, url: result.url, width: 400 %}
+<div class="search-interface-section section-padding">
+  <div class="container">
+    
+    {% comment %} Search Header and Form {% endcomment %}
+    <div class="search-header">
+      <div class="search-header-content data-box">
+        <div class="data-box-header">
+          <h1 class="search-title">
+            {% if search.performed %}
+              {{ 'search.results_title' | t | default: 'SEARCH_RESULTS' }}
+            {% else %}
+              {{ 'search.title' | t | default: 'SEARCH_INVENTORY' }}
             {% endif %}
-            <div class="search-result__content">
-              <p>
-                {{ result.title | link_to: result.url }}
-                {% if result.price %}
-                  {{ result.price | money_with_currency }}
-                {% endif %}
+          </h1>
+        </div>
+        
+        <div class="search-form-container">
+          <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
+            <div class="search-input-group">
+              <label for="search-input" class="visually-hidden">{{ 'search.label' | t | default: 'Search' }}</label>
+              <input
+                id="search-input"
+                type="search"
+                name="q"
+                value="{{ search.terms | escape }}"
+                placeholder="{{ 'search.placeholder' | t | default: 'Search inventory archives...' }}"
+                class="search-input"
+                autocomplete="off"
+                autocapitalize="off"
+                autocorrect="off"
+              >
+              <button type="submit" class="search-btn">
+                <span class="search-btn-text">{{ 'search.submit' | t | default: 'SEARCH' }}</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {% comment %} Search Results {% endcomment %}
+    {% if search.performed %}
+      {% if search.results_count == 0 %}
+        {% comment %} No Results State {% endcomment %}
+        <div class="search-empty-state">
+          <div class="empty-results data-box">
+            <div class="data-box-header">
+              <h2 class="empty-title">{{ 'search.no_results_title' | t | default: 'NO_RESULTS_FOUND' }}</h2>
+            </div>
+            <div class="empty-content">
+              <p class="empty-message">
+                {{ 'search.no_results_html' | t: terms: search.terms | default: "No results found for \"<strong>" | append: search.terms | append: "</strong>\". Check your spelling or try a different search term." }}
               </p>
+              
+              <div class="search-suggestions">
+                <h3 class="suggestions-title">{{ 'search.suggestions_title' | t | default: 'SEARCH_SUGGESTIONS:' }}</h3>
+                <ul class="suggestions-list">
+                  <li>{{ 'search.suggestion_1' | t | default: 'Try different keywords or phrases' }}</li>
+                  <li>{{ 'search.suggestion_2' | t | default: 'Check for typos in your search' }}</li>
+                  <li>{{ 'search.suggestion_3' | t | default: 'Use broader search terms' }}</li>
+                  <li>{{ 'search.suggestion_4' | t | default: 'Browse our collection catalog instead' }}</li>
+                </ul>
+              </div>
+              
+              <div class="search-actions">
+                <a href="{{ routes.root_url }}" class="btn btn-cta">
+                  {{ 'search.back_to_home' | t | default: 'RETURN_TO_BASE' }}
+                </a>
+                <a href="{{ routes.collections_url }}" class="btn btn-secondary">
+                  {{ 'search.browse_collections' | t | default: 'BROWSE_COLLECTIONS' }}
+                </a>
+              </div>
             </div>
           </div>
-        {% endfor %}
+        </div>
+        
+      {% else %}
+        {% comment %} Results Found {% endcomment %}
+        <div class="search-results-section">
+          
+          {% comment %} Results Summary {% endcomment %}
+          <div class="results-summary data-box">
+            <div class="summary-content">
+              <div class="results-info">
+                <span class="results-count terminal-green-glow">{{ search.results_count }}</span>
+                <span class="results-label">
+                  {% if search.results_count == 1 %}
+                    {{ 'search.result_found' | t | default: 'RESULT_FOUND' }}
+                  {% else %}
+                    {{ 'search.results_found' | t | default: 'RESULTS_FOUND' }}
+                  {% endif %}
+                </span>
+                <span class="search-terms">{{ 'search.for_terms' | t: terms: search.terms | default: 'FOR: "' | append: search.terms | append: '"' }}</span>
+              </div>
+              {% if search.results_count > 20 %}
+                <div class="pagination-info">
+                  <span class="page-indicator">PAGE_{{ paginate.current_page }}_OF_{{ paginate.pages }}</span>
+                </div>
+              {% endif %}
+            </div>
+          </div>
 
-        {{ paginate | default_pagination }}
-      {% endpaginate %}
-    </div>
-  {% endif %}
-{% endif %}
+          {% comment %} Search Results Grid {% endcomment %}
+          <div class="search-results-container">
+            {% paginate search.results by 20 %}
+              <div class="search-results-grid">
+                {% for result in search.results %}
+                  <div class="search-result-item" data-result-type="{{ result.object_type }}">
+                    
+                    {% comment %} Result Image {% endcomment %}
+                    <div class="result-image-container">
+                      {% assign featured_image = result.featured_image | default: result.image %}
+                      {% if featured_image %}
+                        <a href="{{ result.url }}" class="result-image-link">
+                          {% render 'image', 
+                            class: 'result-image', 
+                            image: featured_image, 
+                            width: 300,
+                            loading: 'lazy'
+                          %}
+                        </a>
+                      {% else %}
+                        <div class="result-image-placeholder">
+                          <div class="placeholder-icon">
+                            {% case result.object_type %}
+                              {% when 'product' %}
+                                <span class="icon-product">📦</span>
+                              {% when 'article' %}
+                                <span class="icon-article">📄</span>
+                              {% when 'page' %}
+                                <span class="icon-page">📃</span>
+                              {% else %}
+                                <span class="icon-default">🔍</span>
+                            {% endcase %}
+                          </div>
+                        </div>
+                      {% endif %}
+                      
+                      {% comment %} Result Type Badge {% endcomment %}
+                      <div class="result-type-badge {{ result.object_type }}-badge">
+                        {% case result.object_type %}
+                          {% when 'product' %}
+                            {{ 'search.type_product' | t | default: 'PRODUCT' }}
+                          {% when 'article' %}
+                            {{ 'search.type_article' | t | default: 'ARTICLE' }}
+                          {% when 'page' %}
+                            {{ 'search.type_page' | t | default: 'PAGE' }}
+                          {% else %}
+                            {{ result.object_type | upcase }}
+                        {% endcase %}
+                      </div>
+                    </div>
 
-{% stylesheet %}
-  .search-results {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
-  .search-results .prev,
-  .search-results .page,
-  .search-results .next {
-    grid-column: 1 / -1;
-  }
-{% endstylesheet %}
+                    {% comment %} Result Content {% endcomment %}
+                    <div class="result-content">
+                      <div class="result-header">
+                        <h3 class="result-title">
+                          <a href="{{ result.url }}" class="result-link">{{ result.title | truncate: 60 }}</a>
+                        </h3>
+                      </div>
+                      
+                      {% comment %} Product-specific information {% endcomment %}
+                      {% if result.object_type == 'product' %}
+                        <div class="result-product-info">
+                          {% if result.price %}
+                            <div class="result-price">
+                              {% if result.compare_at_price and result.compare_at_price > result.price %}
+                                <span class="price-compare">{{ result.compare_at_price | money_with_currency }}</span>
+                              {% endif %}
+                              <span class="price-current terminal-green-glow">{{ result.price | money_with_currency }}</span>
+                            </div>
+                          {% endif %}
+                          
+                          {% if result.vendor %}
+                            <div class="result-vendor">
+                              <span class="vendor-label">{{ 'search.vendor' | t | default: 'MFG:' }}</span>
+                              <span class="vendor-name">{{ result.vendor }}</span>
+                            </div>
+                          {% endif %}
+                          
+                          {% if result.available == false %}
+                            <div class="result-availability unavailable">
+                              {{ 'search.unavailable' | t | default: 'UNAVAILABLE' }}
+                            </div>
+                          {% endif %}
+                        </div>
+                      {% endif %}
+                      
+                      {% comment %} Content excerpt {% endcomment %}
+                      {% if result.excerpt or result.summary %}
+                        <div class="result-excerpt">
+                          <p>{{ result.excerpt | default: result.summary | strip_html | truncate: 120 }}</p>
+                        </div>
+                      {% endif %}
+                      
+                      {% comment %} Article-specific information {% endcomment %}
+                      {% if result.object_type == 'article' and result.published_at %}
+                        <div class="result-meta">
+                          <span class="meta-date">{{ result.published_at | date: '%B %d, %Y' }}</span>
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+
+              {% comment %} Pagination {% endcomment %}
+              {% if paginate.pages > 1 %}
+                <div class="search-pagination">
+                  <div class="pagination-terminal data-box">
+                    <div class="pagination-content">
+                      {% if paginate.previous %}
+                        <a href="{{ paginate.previous.url }}" class="pagination-btn prev-btn">
+                          <span class="btn-text">{{ 'search.previous' | t | default: 'PREVIOUS' }}</span>
+                        </a>
+                      {% endif %}
+                      
+                      <div class="pagination-info">
+                        <span class="page-indicator">{{ 'search.page_indicator' | t: current: paginate.current_page, total: paginate.pages | default: 'PAGE ' | append: paginate.current_page | append: ' OF ' | append: paginate.pages }}</span>
+                        <span class="results-indicator">{{ 'search.results_indicator' | t: count: search.results_count | default: search.results_count | append: ' TOTAL RESULTS' }}</span>
+                      </div>
+                      
+                      {% if paginate.next %}
+                        <a href="{{ paginate.next.url }}" class="pagination-btn next-btn">
+                          <span class="btn-text">{{ 'search.next' | t | default: 'NEXT' }}</span>
+                        </a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+            {% endpaginate %}
+          </div>
+        </div>
+      {% endif %}
+    {% else %}
+      {% comment %} Initial Search State {% endcomment %}
+      <div class="search-initial-state">
+        <div class="search-welcome data-box">
+          <div class="welcome-content">
+            <h2 class="welcome-title">{{ 'search.welcome_title' | t | default: 'INVENTORY_SEARCH_SYSTEM' }}</h2>
+            <p class="welcome-description">
+              {{ 'search.welcome_description' | t | default: 'Search our complete inventory database for products, documentation, and archived entries. Use keywords, product codes, or descriptions to find what you need.' }}
+            </p>
+            
+            <div class="search-tips">
+              <h3 class="tips-title">{{ 'search.tips_title' | t | default: 'SEARCH_PROTOCOLS:' }}</h3>
+              <ul class="tips-list">
+                <li>{{ 'search.tip_1' | t | default: 'Use specific product names or codes for precise results' }}</li>
+                <li>{{ 'search.tip_2' | t | default: 'Search by manufacturer or category for broader discovery' }}</li>
+                <li>{{ 'search.tip_3' | t | default: 'Include model numbers when searching for specific variants' }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
 
 {% schema %}
 {
   "name": "t:general.search",
-  "settings": []
+  "settings": [
+    {
+      "type": "header",
+      "content": "Search Interface"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search_tips",
+      "label": "Show search tips on initial load",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "results_per_page",
+      "min": 12,
+      "max": 48,
+      "step": 4,
+      "unit": "results",
+      "label": "Results per page",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Display Options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show product vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_result_excerpts",
+      "label": "Show content excerpts",
+      "default": true
+    }
+  ]
 }
 {% endschema %}
