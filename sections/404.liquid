@@ -2,22 +2,194 @@
   This section is used in the 404 template to render page shown when customers
   enter an invalid store URL.
 
+  Following Shopify best practices:
+  - Clear indication the page wasn't found
+  - Multiple options for how to proceed
+  - Search functionality to help find content
+  - Links to popular/important pages
+  - Consistent with cyberpunk theme aesthetic
+
   https://shopify.dev/docs/storefronts/themes/architecture/templates/404
 {% endcomment %}
 
-<h1>{{ '404.title' | t }}</h1>
+<div class="error-interface-section section-padding">
+  <div class="container">
+    
+    {%- comment -%} Error Status Display {%- endcomment -%}
+    <div class="error-status-container">
+      <div class="error-code data-box">
+        <div class="data-box-header">
+          <h2 class="data-box-title">[SYSTEM_ERROR_404]</h2>
+        </div>
+        <div class="data-box-content">
+          <div class="error-details">
+            <div class="error-type">
+              <span class="diag-label">Error Type:</span>
+              <span class="diag-value">{{ '404.title' | t }}</span>
+            </div>
+            <div class="error-description">
+              <span class="diag-label">Status:</span>
+              <span class="diag-value status-error">{{ '404.not_found' | t }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<p>
-  {{ '404.not_found' | t }}
-</p>
+    {%- comment -%} Navigation Recovery Interface {%- endcomment -%}
+    <div class="recovery-interface">
+      
+      {%- comment -%} Search Module {%- endcomment -%}
+      <div class="recovery-module data-box">
+        <div class="data-box-header">
+          <h3 class="data-box-title">[SEARCH_PROTOCOLS]</h3>
+        </div>
+        <div class="data-box-content">
+          <p class="module-description">{{ '404.search_help' | t | default: 'Search our inventory systems to find what you\'re looking for:' }}</p>
+          <form action="{{ routes.search_url }}" method="get" class="error-search-form">
+            <div class="search-input-group">
+              <input type="search" 
+                     name="q" 
+                     placeholder="{{ '404.search_placeholder' | t | default: 'Search inventory...' }}"
+                     class="search-input form-input"
+                     aria-label="{{ '404.search_label' | t | default: 'Search products' }}">
+              <button type="submit" class="search-btn btn btn-cta">
+                {{ '404.search_button' | t | default: 'Search' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
 
-<a href="{{ routes.all_products_collection_url }}">
-  {{ '404.back_to_shopping' | t }}
-</a>
+      {%- comment -%} Quick Navigation Module {%- endcomment -%}
+      <div class="recovery-module data-box">
+        <div class="data-box-header">
+          <h3 class="data-box-title">[NAVIGATION_PROTOCOLS]</h3>
+        </div>
+        <div class="data-box-content">
+          <p class="module-description">{{ '404.navigation_help' | t | default: 'Access primary navigation systems:' }}</p>
+          <div class="recovery-actions">
+            <a href="{{ routes.root_url }}" class="recovery-btn btn btn-cta-primary">
+              {{ '404.go_home' | t | default: 'Return to Base' }}
+            </a>
+            <a href="{{ routes.all_products_collection_url }}" class="recovery-btn btn btn-cta">
+              {{ '404.back_to_shopping' | t }}
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%} Collection Links Module {%- endcomment -%}
+      {%- if collections.size > 0 -%}
+      <div class="recovery-module data-box">
+        <div class="data-box-header">
+          <h3 class="data-box-title">[INVENTORY_ACCESS]</h3>
+        </div>
+        <div class="data-box-content">
+          <p class="module-description">{{ '404.collections_help' | t | default: 'Browse available inventory categories:' }}</p>
+          <div class="collection-links">
+            {%- for collection in collections limit: 6 -%}
+              {%- unless collection.id == blank -%}
+              <a href="{{ collection.url }}" class="collection-link">
+                {{ collection.title }}
+              </a>
+              {%- endunless -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+      {%- endif -%}
+
+      {%- comment -%} Contact Module {%- endcomment -%}
+      <div class="recovery-module data-box">
+        <div class="data-box-header">
+          <h3 class="data-box-title">[SUPPORT_PROTOCOLS]</h3>
+        </div>
+        <div class="data-box-content">
+          <p class="module-description">{{ '404.contact_help' | t | default: 'Need assistance? Contact station operations:' }}</p>
+          <div class="support-actions">
+            {%- if pages['contact'] -%}
+            <a href="{{ pages['contact'].url }}" class="support-btn btn btn-secondary">
+              {{ '404.contact_us' | t | default: 'Contact Support' }}
+            </a>
+            {%- endif -%}
+            {%- if settings.email -%}
+            <a href="mailto:{{ settings.email }}" class="support-btn btn btn-secondary">
+              {{ '404.email_support' | t | default: 'Send Message' }}
+            </a>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    {%- comment -%} System Status Footer {%- endcomment -%}
+    <div class="error-footer">
+      <div class="system-status">
+        <span class="status-label">System Status:</span>
+        <span class="status-value status-operational">All other systems operational</span>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 {% schema %}
 {
   "name": "t:general.404",
-  "settings": []
+  "settings": [
+    {
+      "type": "header",
+      "content": "Error Page Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search module",
+      "default": true
+    },
+    {
+      "type": "checkbox", 
+      "id": "show_collections",
+      "label": "Show collection links",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_contact",
+      "label": "Show support module", 
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "404 Error Page"
+    }
+  ]
 }
 {% endschema %}
