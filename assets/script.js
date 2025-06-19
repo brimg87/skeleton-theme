@@ -96,16 +96,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Functions are now handled via event listeners, no need for global scope
     }
 
-    // Mobile Menu Toggle
+    // --- Mobile Navigation Toggle ---
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-    const siteHeader = document.querySelector('.site-header');
-    
-    if (mobileMenuToggle && siteHeader) {
-        mobileMenuToggle.addEventListener('click', function() {
-            const isOpen = siteHeader.classList.contains('mobile-menu-open');
-            
+    const mainNav = document.querySelector('.main-nav'); // We can use this to check if the menu exists
+    const body = document.body;
+
+    if (mobileMenuToggle && mainNav) {
+        mobileMenuToggle.addEventListener('click', () => {
+            const isOpen = body.classList.contains('mobile-menu-open');
             if (isOpen) {
-                siteHeader.classList.remove('mobile-menu-open');
+                body.classList.remove('mobile-menu-open');
                 mobileMenuToggle.setAttribute('aria-expanded', 'false');
                 // Close any open dropdowns
                 document.querySelectorAll('.has-dropdown.dropdown-open').forEach(item => {
@@ -113,11 +113,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             } else {
                 // Close search interface if open
+                const searchInterface = document.getElementById('searchInterface');
                 if (searchInterface && searchInterface.classList.contains('active')) {
-                    closeSearchInterface();
+                    // Call closeSearchInterface if it exists
+                    if (typeof closeSearchInterface === 'function') {
+                        closeSearchInterface();
+                    } else {
+                        // Fallback: manually close search interface
+                        searchInterface.classList.remove('active');
+                        searchInterface.setAttribute('aria-hidden', 'true');
+                        const searchToggle = document.querySelector('.search-toggle');
+                        if (searchToggle) {
+                            searchToggle.setAttribute('aria-expanded', 'false');
+                        }
+                        document.body.classList.remove('search-active');
+                    }
                 }
                 
-                siteHeader.classList.add('mobile-menu-open');
+                body.classList.add('mobile-menu-open');
                 mobileMenuToggle.setAttribute('aria-expanded', 'true');
             }
         });
@@ -150,9 +163,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Close mobile menu when clicking outside
+        const siteHeader = document.querySelector('.site-header');
         document.addEventListener('click', function(e) {
-            if (!siteHeader.contains(e.target) && siteHeader.classList.contains('mobile-menu-open')) {
-                siteHeader.classList.remove('mobile-menu-open');
+            if (siteHeader && !siteHeader.contains(e.target) && body.classList.contains('mobile-menu-open')) {
+                body.classList.remove('mobile-menu-open');
                 mobileMenuToggle.setAttribute('aria-expanded', 'false');
                 // Close any open dropdowns
                 document.querySelectorAll('.has-dropdown.dropdown-open').forEach(item => {
@@ -163,8 +177,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Close mobile menu on window resize if it gets too wide
         window.addEventListener('resize', function() {
-            if (window.innerWidth > 989 && siteHeader.classList.contains('mobile-menu-open')) {
-                siteHeader.classList.remove('mobile-menu-open');
+            if (window.innerWidth > 989 && body.classList.contains('mobile-menu-open')) {
+                body.classList.remove('mobile-menu-open');
                 mobileMenuToggle.setAttribute('aria-expanded', 'false');
                 // Close any open dropdowns
                 document.querySelectorAll('.has-dropdown.dropdown-open').forEach(item => {
