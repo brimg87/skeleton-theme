@@ -105,7 +105,7 @@
                   {% if item.product.product_type == 'Transmission Log' %}
                     <div class="archive-controls">
                       <span class="archive-status">[NOT_AVAILABLE_FOR_PURCHASE]</span>
-                      <a href="{{ item.url_to_remove }}" class="btn btn-secondary btn-remove" aria-label="Remove {{ item.product.title | escape }} from cart">
+                      <a href="{{ item.url_to_remove }}" class="btn btn-danger btn-sm" aria-label="Remove {{ item.product.title | escape }} from cart">
                         [REMOVE_FROM_MANIFEST]
                       </a>
                     </div>
@@ -126,7 +126,7 @@
                       </div>
                     </div>
                     
-                    <a href="{{ item.url_to_remove }}" class="btn btn-secondary btn-remove" aria-label="Remove {{ item.product.title | escape }} from cart">
+                    <a href="{{ item.url_to_remove }}" class="btn btn-danger btn-sm" aria-label="Remove {{ item.product.title | escape }} from cart">
                       [REMOVE]
                     </a>
                   {% endif %}
@@ -151,7 +151,7 @@
               </div>
               
               <div class="checkout-buttons">
-                <button type="submit" name="checkout" class="btn btn-cta-primary btn-checkout">
+                <button type="submit" name="checkout" class="btn btn-success btn-lg">
                   [INITIATE_CHECKOUT_SEQUENCE]
                 </button>
               </div>
@@ -169,7 +169,7 @@
             Your armory inventory is currently empty. Browse our catalog to add items to your manifest.
           </p>
           <div class="empty-actions">
-            <a href="{{ routes.collections_url }}" class="btn btn-cta">
+            <a href="{{ routes.collections_url }}" class="btn btn-secondary">
               [ACCESS_CATALOG]
             </a>
           </div>

@@ -53,7 +53,7 @@
                      placeholder="{{ '404.search_placeholder' | t | default: 'Search inventory...' }}"
                      class="search-input form-input"
                      aria-label="{{ '404.search_label' | t | default: 'Search products' }}">
-              <button type="submit" class="search-btn btn btn-cta">
+              <button type="submit" class="search-btn btn btn-secondary">
                 {{ '404.search_button' | t | default: 'Search' }}
               </button>
             </div>
@@ -69,10 +69,10 @@
         <div class="data-box-content">
           <p class="module-description">{{ '404.navigation_help' | t | default: 'Access primary navigation systems:' }}</p>
           <div class="recovery-actions">
-            <a href="{{ routes.root_url }}" class="recovery-btn btn btn-cta-primary">
+            <a href="{{ routes.root_url }}" class="recovery-btn btn btn-primary btn-lg">
               {{ '404.go_home' | t | default: 'Return to Base' }}
             </a>
-            <a href="{{ routes.all_products_collection_url }}" class="recovery-btn btn btn-cta">
+                          <a href="{{ routes.all_products_collection_url }}" class="recovery-btn btn btn-secondary">
               {{ '404.back_to_shopping' | t }}
             </a>
           </div>
@@ -109,12 +109,12 @@
           <p class="module-description">{{ '404.contact_help' | t | default: 'Need assistance? Contact station operations:' }}</p>
           <div class="support-actions">
             {%- if pages['contact'] -%}
-            <a href="{{ pages['contact'].url }}" class="support-btn btn btn-secondary">
+                          <a href="{{ pages['contact'].url }}" class="support-btn btn btn-tertiary">
               {{ '404.contact_us' | t | default: 'Contact Support' }}
             </a>
             {%- endif -%}
             {%- if settings.email -%}
-            <a href="mailto:{{ settings.email }}" class="support-btn btn btn-secondary">
+                          <a href="mailto:{{ settings.email }}" class="support-btn btn btn-tertiary">
               {{ '404.email_support' | t | default: 'Send Message' }}
             </a>
             {%- endif -%}

@@ -20,7 +20,7 @@
             <p class="sub-hero-text">{{ section.settings.sub_heading | escape }}</p>
         {% endif %}
         {% if section.settings.button_label != blank and section.settings.button_link != blank %}
-            <a href="{{ section.settings.button_link }}" class="btn btn-cta btn-product">
+            <a href="{{ section.settings.button_link }}" class="btn btn-primary btn-lg">
               {{ section.settings.button_label | escape }}
             </a>
         {% endif %}

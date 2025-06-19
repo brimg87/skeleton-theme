@@ -296,14 +296,14 @@
       <div class="actions-content">
         
         <div class="action-buttons">
-          <a href="{{ routes.account_url }}" class="btn btn-secondary">
+                      <a href="{{ routes.account_url }}" class="btn btn-tertiary">
             [RETURN_TO_ACCOUNT]
           </a>
           
           {% if order.fulfillment_status == 'fulfilled' %}
             {% for line_item in order.line_items %}
               {% if line_item.fulfillment.tracking_url %}
-                <a href="{{ line_item.fulfillment.tracking_url }}" class="btn btn-cta" target="_blank">
+                <a href="{{ line_item.fulfillment.tracking_url }}" class="btn btn-secondary btn-sm" target="_blank">
                   [TRACK_SHIPMENT]
                 </a>
                 {% break %}
@@ -311,7 +311,7 @@
             {% endfor %}
           {% endif %}
 
-          <a href="/pages/contact" class="btn btn-secondary">
+                      <a href="/pages/contact" class="btn btn-tertiary btn-sm">
             [CONTACT_SUPPORT]
           </a>
         </div>

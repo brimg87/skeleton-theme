@@ -150,7 +150,7 @@
                   </div>
 
                   <div class="order-actions">
-                    <a href="{{ order.customer_url }}" class="btn btn-cta">
+                    <a href="{{ order.customer_url }}" class="btn btn-secondary btn-sm">
                       [VIEW_DETAILS]
                     </a>
                     
@@ -164,7 +164,7 @@
                       {% endfor %}
                       
                       {% if tracking_available %}
-                        <a href="{{ order.customer_url }}#tracking" class="btn btn-secondary">
+                        <a href="{{ order.customer_url }}#tracking" class="btn btn-tertiary btn-sm">
                           [TRACK]
                         </a>
                       {% endif %}
@@ -220,7 +220,7 @@
           </p>
           
           <div class="empty-actions">
-            <a href="{{ routes.collections_url }}" class="btn btn-cta-primary">
+            <a href="{{ routes.collections_url }}" class="btn btn-primary btn-lg">
               [ACCESS_CATALOG]
             </a>
           </div>
@@ -236,15 +236,15 @@
       <div class="actions-content">
         
         <div class="action-buttons">
-          <a href="{{ routes.account_url }}" class="btn btn-secondary">
+                      <a href="{{ routes.account_url }}" class="btn btn-tertiary">
             [ACCOUNT_OVERVIEW]
           </a>
           
-          <a href="{{ routes.account_addresses_url }}" class="btn btn-secondary">
+                      <a href="{{ routes.account_addresses_url }}" class="btn btn-tertiary">
             [ADDRESSES]
           </a>
           
-          <a href="/pages/contact" class="btn btn-secondary">
+                      <a href="/pages/contact" class="btn btn-tertiary">
             [SUPPORT]
           </a>
         </div>

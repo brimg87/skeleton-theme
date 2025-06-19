@@ -336,7 +336,7 @@
                   
                   <button type="submit" 
                           name="add" 
-                          class="btn btn-cta-primary product-page-cta" 
+                          class="btn btn-success btn-lg product-page-cta" 
                           {% unless product.selected_or_first_available_variant.available %}disabled="disabled"{% endunless %}
                           aria-describedby="ProductPrice-{{ section.id }}"
                           data-add-text="{{ section.settings.add_to_cart_text | default: '[ADD_TO_INVENTORY_CORE]' }}"

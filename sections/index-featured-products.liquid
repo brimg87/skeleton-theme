@@ -76,11 +76,11 @@
             </div>
             <div class="product-actions">
               {% if product.available %}
-                <a href="{{ product.url | within: collection }}" class="btn btn-cta btn-product" aria-describedby="product-{{ product.id }}-price">
+                <a href="{{ product.url | within: collection }}" class="btn btn-secondary" aria-describedby="product-{{ product.id }}-price">
                   {{ section.settings.button_label | default: '[ANALYZE_ITEM]' }}
                 </a>
               {% else %}
-                <button class="btn btn-cta btn-product disabled" disabled>
+                <button class="btn btn-secondary disabled" disabled>
                   [OUT_OF_STOCK]
                 </button>
               {% endif %}
@@ -110,7 +110,7 @@
                 <div class="product-price" style="opacity: 0.5;">€$ ---</div>
               </div>
               <div class="product-actions">
-                <button class="btn btn-cta btn-product disabled" disabled>[AWAITING_INVENTORY]</button>
+                <button class="btn btn-secondary disabled" disabled>[AWAITING_INVENTORY]</button>
               </div>
             </div>
           </div>
@@ -120,7 +120,7 @@
             <div class="data-box">
               <div class="data-box-content">
                 <p><strong>Admin Notice:</strong> Add products to this collection to replace the placeholder cards above.</p>
-                <a href="/admin/products" class="btn btn-secondary mt-sm">[ADD_PRODUCTS]</a>
+                <a href="/admin/products" class="btn btn-tertiary btn-sm mt-sm">[ADD_PRODUCTS]</a>
               </div>
             </div>
           </div>
