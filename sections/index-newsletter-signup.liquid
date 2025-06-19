@@ -19,15 +19,17 @@
 
 <section class="section-newsletter-signup {{ text_align_class }} section-wrapper">
   <div class="container">
-    {%- if section.settings.title != blank -%}
-      <h2 class="section-title" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
-    {%- endif -%}
-    
-    {%- if section.settings.description != blank -%}
-      <div class="section-subheader">
-        <p class="terminal-subtext">{{ section.settings.description }}</p>
-      </div>
-    {%- endif -%}
+    <div class="section-header {{ text_align_class }}">
+      {%- if section.settings.title != blank -%}
+        <h2 class="section-title" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
+      {%- endif -%}
+      
+      {%- if section.settings.description != blank -%}
+        <div class="section-description">
+          <p class="terminal-subtext">{{ section.settings.description }}</p>
+        </div>
+      {%- endif -%}
+    </div>
 
     {%- form 'customer', class: 'signup-form' -%}
       <input type="hidden" name="contact[tags]" value="newsletter">

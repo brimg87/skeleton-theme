@@ -27,7 +27,9 @@
 >
   <div class="container">
     {%- if title_text != blank -%}
-      <h2 class="section-title" data-text="{{ title_text | escape }}">{{ title_text | escape }}</h2>
+      <div class="section-header {{ text_align_class }}">
+        <h2 class="section-title" data-text="{{ title_text | escape }}">{{ title_text | escape }}</h2>
+      </div>
     {%- endif -%}
     
     <div class="custom-message-content data-box">

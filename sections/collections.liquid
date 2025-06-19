@@ -8,9 +8,11 @@
 <div class="collection-interface-section section-wrapper section-wrapper-header-offset">
   <div class="container">
     {% if section.settings.show_heading %}
-      <h1 class="section-title" data-text="{{ 'collections.title' | t }}">
-        {{ 'collections.title' | t }}
-      </h1>
+      <div class="section-header text-center">
+        <h1 class="section-title" data-text="{{ 'collections.title' | t }}">
+          {{ 'collections.title' | t }}
+        </h1>
+      </div>
     {% endif %}
 
     <div class="collection-grid">
