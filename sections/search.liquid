@@ -44,8 +44,8 @@
                 autocapitalize="off"
                 autocorrect="off"
               >
-              <button type="submit" class="search-btn">
-                <span class="search-btn-text">{{ 'search.submit' | t | default: 'SEARCH' }}</span>
+              <button type="submit" class="btn btn-primary">
+                <span class="btn-text">{{ 'search.submit' | t | default: 'SEARCH' }}</span>
               </button>
             </div>
           </form>
@@ -230,7 +230,7 @@
                   <div class="pagination-terminal data-box">
                     <div class="pagination-content">
                       {% if paginate.previous %}
-                        <a href="{{ paginate.previous.url }}" class="pagination-btn prev-btn">
+                        <a href="{{ paginate.previous.url }}" class="btn btn-secondary btn-sm">
                           <span class="btn-text">{{ 'search.previous' | t | default: 'PREVIOUS' }}</span>
                         </a>
                       {% endif %}
@@ -241,7 +241,7 @@
                       </div>
                       
                       {% if paginate.next %}
-                        <a href="{{ paginate.next.url }}" class="pagination-btn next-btn">
+                        <a href="{{ paginate.next.url }}" class="btn btn-secondary btn-sm">
                           <span class="btn-text">{{ 'search.next' | t | default: 'NEXT' }}</span>
                         </a>
                       {% endif %}

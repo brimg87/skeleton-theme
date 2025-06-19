@@ -38,15 +38,15 @@
     {%- if section.settings.show_blog_navigation -%}
       <nav class="blog-navigation" aria-label="Blog categories">
         <div class="nav-buttons">
-          <a href="{{ blogs['update-log'].url }}" 
-             class="nav-button {% if blog.handle == 'update-log' %}active{% endif %}"
-             aria-label="View Update Log">
+          <a href="{{ blogs['update-log'].url }}"
+             class="btn btn-secondary {% if blog.handle == 'update-log' %}active{% endif %}"
+             aria-current="{% if blog.handle == 'update-log' %}page{% endif %}">
             [UPDATE_LOG]
           </a>
-          <a href="{{ blogs['manuals-guides'].url }}" 
-             class="nav-button {% if blog.handle == 'manuals-guides' %}active{% endif %}"
-             aria-label="View Manuals and Guides">
-            [MANUALS_&_GUIDES]
+          <a href="{{ blogs['manuals-guides'].url }}"
+             class="btn btn-secondary {% if blog.handle == 'manuals-guides' %}active{% endif %}"
+             aria-current="{% if blog.handle == 'manuals-guides' %}page{% endif %}">
+            [TECHNICAL_MANUALS]
           </a>
         </div>
       </nav>
@@ -121,7 +121,7 @@
                   {%- endif -%}
 
                   <div class="article-actions">
-                    <a href="{{ article.url }}" class="read-more-button" aria-label="Read full article: {{ article.title | escape }}">
+                    <a href="{{ article.url }}" class="btn btn-secondary btn-sm" aria-label="Read full article: {{ article.title | escape }}">
                       {% if blog.handle == 'update-log' %}
                         [VIEW_UPDATE]
                       {% elsif blog.handle == 'manuals-guides' %}
@@ -156,8 +156,8 @@
           <nav class="pagination-wrapper" aria-label="Blog pagination">
             <div class="pagination">
               {%- if paginate.previous -%}
-                <a href="{{ paginate.previous.url }}" class="pagination-button prev" aria-label="Previous page">
-                  [PREV]
+                <a href="{{ paginate.previous.url }}" class="btn btn-secondary btn-sm" aria-label="Previous page">
+                  [PREV_PAGE]
                 </a>
               {%- endif -%}
               
@@ -166,8 +166,8 @@
               </span>
               
               {%- if paginate.next -%}
-                <a href="{{ paginate.next.url }}" class="pagination-button next" aria-label="Next page">
-                  [NEXT]
+                <a href="{{ paginate.next.url }}" class="btn btn-secondary btn-sm" aria-label="Next page">
+                  [NEXT_PAGE]
                 </a>
               {%- endif -%}
             </div>

@@ -180,7 +180,7 @@
                 <nav class="comments-pagination" aria-label="Comments pagination">
                   <div class="pagination">
                     {%- if paginate.previous -%}
-                      <a href="{{ paginate.previous.url }}#comments" class="pagination-button prev">
+                      <a href="{{ paginate.previous.url }}#comments" class="btn btn-secondary btn-sm">
                         [PREV_COMMENTS]
                       </a>
                     {%- endif -%}
@@ -190,7 +190,7 @@
                     </span>
                     
                     {%- if paginate.next -%}
-                      <a href="{{ paginate.next.url }}#comments" class="pagination-button next">
+                      <a href="{{ paginate.next.url }}#comments" class="btn btn-secondary btn-sm">
                         [NEXT_COMMENTS]
                       </a>
                     {%- endif -%}
@@ -246,8 +246,8 @@
               </div>
 
               <div class="form-actions">
-                <button type="submit" class="submit-button">
-                  [TRANSMIT_COMMENT]
+                <button type="submit" class="btn btn-primary">
+                  [SUBMIT_COMMENT]
                 </button>
               </div>
             </div>

@@ -98,14 +98,14 @@
                                 {% endfor %}
                               {% endunless %}
                             {% endfor %}
-                            <button type="submit" class="filter-reset-button filter-apply" aria-label="Apply price filter">[APPLY]</button>
+                            <button type="submit" class="btn btn-success btn-sm" aria-label="Apply price filter">[APPLY]</button>
                           </form>
                         </li>
                   {%- endcase -%}
                 </ul>
               </div>
             {%- endfor -%}
-            <a href="{{ collection.url }}" class="filter-reset-button" aria-label="Reset all filters">[RESET_FILTERS]</a>
+            <a href="{{ collection.url }}" class="btn btn-secondary btn-sm" aria-label="Reset all filters">[RESET_FILTERS]</a>
           </div>
         </aside>
       {% endif %}

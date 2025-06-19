@@ -273,7 +273,7 @@ Custom product page for archive items - no commerce, just detailed case files
       <div class="nav-terminal data-box">
         <div class="data-box-header">//: ARCHIVE_NAVIGATION ://</div>
         <div class="nav-actions">
-          <a href="{{ collections['transmission-log'].url }}" class="nav-button primary">
+          <a href="{{ collections['transmission-log'].url }}" class="btn btn-primary">
             [RETURN_TO_ARCHIVE]
           </a>
           
@@ -289,7 +289,7 @@ Custom product page for archive items - no commerce, just detailed case files
           {% if current_index and current_index > 0 %}
             {% assign prev_product = current_collection.products[current_index] | minus: 1 %}
             {% assign prev_product = current_collection.products[prev_product] %}
-            <a href="{{ prev_product.url }}" class="nav-button secondary">
+            <a href="{{ prev_product.url }}" class="btn btn-secondary">
               [PREV_ENTRY]
             </a>
           {% endif %}
@@ -297,7 +297,7 @@ Custom product page for archive items - no commerce, just detailed case files
           {% if current_index and current_index < current_collection.products.size | minus: 1 %}
             {% assign next_index = current_index | plus: 1 %}
             {% assign next_product = current_collection.products[next_index] %}
-            <a href="{{ next_product.url }}" class="nav-button secondary">
+            <a href="{{ next_product.url }}" class="btn btn-secondary">
               [NEXT_ENTRY]
             </a>
           {% endif %}

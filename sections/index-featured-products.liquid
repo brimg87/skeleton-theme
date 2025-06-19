@@ -1,130 +1,79 @@
-<section id="featured-products-{{ section.id }}" class="section-wrapper">
+{% comment %}
+  Refactored Featured Products Section
+  - Removes external CSS dependency.
+  - Uses standardized .section-wrapper and .container classes.
+  - Relies on global .product-grid CSS for layout.
+  - Simplifies product card HTML to match our .product-card component.
+  - Removes redundant schema settings for layout and padding.
+{% endcomment %}
+
+<section class="section-wrapper section-standard">
   <div class="container">
-    {% if section.settings.title != blank %}
+    {%- if section.settings.title != blank -%}
       <div class="section-header text-{{ section.settings.header_alignment }}">
-        <h2 class="section-title h1" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
-        {% if section.settings.description != blank %}
+        <h2 class="section-title" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
+        {%- if section.settings.description != blank -%}
           <div class="section-description rte">{{ section.settings.description }}</div>
-        {% endif %}
+        {%- endif -%}
       </div>
-    {% endif %}
-    
+    {%- endif -%}
+
     <div class="product-grid">
       {%- assign collection = section.settings.collection -%}
       {%- assign products_to_show = section.settings.products_to_show -%}
 
-      {% for product in collection.products limit: products_to_show %}
-        <div class="product-card" itemscope itemtype="https://schema.org/Product">
-          <div class="product-image">
-            <a href="{{ product.url | within: collection }}" aria-label="{{ 'products.product.view_product' | t: product_title: product.title }}">
-              {% if product.featured_image %}
-                <img 
-                  src="{{ product.featured_image | image_url: width: 600 }}" 
-                  alt="{{ product.featured_image.alt | escape }}"
-                  loading="lazy"
-                  width="600" 
-                  height="{{ 600 | divided_by: product.featured_image.aspect_ratio | round }}"
-                  itemprop="image">
-              {% else %}
-                <div class="product-image-placeholder">
-                  {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
-                </div>
-              {% endif %}
-              {% if product.compare_at_price > product.price and section.settings.show_sale_badges %}
-                <div class="product-badge sale-badge">[ON_SALE]</div>
-              {% endif %}
-            </a>
-          </div>
-          
-          <div class="product-info">
-            <div class="product-content">
-              <h3 class="product-name" itemprop="name">
-                <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
-              </h3>
-              
-              {% if section.settings.show_vendor and product.vendor != blank %}
-                <div class="product-vendor">{{ product.vendor }}</div>
-              {% endif %}
-              
-              <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-                <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
-                <meta itemprop="price" content="{{ product.price | divided_by: 100.0 }}">
-                {% if product.compare_at_price > product.price and section.settings.show_compare_prices %}
-                  <span class="visually-hidden">Regular price</span>
-                  <s class="product-price-compare">{{ product.compare_at_price | money }}</s>
-                  <span class="visually-hidden">Sale price</span>
-                {% endif %}
-                <span class="product-price-current">{{ product.price | money }}</span>
-                {% if product.available %}
-                  <link itemprop="availability" href="https://schema.org/InStock">
-                {% else %}
-                  <link itemprop="availability" href="https://schema.org/OutOfStock">
-                {% endif %}
-              </div>
-              
-              {% if section.settings.show_rating and product.metafields.reviews.rating.value != blank %}
-                <div class="product-rating">
-                  {% render 'product-rating', product: product %}
-                </div>
-              {% endif %}
-            </div>
-            
-            <div class="product-actions">
-              {% if product.available %}
-                <a href="{{ product.url | within: collection }}" class="btn btn-secondary" aria-describedby="product-{{ product.id }}-price">
-                  {{ section.settings.button_label | default: '[ANALYZE_ITEM]' }}
-                </a>
-              {% else %}
-                <button class="btn btn-secondary disabled" disabled>
-                  [OUT_OF_STOCK]
-                </button>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-      {% endfor %}
-
-      {% if collection.products_count == 0 %}
-        {% comment %} Show placeholder cards based on the admin's products_to_show setting {% endcomment %}
-        {% for i in (1..section.settings.products_to_show) %}
-          <div class="product-card product-card-placeholder">
+      {%- if collection.products_count > 0 -%}
+        {%- for product in collection.products limit: products_to_show -%}
+          <div class="product-card shape-card">
             <div class="product-image">
-              <div class="product-image-placeholder">
-                {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
-              </div>
+              <a href="{{ product.url | within: collection }}">
+                {%- if product.featured_image -%}
+                  <img
+                    src="{{ product.featured_image | image_url: width: 600 }}"
+                    alt="{{ product.featured_image.alt | escape }}"
+                    loading="lazy"
+                    width="600"
+                    height="{{ 600 | divided_by: product.featured_image.aspect_ratio | round }}">
+                {%- else -%}
+                    {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </a>
             </div>
             <div class="product-info">
-              <div class="product-content">
-                <h3 class="product-name">EQUIPMENT_SLOT_{{ forloop.index }}</h3>
-                <div class="product-price">€$ ---</div>
-              </div>
-              <div class="product-actions">
-                <button class="btn btn-secondary disabled" disabled>[AWAITING_INVENTORY]</button>
-              </div>
+              <h3 class="product-name">
+                <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
+              </h3>
+              <p class="product-price">{{ product.price | money }}</p>
+              <a href="{{ product.url | within: collection }}" class="btn btn-secondary btn-sm shape-button">
+                {{ section.settings.button_label | default: '[ANALYZE_ITEM]' }}
+              </a>
             </div>
           </div>
-        {% endfor %}
-        
-        {% if request.design_mode %}
-          <div class="collection-empty-admin" style="grid-column: 1 / -1; text-align: center; margin-top: var(--space-lg);">
-            <div class="data-box">
-              <div class="data-box-content">
-                <p><strong>Admin Notice:</strong> Add products to this collection to replace the placeholder cards above.</p>
-                <a href="/admin/products" class="btn btn-tertiary btn-sm mt-sm">[ADD_PRODUCTS]</a>
-              </div>
+        {%- endfor -%}
+      {%- else -%}
+        {%- comment -%} Onboarding placeholders for the Theme Editor {%- endcomment -%}
+        {%- for i in (1..section.settings.products_to_show) -%}
+          <div class="product-card shape-card">
+            <div class="product-image">
+              {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">EQUIPMENT_SLOT_{{ forloop.index }}</h3>
+              <p class="product-price">€$ ---</p>
+              <button class="btn btn-secondary btn-sm shape-button disabled" disabled>[AWAITING_INVENTORY]</button>
             </div>
           </div>
-        {% endif %}
-      {% endif %}
+        {%- endfor -%}
+      {%- endif -%}
     </div>
 
-    {% if section.settings.show_view_all and collection.products_count > products_to_show %}
-      <div class="section-footer text-center">
-        <a href="{{ collection.url }}" class="btn btn-secondary">
+    {%- if section.settings.show_view_all and collection.products_count > section.settings.products_to_show -%}
+      <div class="section-footer text-center mt-xl">
+        <a href="{{ collection.url }}" class="btn btn-secondary shape-button">
           {{ 'sections.featured_collection.view_all' | t }}
         </a>
       </div>
-    {% endif %}
+    {%- endif -%}
   </div>
 </section>
 
@@ -135,7 +84,7 @@
   "class": "section-featured-products",
   "settings": [
     {
-      "type": "inline_richtext",
+      "type": "text",
       "id": "title",
       "label": "Heading",
       "default": "// FEATURED_ITEMS //"
@@ -150,18 +99,8 @@
       "id": "header_alignment",
       "label": "Header alignment",
       "options": [
-        {
-          "value": "left",
-          "label": "Left"
-        },
-        {
-          "value": "center",
-          "label": "Center"
-        },
-        {
-          "value": "right",
-          "label": "Right"
-        }
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
       ],
       "default": "center"
     },
@@ -174,61 +113,27 @@
       "type": "range",
       "id": "products_to_show",
       "min": 2,
-      "max": 12,
+      "max": 8,
       "step": 1,
       "label": "Products to show",
       "default": 4
     },
     {
       "type": "checkbox",
-      "id": "show_vendor",
-      "label": "Show product vendor",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "show_rating",
-      "label": "Show product rating",
-      "default": false,
-      "info": "To display a rating, add a product rating app. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#featured-collection-show-product-rating)"
-    },
-    {
-      "type": "checkbox",
       "id": "show_view_all",
-      "label": "Show 'View all' button",
+      "label": "Show 'View all' button if collection has more products",
       "default": true
     },
     {
       "type": "text",
       "id": "button_label",
-      "label": "Button label",
+      "label": "Product card button label",
       "default": "[ANALYZE_ITEM]"
-    },
-    {
-      "type": "header",
-      "content": "Product Features"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_sale_badges",
-      "label": "Show sale badges",
-      "default": true,
-      "info": "Display [ON_SALE] badges on discounted products"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_compare_prices",
-      "label": "Show compare at prices",
-      "default": true,
-      "info": "Display crossed-out original prices for sale items"
     }
   ],
   "presets": [
     {
-      "name": "Featured Products",
-      "settings": {
-        "collection": "all"
-      }
+      "name": "Featured Products"
     }
   ]
 }

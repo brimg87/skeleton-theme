@@ -53,7 +53,7 @@
                      placeholder="{{ '404.search_placeholder' | t | default: 'Search inventory...' }}"
                      class="search-input form-input"
                      aria-label="{{ '404.search_label' | t | default: 'Search products' }}">
-              <button type="submit" class="search-btn btn btn-secondary">
+              <button type="submit" class="btn btn-secondary">
                 {{ '404.search_button' | t | default: 'Search' }}
               </button>
             </div>
@@ -69,10 +69,10 @@
         <div class="data-box-content">
           <p class="module-description">{{ '404.navigation_help' | t | default: 'Access primary navigation systems:' }}</p>
           <div class="recovery-actions">
-            <a href="{{ routes.root_url }}" class="recovery-btn btn btn-primary btn-lg">
+            <a href="{{ routes.root_url }}" class="btn btn-primary btn-lg">
               {{ '404.go_home' | t | default: 'Return to Base' }}
             </a>
-                          <a href="{{ routes.all_products_collection_url }}" class="recovery-btn btn btn-secondary">
+            <a href="{{ routes.all_products_collection_url }}" class="btn btn-secondary">
               {{ '404.back_to_shopping' | t }}
             </a>
           </div>

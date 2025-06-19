@@ -1,21 +1,18 @@
-<div class="custom-section full-width">
-  {% if section.settings.background_image %}
-    <div class="custom-section__background">
-      {{ section.settings.background_image | image_url: width: 2000 | image_tag }}
-    </div>
-  {% endif %}
+<section class="section-wrapper">
+  <div class="container">
+    {% if section.settings.background_image %}
+      <div class="custom-section__background">
+        {{ section.settings.background_image | image_url: width: 2000 | image_tag }}
+      </div>
+    {% endif %}
 
-  <div class="custom-section__content">
-    {% content_for 'blocks' %}
+    <div class="custom-section__content">
+      {% content_for 'blocks' %}
+    </div>
   </div>
-</div>
+</section>
 
 {% stylesheet %}
-  .custom-section {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-  }
   .custom-section__background {
     position: absolute;
     width: 100%;

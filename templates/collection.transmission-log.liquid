@@ -35,12 +35,12 @@
             <!-- Status Filter -->
             <div class="filter-group">
               <label class="filter-label">[ARCHIVE_STATUS]</label>
-              <div class="filter-options">
-                <button class="filter-btn active" data-filter="all">[ALL_ENTRIES]</button>
-                <button class="filter-btn" data-filter="details">[DETAILS]</button>
-                <button class="filter-btn" data-filter="restricted">[RESTRICTED]</button>
-                <button class="filter-btn" data-filter="sealed">[SEALED]</button>
-                <button class="filter-btn" data-filter="archived">[ARCHIVED]</button>
+              <div class="filter-controls">
+                <button class="btn btn-secondary btn-sm active" data-filter="all">[ALL_ENTRIES]</button>
+                <button class="btn btn-secondary btn-sm" data-filter="details">[DETAILS]</button>
+                <button class="btn btn-secondary btn-sm" data-filter="restricted">[RESTRICTED]</button>
+                <button class="btn btn-secondary btn-sm" data-filter="sealed">[SEALED]</button>
+                <button class="btn btn-secondary btn-sm" data-filter="archived">[ARCHIVED]</button>
               </div>
             </div>
 
@@ -177,7 +177,7 @@
 
                   <!-- Entry Actions -->
                   <div class="entry-actions">
-                    <a href="{{ product.url }}" class="archive-view-btn" aria-label="Access archive entry: {{ product.title | escape }}">
+                    <a href="{{ product.url }}" class="btn btn-secondary btn-sm" aria-label="Access archive entry: {{ product.title | escape }}">
                       [ACCESS_ENTRY]
                     </a>
                   </div>
@@ -196,7 +196,7 @@
                   Adjust search criteria or contact system administrator.
                 </p>
                 <div class="empty-actions">
-                  <button class="filter-btn" onclick="resetArchiveFilters()">[RESET_FILTERS]</button>
+                  <button class="btn btn-secondary" onclick="resetArchiveFilters()">[RESET_FILTERS]</button>
                 </div>
               </div>
             </div>
@@ -208,8 +208,8 @@
           <nav class="archive-pagination" aria-label="Archive pagination">
             <div class="pagination-terminal">
               {% if paginate.previous %}
-                <a href="{{ paginate.previous.url }}" class="pagination-btn prev" aria-label="Previous page">
-                  [PREV_ENTRIES]
+                <a href="{{ paginate.previous.url }}" class="btn btn-secondary btn-sm" aria-label="Previous page">
+                  [PREV_PAGE]
                 </a>
               {% endif %}
               
@@ -219,8 +219,8 @@
               </div>
               
               {% if paginate.next %}
-                <a href="{{ paginate.next.url }}" class="pagination-btn next" aria-label="Next page">
-                  [NEXT_ENTRIES]
+                <a href="{{ paginate.next.url }}" class="btn btn-secondary btn-sm" aria-label="Next page">
+                  [NEXT_PAGE]
                 </a>
               {% endif %}
             </div>
