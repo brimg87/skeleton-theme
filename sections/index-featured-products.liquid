@@ -1,7 +1,5 @@
-{{ 'section-featured-products.css' | asset_url | stylesheet_tag }}
-
-<section id="featured-products-{{ section.id }}" class="section-wrapper{% if section.settings.color_scheme != 'background-1' %} color-{{ section.settings.color_scheme }}{% endif %}" style="--section-padding-top: {{ section.settings.padding_top }}px; --section-padding-bottom: {{ section.settings.padding_bottom }}px;">
-  <div class="{% if section.settings.full_width %}container-wide{% else %}container{% endif %}">
+<section id="featured-products-{{ section.id }}" class="section-wrapper">
+  <div class="container">
     {% if section.settings.title != blank %}
       <div class="section-header text-{{ section.settings.header_alignment }}">
         <h2 class="section-title h1" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
@@ -11,7 +9,7 @@
       </div>
     {% endif %}
     
-    <div class="product-grid" style="--grid-desktop-columns: {{ section.settings.columns_desktop }}; --grid-tablet-columns: {{ section.settings.columns_tablet }}; --grid-mobile-columns: {{ section.settings.columns_mobile }};">
+    <div class="product-grid">
       {%- assign collection = section.settings.collection -%}
       {%- assign products_to_show = section.settings.products_to_show -%}
 
@@ -20,21 +18,13 @@
           <div class="product-image">
             <a href="{{ product.url | within: collection }}" aria-label="{{ 'products.product.view_product' | t: product_title: product.title }}">
               {% if product.featured_image %}
-                {%- assign image_height = section.settings.image_ratio -%}
-                {%- if section.settings.image_ratio == 'adapt' -%}
-                  {%- assign image_height = 1 | divided_by: product.featured_image.aspect_ratio | times: 100 | append: '%' -%}
-                {%- endif -%}
-                <div class="product-image-wrapper" style="padding-bottom: {{ image_height }};">
-                  <img 
-                    src="{{ product.featured_image | image_url: width: 600 }}" 
-                    alt="{{ product.featured_image.alt | escape }}"
-                    loading="lazy"
-                    width="600" 
-                    height="{{ 600 | divided_by: product.featured_image.aspect_ratio | round }}"
-                    sizes="(min-width: 990px) {{ 1200 | divided_by: section.settings.columns_desktop }}px, (min-width: 750px) {{ 750 | divided_by: section.settings.columns_tablet }}px, 100vw"
-                    srcset="{{ product.featured_image | image_url: width: 300 }} 300w, {{ product.featured_image | image_url: width: 600 }} 600w, {{ product.featured_image | image_url: width: 900 }} 900w"
-                    itemprop="image">
-                </div>
+                <img 
+                  src="{{ product.featured_image | image_url: width: 600 }}" 
+                  alt="{{ product.featured_image.alt | escape }}"
+                  loading="lazy"
+                  width="600" 
+                  height="{{ 600 | divided_by: product.featured_image.aspect_ratio | round }}"
+                  itemprop="image">
               {% else %}
                 <div class="product-image-placeholder">
                   {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
@@ -45,14 +35,17 @@
               {% endif %}
             </a>
           </div>
+          
           <div class="product-info">
             <div class="product-content">
-              <h3 class="product-name h4" itemprop="name">
+              <h3 class="product-name" itemprop="name">
                 <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
               </h3>
+              
               {% if section.settings.show_vendor and product.vendor != blank %}
                 <div class="product-vendor">{{ product.vendor }}</div>
               {% endif %}
+              
               <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
                 <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
                 <meta itemprop="price" content="{{ product.price | divided_by: 100.0 }}">
@@ -63,17 +56,19 @@
                 {% endif %}
                 <span class="product-price-current">{{ product.price | money }}</span>
                 {% if product.available %}
-                                  <link itemprop="availability" href="https://schema.org/InStock">
-              {% else %}
-                <link itemprop="availability" href="https://schema.org/OutOfStock">
+                  <link itemprop="availability" href="https://schema.org/InStock">
+                {% else %}
+                  <link itemprop="availability" href="https://schema.org/OutOfStock">
                 {% endif %}
               </div>
+              
               {% if section.settings.show_rating and product.metafields.reviews.rating.value != blank %}
                 <div class="product-rating">
                   {% render 'product-rating', product: product %}
                 </div>
               {% endif %}
             </div>
+            
             <div class="product-actions">
               {% if product.available %}
                 <a href="{{ product.url | within: collection }}" class="btn btn-secondary" aria-describedby="product-{{ product.id }}-price">
@@ -92,22 +87,16 @@
       {% if collection.products_count == 0 %}
         {% comment %} Show placeholder cards based on the admin's products_to_show setting {% endcomment %}
         {% for i in (1..section.settings.products_to_show) %}
-          <div class="product-card product-card-placeholder" style="border: none;">
-                          <div class="product-image" style="border: none;">
-               {%- assign image_height = section.settings.image_ratio -%}
-               {%- if section.settings.image_ratio == 'adapt' -%}
-                 {%- assign image_height = '100%' -%}
-               {%- endif -%}
-               <div class="product-image-wrapper" style="padding-bottom: {{ image_height }};">
-                 <div class="product-image-placeholder" style="border: 2px dashed var(--color-accent-cyan); opacity: 0.3;">
-                   {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
-                 </div>
-               </div>
-             </div>
+          <div class="product-card product-card-placeholder">
+            <div class="product-image">
+              <div class="product-image-placeholder">
+                {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+            </div>
             <div class="product-info">
               <div class="product-content">
-                <h3 class="product-name" style="opacity: 0.5;">EQUIPMENT_SLOT_{{ forloop.index }}</h3>
-                <div class="product-price" style="opacity: 0.5;">€$ ---</div>
+                <h3 class="product-name">EQUIPMENT_SLOT_{{ forloop.index }}</h3>
+                <div class="product-price">€$ ---</div>
               </div>
               <div class="product-actions">
                 <button class="btn btn-secondary disabled" disabled>[AWAITING_INVENTORY]</button>
@@ -115,6 +104,7 @@
             </div>
           </div>
         {% endfor %}
+        
         {% if request.design_mode %}
           <div class="collection-empty-admin" style="grid-column: 1 / -1; text-align: center; margin-top: var(--space-lg);">
             <div class="data-box">
@@ -190,68 +180,6 @@
       "default": 4
     },
     {
-      "type": "range",
-      "id": "columns_desktop",
-      "min": 1,
-      "max": 6,
-      "step": 1,
-      "label": "Number of columns on desktop",
-      "default": 4
-    },
-    {
-      "type": "range",
-      "id": "columns_tablet",
-      "min": 2,
-      "max": 4,
-      "step": 1,
-      "label": "Number of columns on tablet",
-      "default": 3
-    },
-    {
-      "type": "select",
-      "id": "columns_mobile",
-      "label": "Number of columns on mobile",
-      "options": [
-        {
-          "value": "1",
-          "label": "1 column"
-        },
-        {
-          "value": "2",
-          "label": "2 columns"
-        }
-      ],
-      "default": "2"
-    },
-    {
-      "type": "select",
-      "id": "image_ratio",
-      "label": "Image ratio",
-      "options": [
-        {
-          "value": "adapt",
-          "label": "Adapt to image"
-        },
-        {
-          "value": "100%",
-          "label": "Square (1:1)"
-        },
-        {
-          "value": "150%",
-          "label": "Portrait (2:3)"
-        },
-        {
-          "value": "75%",
-          "label": "Landscape (4:3)"
-        },
-        {
-          "value": "56.25%",
-          "label": "Wide (16:9)"
-        }
-      ],
-      "default": "100%"
-    },
-    {
       "type": "checkbox",
       "id": "show_vendor",
       "label": "Show product vendor",
@@ -293,68 +221,6 @@
       "label": "Show compare at prices",
       "default": true,
       "info": "Display crossed-out original prices for sale items"
-    },
-    {
-      "type": "header",
-      "content": "Layout"
-    },
-    {
-      "type": "checkbox",
-      "id": "full_width",
-      "label": "Make section full width",
-      "default": false
-    },
-    {
-      "type": "select",
-      "id": "color_scheme",
-      "label": "Color scheme",
-      "options": [
-        {
-          "value": "background-1",
-          "label": "Background 1"
-        },
-        {
-          "value": "background-2",
-          "label": "Background 2"
-        },
-        {
-          "value": "inverse",
-          "label": "Inverse"
-        },
-        {
-          "value": "accent-1",
-          "label": "Accent 1"
-        },
-        {
-          "value": "accent-2",
-          "label": "Accent 2"
-        }
-      ],
-      "default": "background-1"
-    },
-    {
-      "type": "header",
-      "content": "Section padding"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Top padding",
-      "default": 36
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Bottom padding",
-      "default": 36
     }
   ],
   "presets": [
