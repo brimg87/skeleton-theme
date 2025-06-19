@@ -105,7 +105,7 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 .text-accent-cyan{color:var(--color-accent-cyan) !important;}.text-accent-magenta{color:var(--color-accent-magenta) !important;}.text-accent-yellow{color:var(--color-accent-yellow) !important;}.text-accent-green{color:var(--color-accent-green) !important;}.text-accent-orange{color:var(--color-accent-orange) !important;}.text-accent-red{color:var(--color-accent-red) !important;}
 .font-family-primary{font-family:var(--font-family-primary) !important;}.font-family-secondary{font-family:var(--font-family-secondary) !important;}.font-family-body{font-family:var(--font-family-body) !important;}
 .font-weight-light{font-weight:var(--font-weight-light) !important;}.font-weight-normal{font-weight:var(--font-weight-normal) !important;}.font-weight-bold{font-weight:var(--font-weight-bold) !important;}
-.font-size-xs{font-size:var(--font-size-xs) !important;}.font-size-sm{font-size:var(--font-size-sm) !important;}.font-size-base{font-size:var(--font-size-base) !important;}.font-size-md{font-size:var(--font-size-md) !important;}.font-size-lg{font-size:var(--font-size-lg) !important;}.font-size-xl{font-size:var(--font-size-xl) !important;}.font-size-xxl{font-size:var(--font-size-xxl) !important;}
+.font-size-xs{font-size:var(--font-size-xs) !important;}.font-size-sm{font-size:var(--font-size-sm) !important;}.font-size-base{font-size:var(--font-size-base) !important;}.font-size-md{font-size:var(--font-size-md) !important;}.font-size-lg{font-size:var(--font-size-lg) !important;}.font-size-xl{font-size:var(--font-size-xl) !important;}.font-size-xxl{font-size:var(--font-size-xxl) !important;}.font-size-xxxl{font-size:var(--font-size-xxxl) !important;}.font-size-super{font-size:var(--font-size-super) !important;}.font-size-h1{font-size:var(--font-size-h1) !important;}.font-size-h2{font-size:var(--font-size-h2) !important;}.font-size-h3{font-size:var(--font-size-h3) !important;}.font-size-h4{font-size:var(--font-size-h4) !important;}
 
 /* === DISPLAY UTILITIES === */
 .d-none{display:none !important;}.d-block{display:block !important;}.d-inline{display:inline !important;}.d-inline-block{display:inline-block !important;}.d-flex{display:flex !important;}.d-grid{display:grid !important;}
@@ -1332,7 +1332,7 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 
 .archive-status {
     font-family: var(--font-family-primary);
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm);
     padding: 0.25rem 0.5rem;
     border: 1px solid;
     text-align: center;
