@@ -141,6 +141,12 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 .border-accent-cyan{border-color:var(--color-accent-cyan) !important;}
 
 /* === LAYOUT HELPERS === */
+/* === LAYOUT FOUNDATION === */
+/* =====================================================
+   CONTAINER SYSTEM - STANDARDIZED & SEMANTIC
+   ===================================================== */
+
+/* Base Container - Standard content width with responsive padding */
 .container {
   width: 100%;
   max-width: var(--container-max-width);
@@ -157,6 +163,45 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
   }
 }
 
+/* Container Size Variants */
+.container-narrow {
+  width: 100%;
+  max-width: calc(var(--container-max-width) * 0.75);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding-x-sm);
+  padding-right: var(--container-padding-x-sm);
+}
+
+.container-wide {
+  width: 100%;
+  max-width: calc(var(--container-max-width) * 1.25);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding-x-sm);
+  padding-right: var(--container-padding-x-sm);
+}
+
+.container-full {
+  width: 100%;
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding-x-sm);
+  padding-right: var(--container-padding-x-sm);
+}
+
+@media screen and (min-width: 768px) {
+  .container-narrow,
+  .container-wide,
+  .container-full {
+    padding-left: var(--container-padding-x-md);
+    padding-right: var(--container-padding-x-md);
+  }
+}
+
+/* Legacy Support - Deprecated but maintained for compatibility */
+/* @deprecated Use .container instead */
 .page-width {
     width: 100%;
     max-width: var(--container-max-width);
@@ -171,6 +216,62 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
         padding-left: var(--container-padding-x-md);
         padding-right: var(--container-padding-x-md);
     }
+}
+
+/* Section Wrapper System - Handles vertical spacing */
+.section-wrapper {
+  width: 100%;
+}
+
+.section-wrapper-sm {
+  padding-top: var(--space-section-padding-y-sm);
+  padding-bottom: var(--space-section-padding-y-sm);
+}
+
+.section-wrapper-md {
+  padding-top: var(--space-section-padding-y);
+  padding-bottom: var(--space-section-padding-y);
+}
+
+.section-wrapper-lg {
+  padding-top: var(--space-section-padding-y-lg);
+  padding-bottom: var(--space-section-padding-y-lg);
+}
+
+.section-wrapper-xl {
+  padding-top: var(--space-section-padding-y-xl);
+  padding-bottom: var(--space-section-padding-y-xl);
+}
+
+/* Header Offset Variants - For sections that need to account for fixed header */
+.section-wrapper-header-offset {
+  padding-top: calc(var(--header-height) + var(--space-section-padding-y));
+}
+
+.section-wrapper-header-offset.section-wrapper-sm {
+  padding-top: calc(var(--header-height) + var(--space-section-padding-y-sm));
+}
+
+.section-wrapper-header-offset.section-wrapper-lg {
+  padding-top: calc(var(--header-height) + var(--space-section-padding-y-lg));
+}
+
+.section-wrapper-header-offset.section-wrapper-xl {
+  padding-top: calc(var(--header-height) + var(--space-section-padding-y-xl));
+}
+
+/* No Spacing Variants - For sections that need custom spacing */
+.section-wrapper-no-top {
+  padding-top: 0;
+}
+
+.section-wrapper-no-bottom {
+  padding-bottom: 0;
+}
+
+.section-wrapper-no-spacing {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 /* === COMPONENTS === */
@@ -4150,6 +4251,8 @@ body.search-active {
 .debug-secondary { background-color: var(--debug-secondary) !important; }
 
 /* Section spacing with header offset */
+/* Legacy Section Padding - Maintained for backward compatibility */
+/* @deprecated Use .section-wrapper-* with .container instead */
 .section-padding {
     padding-top: calc(var(--header-height) + var(--space-section-padding-y));
     padding-bottom: var(--space-section-padding-y);
@@ -4170,6 +4273,43 @@ body.search-active {
 
 .section-padding:last-child {
     margin-bottom: 0;
+}
+
+/* Improved Section Padding System - Use these going forward */
+.section-standard {
+    padding-top: calc(var(--header-height) + var(--space-section-padding-y));
+    padding-bottom: var(--space-section-padding-y);
+}
+
+.section-compact {
+    padding-top: calc(var(--header-height) + var(--space-section-padding-y-sm));
+    padding-bottom: var(--space-section-padding-y-sm);
+}
+
+.section-spacious {
+    padding-top: calc(var(--header-height) + var(--space-section-padding-y-lg));
+    padding-bottom: var(--space-section-padding-y-lg);
+}
+
+.section-hero {
+    padding-top: calc(var(--header-height) + var(--space-section-padding-y-xl));
+    padding-bottom: var(--space-section-padding-y-xl);
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 767px) {
+    .section-standard,
+    .section-compact,
+    .section-spacious,
+    .section-hero {
+        padding-top: calc(var(--header-height) + var(--space-md));
+        padding-bottom: var(--space-md);
+    }
+    
+    .section-compact {
+        padding-top: calc(var(--header-height) + var(--space-sm));
+        padding-bottom: var(--space-sm);
+    }
 }
 
 .section-title {
