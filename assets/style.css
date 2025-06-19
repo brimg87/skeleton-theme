@@ -174,24 +174,256 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 }
 
 /* === COMPONENTS === */
-/* --- Buttons --- */
-.btn { display: inline-block; padding: var(--space-sm) var(--space-lg); font-family: var(--font-family-secondary); font-size: var(--font-size-base); font-weight: var(--font-weight-normal); text-transform: uppercase; letter-spacing: 1px; text-align: center; border: var(--border-width-medium) solid transparent; background-color: transparent; cursor: pointer; transition: all var(--transition-duration-normal) var(--transition-easing); position: relative; overflow: hidden; clip-path: var(--clip-path-button); user-select: none; }
-.btn-cta { color: var(--color-accent-cyan); border-color: var(--color-accent-cyan); }
-.btn-cta:hover, .btn-cta:focus { background-color: var(--color-accent-cyan); color: var(--color-text-on-accent); box-shadow: 0 0 10px var(--color-accent-cyan), 0 0 20px var(--color-accent-cyan); outline: none; }
-.btn-cta-primary { color: var(--color-text-on-accent); background-color: var(--color-accent-green); border-color: var(--color-accent-green); box-shadow: 0 0 10px var(--color-accent-green), 0 0 15px rgba(0,255,0,0.5); }
-.btn-cta-primary:hover, .btn-cta-primary:focus { background-color: transparent; color: var(--color-accent-green); border-color: var(--color-accent-green); box-shadow: 0 0 15px var(--color-accent-green), 0 0 25px var(--color-accent-green); outline: none; }
-.btn-primary { color: var(--color-text-on-accent); background-color: var(--color-accent-magenta); border-color: var(--color-accent-magenta); box-shadow: 0 0 10px var(--color-accent-magenta); font-weight: var(--font-weight-bold); }
-.btn-primary:hover, .btn-primary:focus { background-color: transparent; color: var(--color-accent-magenta); border-color: var(--color-accent-magenta); box-shadow: 0 0 15px var(--color-accent-magenta); transform: translateY(-2px); outline: none; }
-.btn-secondary { color: var(--color-text-secondary); border-color: var(--color-border-primary); padding: var(--space-xs) var(--space-md); font-size: var(--font-size-sm); }
-.btn-secondary:hover, .btn-secondary:focus { color: var(--color-accent-yellow); border-color: var(--color-accent-yellow); box-shadow: 0 0 8px var(--color-accent-yellow); outline: none; }
-.btn-secondary i { margin-left: var(--space-xs); color: var(--color-accent-yellow); }
-.btn-product { padding: var(--space-xs) var(--space-md); font-size: var(--font-size-sm); }
-.btn-qty { background-color: var(--color-background-input); border: var(--border-width-thin) solid var(--color-border-primary); color: var(--color-accent-cyan); font-family: var(--font-family-primary); font-size: var(--font-size-lg); width: 30px; height: 30px; padding: 0; line-height: 28px; text-align: center; clip-path: var(--clip-path-qty-button); }
-.btn-qty:hover, .btn-qty:focus { background-color: var(--color-accent-cyan); color: var(--color-text-on-accent); border-color: var(--color-accent-cyan); outline: none; }
-.btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.6s ease; }
-.btn:hover::before { left: 150%; }
-.btn-qty::before { display: none; }
-.btn.disabled, .btn:disabled { opacity: 0.5; pointer-events: none; background-color: var(--color-secondary-dark); border-color: var(--color-border-primary); color: var(--color-text-secondary); box-shadow: none; }
+/* =====================================================
+   BUTTON SYSTEM - STANDARDIZED & SEMANTIC
+   ===================================================== */
+
+/* Base Button Foundation - All buttons inherit from this */
+.btn {
+  display: inline-block;
+  padding: var(--space-sm) var(--space-lg);
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  text-decoration: none;
+  border: var(--border-width-medium) solid transparent;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all var(--transition-duration-normal) var(--transition-easing);
+  position: relative;
+  overflow: hidden;
+  clip-path: var(--clip-path-button);
+  user-select: none;
+  line-height: 1;
+}
+
+/* Shine effect for all buttons */
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.btn:hover::before {
+  left: 150%;
+}
+
+/* Primary Action Buttons - Highest visual priority */
+.btn-primary {
+  color: var(--color-text-on-accent);
+  background-color: var(--color-accent-magenta);
+  border-color: var(--color-accent-magenta);
+  box-shadow: 0 0 10px var(--color-accent-magenta);
+  font-weight: var(--font-weight-bold);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: transparent;
+  color: var(--color-accent-magenta);
+  border-color: var(--color-accent-magenta);
+  box-shadow: 0 0 15px var(--color-accent-magenta);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+/* Secondary Action Buttons - Standard importance */
+.btn-secondary {
+  color: var(--color-accent-cyan);
+  border-color: var(--color-accent-cyan);
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+  background-color: var(--color-accent-cyan);
+  color: var(--color-text-on-accent);
+  box-shadow: 0 0 10px var(--color-accent-cyan), 0 0 20px var(--color-accent-cyan);
+  outline: none;
+}
+
+/* Tertiary Action Buttons - Lowest visual priority */
+.btn-tertiary {
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-primary);
+}
+
+.btn-tertiary:hover,
+.btn-tertiary:focus {
+  color: var(--color-accent-yellow);
+  border-color: var(--color-accent-yellow);
+  box-shadow: 0 0 8px var(--color-accent-yellow);
+  outline: none;
+}
+
+/* Success/Positive Action Buttons */
+.btn-success {
+  color: var(--color-text-on-accent);
+  background-color: var(--color-accent-green);
+  border-color: var(--color-accent-green);
+  box-shadow: 0 0 10px var(--color-accent-green), 0 0 15px rgba(0,255,0,0.5);
+}
+
+.btn-success:hover,
+.btn-success:focus {
+  background-color: transparent;
+  color: var(--color-accent-green);
+  border-color: var(--color-accent-green);
+  box-shadow: 0 0 15px var(--color-accent-green), 0 0 25px var(--color-accent-green);
+  outline: none;
+}
+
+/* Danger/Destructive Action Buttons */
+.btn-danger {
+  color: var(--color-text-on-accent);
+  background-color: var(--color-accent-red);
+  border-color: var(--color-accent-red);
+  box-shadow: 0 0 10px var(--color-accent-red), 0 0 15px rgba(255,0,0,0.5);
+}
+
+.btn-danger:hover,
+.btn-danger:focus {
+  background-color: transparent;
+  color: var(--color-accent-red);
+  border-color: var(--color-accent-red);
+  box-shadow: 0 0 15px var(--color-accent-red), 0 0 25px var(--color-accent-red);
+  outline: none;
+}
+
+/* Button Size Variants */
+.btn-sm {
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-size-sm);
+}
+
+.btn-lg {
+  padding: var(--space-md) var(--space-xl);
+  font-size: var(--font-size-lg);
+}
+
+/* Specialized Button Types */
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon.btn-sm {
+  width: 32px;
+  height: 32px;
+}
+
+/* Quantity Control Buttons - Specialized for product interactions */
+.btn-qty {
+  background-color: var(--color-background-input);
+  border: var(--border-width-thin) solid var(--color-border-primary);
+  color: var(--color-accent-cyan);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-lg);
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  line-height: 28px;
+  text-align: center;
+  clip-path: var(--clip-path-qty-button);
+}
+
+.btn-qty:hover,
+.btn-qty:focus {
+  background-color: var(--color-accent-cyan);
+  color: var(--color-text-on-accent);
+  border-color: var(--color-accent-cyan);
+  outline: none;
+}
+
+.btn-qty::before {
+  display: none;
+}
+
+/* Button States */
+.btn.disabled,
+.btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  background-color: var(--color-secondary-dark);
+  border-color: var(--color-border-primary);
+  color: var(--color-text-secondary);
+  box-shadow: none;
+}
+
+.btn.loading {
+  position: relative;
+  color: transparent;
+}
+
+.btn.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: btn-spin 1s linear infinite;
+}
+
+@keyframes btn-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* =====================================================
+   LEGACY BUTTON CLASSES - MAINTAINED FOR COMPATIBILITY
+   Will be phased out gradually
+   ===================================================== */
+
+/* Legacy aliases - redirect to new semantic classes */
+.btn-cta {
+  color: var(--color-accent-cyan);
+  border-color: var(--color-accent-cyan);
+}
+
+.btn-cta:hover,
+.btn-cta:focus {
+  background-color: var(--color-accent-cyan);
+  color: var(--color-text-on-accent);
+  box-shadow: 0 0 10px var(--color-accent-cyan), 0 0 20px var(--color-accent-cyan);
+  outline: none;
+}
+
+.btn-cta-primary {
+  color: var(--color-text-on-accent);
+  background-color: var(--color-accent-green);
+  border-color: var(--color-accent-green);
+  box-shadow: 0 0 10px var(--color-accent-green), 0 0 15px rgba(0,255,0,0.5);
+}
+
+.btn-cta-primary:hover,
+.btn-cta-primary:focus {
+  background-color: transparent;
+  color: var(--color-accent-green);
+  border-color: var(--color-accent-green);
+  box-shadow: 0 0 15px var(--color-accent-green), 0 0 25px var(--color-accent-green);
+  outline: none;
+}
+
+.btn-product {
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-size-sm);
+}
 
 /* --- Product Cards --- */
 .product-grid {
@@ -1060,6 +1292,7 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
     text-transform: uppercase;
 }
 
+/* ===== DEPRECATED - Use .btn-secondary instead ===== */
 .btn-archive {
     background: var(--color-accent-cyan);
     color: var(--color-background);
@@ -4546,6 +4779,7 @@ body.search-active {
   border-radius: 4px;
 }
 
+/* ===== DEPRECATED - Use .btn-danger.btn-sm instead ===== */
 .btn-remove {
   font-size: 0.875rem;
   padding: 0.5rem 1rem;
@@ -4607,6 +4841,7 @@ body.search-active {
   justify-content: center;
 }
 
+/* ===== DEPRECATED - Use .btn-success.btn-lg instead ===== */
 .btn-checkout {
   white-space: nowrap;
   min-width: 250px;
