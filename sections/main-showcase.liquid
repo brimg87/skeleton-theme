@@ -1,19 +1,17 @@
 <div class="showcase-interface-section section-wrapper section-wrapper-header-offset">
   <div class="container">
     {% if section.settings.title != blank %}
-      <div class="showcase-header">
-        <div class="showcase-header-content">
-          <div class="terminal-header">
-            <span class="terminal-prompt">[PORTFOLIO_CORE]$ </span>
-            <span class="terminal-command">load --database=showcase_archive</span>
-          </div>
-          <h1 class="showcase-title section-title">{{ section.settings.title }}</h1>
-          {% if section.settings.description != blank %}
-            <div class="showcase-description section-subheader">
-              {{ section.settings.description }}
-            </div>
-          {% endif %}
+      <div class="section-header text-center">
+        <div class="terminal-header">
+          <span class="terminal-prompt">[PORTFOLIO_CORE]$ </span>
+          <span class="terminal-command">load --database=showcase_archive</span>
         </div>
+        <h1 class="showcase-title section-title">{{ section.settings.title }}</h1>
+        {% if section.settings.description != blank %}
+          <div class="showcase-description section-description">
+            {{ section.settings.description }}
+          </div>
+        {% endif %}
       </div>
     {% endif %}
 
