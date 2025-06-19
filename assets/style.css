@@ -79,6 +79,12 @@ TABLE OF CONTENTS:
   --line-height-normal: 1.6;
   --line-height-heading: 1.3;
 
+  /* === TRANSITIONS === */
+  --transition-duration-fast: 0.15s;
+  --transition-duration-normal: 0.2s;
+  --transition-duration-slow: 0.3s;
+  --transition-easing: ease;
+
   /* === SPACING === */
   --space-xxs: 0.25rem; /* 4px */
   --space-xs: 0.5rem;  /* 8px */
@@ -225,7 +231,9 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 ================================================================================
 */
 
-/* --- Buttons --- */
+/* --- BUTTON SYSTEM (Corrected for Consistent Hover) --- */
+
+/* Base Button Foundation - All buttons inherit from this */
 .btn {
   display: inline-block;
   padding: var(--space-sm) var(--space-lg);
@@ -239,47 +247,147 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
   border: var(--border-width-medium) solid transparent;
   background-color: transparent;
   cursor: pointer;
-  transition: all 0.2s var(--transition-easing);
+  transition: all var(--transition-duration-normal) var(--transition-easing);
   position: relative;
-  overflow: hidden;
   user-select: none;
   line-height: 1;
+  /* Improve hover reliability */
+  will-change: transform, box-shadow;
 }
 .btn.shape-button { clip-path: var(--clip-path-button); }
+
+/* --- Consistent Hover & Focus State for ALL Buttons --- */
+.btn:hover,
+.btn:focus {
+  transform: translateY(-2px); /* The "lift" effect */
+  outline: none;
+}
+
+
+/* --- Button Color & Style Variants --- */
+
+/* Primary Action Buttons */
 .btn-primary {
   color: var(--color-text-on-accent);
   background-color: var(--color-accent-magenta);
   border-color: var(--color-accent-magenta);
+  font-weight: var(--font-weight-bold);
 }
-.btn-primary:hover, .btn-primary:focus {
+.btn-primary:hover,
+.btn-primary:focus {
   background-color: transparent;
   color: var(--color-accent-magenta);
+  box-shadow: 0 0 15px var(--color-accent-magenta); /* Specific glow color */
 }
+
+/* Secondary Action Buttons */
 .btn-secondary {
   color: var(--color-accent-cyan);
   border-color: var(--color-accent-cyan);
 }
-.btn-secondary:hover, .btn-secondary:focus {
+.btn-secondary:hover,
+.btn-secondary:focus {
   background-color: var(--color-accent-cyan);
   color: var(--color-text-on-accent);
+  box-shadow: 0 0 15px var(--color-accent-cyan); /* Specific glow color */
 }
+
+/* Tertiary / Muted Buttons */
+.btn-tertiary {
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-primary);
+}
+.btn-tertiary:hover,
+.btn-tertiary:focus {
+  color: var(--color-accent-yellow);
+  border-color: var(--color-accent-yellow);
+  box-shadow: 0 0 10px var(--color-accent-yellow); /* Specific glow color */
+}
+
+/* Success Buttons */
 .btn-success {
   color: var(--color-text-on-accent);
   background-color: var(--color-accent-green);
   border-color: var(--color-accent-green);
 }
-.btn-success:hover, .btn-success:focus {
+.btn-success:hover,
+.btn-success:focus {
   background-color: transparent;
   color: var(--color-accent-green);
+  box-shadow: 0 0 15px var(--color-accent-green); /* Specific glow color */
 }
-.btn:hover, .btn:focus {
-  transform: translateY(-2px);
-  box-shadow: 0 0 10px currentColor;
-  outline: none;
+
+/* Danger Buttons */
+.btn-danger {
+  color: var(--color-text-on-accent);
+  background-color: var(--color-accent-red);
+  border-color: var(--color-accent-red);
 }
-.btn-sm { padding: var(--space-xs) var(--space-md); font-size: var(--font-size-sm); }
-.btn-lg { padding: var(--space-md) var(--space-xl); font-size: var(--font-size-lg); }
-.btn.disabled, .btn:disabled { opacity: 0.5; pointer-events: none; transform: none; box-shadow: none; }
+.btn-danger:hover,
+.btn-danger:focus {
+  background-color: transparent;
+  color: var(--color-accent-red);
+  box-shadow: 0 0 15px var(--color-accent-red); /* Specific glow color */
+}
+
+/* --- Button Size Variants --- */
+.btn-sm {
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-size-sm);
+}
+.btn-lg {
+  padding: var(--space-md) var(--space-xl);
+  font-size: var(--font-size-lg);
+}
+
+/* Specialized Icon-Only Button */
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-icon.btn-sm {
+  width: 32px;
+  height: 32px;
+}
+
+/* --- Button States --- */
+.btn.disabled,
+.btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  background-color: var(--color-secondary-dark); /* Example disabled bg */
+  border-color: var(--color-border-primary);
+  color: var(--color-text-secondary);
+  transform: none; /* No lift on disabled buttons */
+  box-shadow: none; /* No glow on disabled buttons */
+}
+/* Disabled buttons have no pseudo-elements to manage */
+
+.btn.loading {
+  position: relative;
+  color: transparent !important; /* Important to override link colors */
+  pointer-events: none; /* Prevent clicks while loading */
+}
+.btn.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid var(--color-text-highlight);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: btn-spin 0.8s linear infinite;
+}
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
 
 /* --- Product Cards --- */
 .product-card {
@@ -519,7 +627,20 @@ select option { background-color: var(--color-background-input); color: var(--co
 .text-left .section-description { margin-left: 0; }
 
 /* --- Category Access Section --- */
-.category-card { background-color: var(--color-primary-dark); padding: var(--space-xl) var(--space-md); border: var(--border-width-thin) solid var(--color-border-primary); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--color-text-highlight); transition: all 0.2s; }
+.category-card { 
+  background-color: var(--color-primary-dark); 
+  padding: var(--space-xl) var(--space-md); 
+  border: var(--border-width-thin) solid var(--color-border-primary); 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; 
+  color: var(--color-text-highlight); 
+  transition: all var(--transition-duration-normal) var(--transition-easing);
+  /* Improve hover reliability */
+  will-change: transform, background-color, border-color;
+  position: relative;
+}
 .category-card.shape-card { clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px); }
 .category-card:hover, .category-card:focus { background-color: var(--color-secondary-dark); border-color: var(--color-accent-cyan); transform: translateY(-3px); outline: none; color: var(--color-accent-cyan); }
 .category-icon { font-size: 2.5rem; margin-bottom: var(--space-md); color: var(--color-accent-cyan); line-height: 1; transition: color 0.2s; }
