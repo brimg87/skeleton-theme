@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInterface = document.getElementById('searchInterface');
     const searchInput = searchInterface?.querySelector('.search-input');
     const searchCloseBtn = searchInterface?.querySelector('.search-close-btn');
+    const siteHeader = document.querySelector('.site-header');
 
     console.log('Search elements found:', {
         searchToggle: !!searchToggle,
@@ -163,7 +164,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Close mobile menu when clicking outside
-        const siteHeader = document.querySelector('.site-header');
         document.addEventListener('click', function(e) {
             if (siteHeader && !siteHeader.contains(e.target) && body.classList.contains('mobile-menu-open')) {
                 body.classList.remove('mobile-menu-open');
