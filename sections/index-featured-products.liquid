@@ -1,7 +1,7 @@
 {{ 'section-featured-products.css' | asset_url | stylesheet_tag }}
 
-<section id="featured-products-{{ section.id }}" class="section-padding{% if section.settings.color_scheme != 'background-1' %} color-{{ section.settings.color_scheme }}{% endif %}{% if section.settings.full_width %} section--full-width{% endif %}" style="--section-padding-top: {{ section.settings.padding_top }}px; --section-padding-bottom: {{ section.settings.padding_bottom }}px;">
-  <div class="{% if section.settings.full_width %}page-width-desktop{% else %}container{% endif %}">
+<section id="featured-products-{{ section.id }}" class="section-wrapper{% if section.settings.color_scheme != 'background-1' %} color-{{ section.settings.color_scheme }}{% endif %}" style="--section-padding-top: {{ section.settings.padding_top }}px; --section-padding-bottom: {{ section.settings.padding_bottom }}px;">
+  <div class="{% if section.settings.full_width %}container-wide{% else %}container{% endif %}">
     {% if section.settings.title != blank %}
       <div class="section-header text-{{ section.settings.header_alignment }}">
         <h2 class="section-title h1" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
