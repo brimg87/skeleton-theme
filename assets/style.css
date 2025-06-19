@@ -109,6 +109,7 @@ TABLE OF CONTENTS:
   --z-index-sticky: 1000;
   --z-index-dropdown: 1100;
   --z-index-overlay: 500;
+  --z-index-default: 1;
   --z-index-critical-overlay: 9999;
 }
 
@@ -500,7 +501,7 @@ select option { background-color: var(--color-background-input); color: var(--co
 .user-interface .cart-count { font-size: 0.8em; font-weight: var(--font-weight-bold); color: var(--color-text-on-accent); background-color: var(--color-accent-yellow); border-radius: 50%; padding: 0 6px; line-height: 1.5; margin-left: -2px; }
 
 /* Search Interface */
-.search-interface { display: none; position: fixed; top: var(--header-height); left: 0; width: 100%; background-color: var(--color-secondary-dark); border-bottom: 1px solid var(--color-border-primary); z-index: 1200; }
+.search-interface { display: none; position: fixed; top: var(--header-height); left: 0; width: 100%; background-color: var(--color-accent-magenta); border-bottom: 1px solid var(--color-border-primary); z-index: 1200; }
 body.search-active .search-interface,
 .search-interface.active { display: block; }
 .search-interface .search-content { display: flex; align-items: center; gap: var(--space-md); height: 60px; }
@@ -553,6 +554,7 @@ body.search-active .search-interface,
   background-position: top center;
   background-size: cover;
   overflow: hidden;
+  z-index: var(--z-index-default);
 }
 .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 15, 31, 0.7); z-index: var(--z-index-default); }
 .hero-content { position: relative; z-index: calc(var(--z-index-default) + 1); }
