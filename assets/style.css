@@ -577,7 +577,7 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
     background: var(--color-accent-magenta);
     color: var(--color-text-primary);
     padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
+    font-size: var(--font-size-xs);
     font-weight: bold;
     text-transform: uppercase;
     z-index: 2;
@@ -587,7 +587,7 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 .product-price-compare {
     color: var(--color-text-secondary);
     margin-right: 0.5rem;
-    font-size: 0.9em;
+    font-size: var(--font-size-sm);
 }
 
 .product-card .product-image img {
@@ -1302,7 +1302,7 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
     background: var(--color-accent-cyan);
     color: var(--color-background);
     padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
+    font-size: var(--font-size-xs);
     font-family: var(--font-family-primary);
     font-weight: bold;
     z-index: 2;
@@ -2552,7 +2552,7 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
       display: block;
       padding: 1rem 2rem;
       font-size: 0.875rem;
-      font-family: 'Share Tech Mono', monospace;
+      font-family: var(--font-family-secondary);
       border-bottom: 1px solid rgba(0, 255, 255, 0.3);
       min-height: 48px;
       color: #ffffff;
@@ -2570,7 +2570,7 @@ input[type="checkbox"]:focus, input[type="radio"]:focus { outline: 2px solid var
       content: '>';
       color: #00ffff;
       margin-right: 0.75rem;
-      font-family: 'Orbitron', sans-serif;
+      font-family: var(--font-family-primary);
       opacity: 0;
       transform: translateX(-10px);
       transition: all 0.15s ease-in-out;
