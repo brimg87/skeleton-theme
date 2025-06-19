@@ -1,123 +1,94 @@
-{% comment %} --- sections/header.liquid --- {% endcomment %}
+{% comment %} --- sections/header.liquid (Corrected & Final) --- {% endcomment %}
 <header class="site-header">
-  <div class="header-content">
+  <div class="header-content container">
     <div class="header-logo">
-      <a href="{{ routes.root_url }}" class="logo-link">STARSIDE_ARMORY</a>
+      <a href="{{ routes.root_url }}" class="logo-link">{{ shop.name }}</a>
     </div>
 
     <nav class="main-nav" role="navigation">
       <ul class="nav-list">
         {%- for link in section.settings.menu.links -%}
           <li class="nav-item {% if link.links != blank %}has-dropdown{% endif %}">
-            <a href="{{ link.url }}" class="nav-link {% if link.active %}active{% endif %}"{% if link.links != blank %} aria-haspopup="true" aria-expanded="false"{% endif %}>
-              //:{{ link.title | upcase }}_
-              {% if link.links != blank %}
-                <span class="dropdown-indicator" aria-hidden="true">▼</span>
-              {% endif %}
+            <a href="{{ link.url }}" class="nav-link">
+              <span>//:{{ link.title | upcase }}_</span>
+              {%- if link.links != blank -%}
+                <i class="dropdown-indicator">▼</i>
+              {%- endif -%}
             </a>
-            {% if link.links != blank %}
-              <ul class="dropdown-menu" role="menu" aria-label="{{ link.title }} submenu">
-                {%- for childlink in link.links -%}
-                  <li class="dropdown-item" role="none">
-                    <a href="{{ childlink.url }}" class="dropdown-link {% if childlink.active %}active{% endif %}" role="menuitem">
-                      {{ childlink.title | upcase }}
-                    </a>
+            {%- if link.links != blank -%}
+              <ul class="dropdown-menu shape-data-box">
+                {%- for child_link in link.links -%}
+                  <li class="dropdown-item">
+                    <a href="{{ child_link.url }}" class="dropdown-link">{{ child_link.title }}</a>
                   </li>
                 {%- endfor -%}
               </ul>
-            {% endif %}
-          </li>
-        {%- else -%}
-          <li class="nav-item">
-            <a href="{{ routes.collections_url }}/weaponry" class="nav-link">//:WEAPONRY_</a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ routes.collections_url }}/armor-systems" class="nav-link">//:ARMOR_SYSTEMS_</a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ routes.collections_url }}/cybernetics" class="nav-link">//:CYBERNETICS_</a>
+            {%- endif -%}
           </li>
         {%- endfor -%}
       </ul>
     </nav>
 
-    <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" aria-expanded="false">
-      <span class="hamburger">
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
-    </button>
-
     <div class="user-interface">
-      <button class="ui-link search-toggle" aria-label="Toggle search" aria-expanded="false">
+      <button type="button" class="ui-link search-toggle" aria-label="Toggle Search">
         <span class="ui-icon">🔍</span>
         <span class="ui-label">[SEARCH]</span>
       </button>
-      {%- if shop.customer_accounts_enabled -%}
-        {%- if customer -%}
-          <a href="{{ routes.account_url }}" class="ui-link account-link">
-            <span class="ui-icon">👤</span>
-            <span class="ui-label">[USER: {{ customer.first_name | default: 'AGENT' }}]</span>
-          </a>
-        {%- else -%}
-          <a href="{{ routes.account_login_url }}" class="ui-link account-link">
-            <span class="ui-icon">👤</span>
-            <span class="ui-label">[LOGIN]</span>
-          </a>
-        {%- endif -%}
+      {%- if customer -%}
+        <a href="{{ routes.account_url }}" class="ui-link">
+          <span class="ui-icon">👤</span>
+          <span class="ui-label">[AGENT]</span>
+        </a>
+      {%- else -%}
+        <a href="{{ routes.account_login_url }}" class="ui-link">
+          <span class="ui-icon">👤</span>
+          <span class="ui-label">[LOGIN]</span>
+        </a>
       {%- endif -%}
-      <button onclick="openCartDrawer()" class="ui-link cart-link" aria-label="Open cart drawer">
+      <a href="{{ routes.cart_url }}" class="ui-link">
         <span class="ui-icon">🛒</span>
         <span class="ui-label">[INVENTORY]</span>
-        {% if cart.item_count > 0 %}
-          <span class="cart-count">{{ cart.item_count }}</span>
-        {% endif %}
-      </button>
+        {%- if cart.item_count > 0 -%}<span class="cart-count">{{ cart.item_count }}</span>{%- endif -%}
+      </a>
     </div>
-  </div>
-  
-  <!-- Mobile-first search interface -->
-  <div class="search-interface" id="searchInterface" aria-hidden="true">
-    <div class="search-interface-content">
-      <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
-        <div class="search-input-group">
-          <input 
-            type="search" 
-            name="q" 
-            value="{{ search.terms | escape }}" 
-            placeholder="{{ 'search.placeholder' | t }}"
-            aria-label="{{ 'search.placeholder' | t }}"
-            class="search-input"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="off"
-            spellcheck="false"
-          >
-          <button type="submit" class="btn btn-primary btn-sm" aria-label="{{ 'search.submit' | t }}">
-            <i class="fas fa-search"></i>
-          </button>
-          <button type="button" class="btn btn-secondary btn-sm" aria-label="{{ 'search.close' | t }}">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-      </form>
-    </div>
+
+    <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+      <div class="hamburger"><span></span><span></span><span></span></div>
+    </button>
   </div>
 </header>
 
-
+<div class="search-interface" id="searchInterface" aria-hidden="true">
+  <div class="search-content container">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
+      <div class="search-input-group shape-input">
+        <input
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="Search inventory archives..."
+          class="search-input"
+          autofocus
+        >
+        <button type="submit" class="search-submit-btn" aria-label="Submit Search">
+          <span>➔</span>
+        </button>
+      </div>
+    </form>
+    <button type="button" class="search-close-btn" aria-label="Close Search">✕</button>
+  </div>
+</div>
 
 {% schema %}
-{
-  "name": "Header",
-  "settings": [
-    {
-      "type": "link_list",
-      "id": "menu",
-      "label": "Menu",
-      "default": "main-menu"
-    }
-  ]
-}
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "menu",
+        "label": "Menu",
+        "default": "main-menu"
+      }
+    ]
+  }
 {% endschema %}
