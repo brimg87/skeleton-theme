@@ -1,7 +1,5 @@
 {% comment %} --- sections/custom-message-block.liquid --- {% endcomment %}
 {%- liquid
-  assign text_align_class = section.settings.text_alignment | default: 'text-center'
-
   assign title_text = section.settings.title | default: section.settings.heading_text
   assign main_content = section.settings.content_text | default: section.settings.text
 -%}
@@ -20,14 +18,14 @@
   }
 {%- endstyle -%}
 
-<section class="{{ text_align_class }} section-wrapper"
+<section class="section-wrapper"
   {% if section.settings.background_color != blank %}
     style="background-color: {{ section.settings.background_color }};"
   {% endif %}
 >
   <div class="container">
     {%- if title_text != blank -%}
-      <div class="section-header {{ text_align_class }}">
+      <div class="section-header text-{{ section.settings.header_alignment }}">
         <h2 class="section-title" data-text="{{ title_text | escape }}">{{ title_text | escape }}</h2>
       </div>
     {%- endif -%}
@@ -42,7 +40,7 @@
         {%- endif -%}
         
         {%- if section.settings.cta_label != blank and section.settings.cta_link != blank -%}
-          <div class="mt-lg {{ text_align_class }}">
+          <div class="mt-lg text-{{ section.settings.header_alignment }}">
             <a href="{{ section.settings.cta_link }}" class="btn {{ section.settings.cta_style }}">
               {{ section.settings.cta_label | escape }}
             </a>
@@ -103,15 +101,13 @@
     },
     {
       "type": "select",
-      "id": "text_alignment",
-      "label": "Content Text Alignment",
+      "id": "header_alignment",
+      "label": "Header alignment",
       "options": [
-        { "value": "text-left", "label": "Left" },
-        { "value": "text-center", "label": "Center" },
-        { "value": "text-right", "label": "Right" }
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
       ],
-      "default": "text-center",
-      "info": "Applies to main content and button block."
+      "default": "center"
     },
     {
         "type": "color",

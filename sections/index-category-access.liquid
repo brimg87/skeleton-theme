@@ -3,7 +3,7 @@
 <section class="section-wrapper section-standard section-category-access">
   <div class="container">
     {%- if section.settings.title != blank -%}
-      <div class="section-header text-center">
+      <div class="section-header text-{{ section.settings.header_alignment }}">
         <h2 class="section-title" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
       </div>
     {%- endif -%}
@@ -54,6 +54,16 @@
       "id": "title",
       "label": "Heading",
       "default": "// SYSTEM_CATEGORIES //"
+    },
+    {
+      "type": "select",
+      "id": "header_alignment",
+      "label": "Header alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "center"
     }
   ],
   "blocks": [
