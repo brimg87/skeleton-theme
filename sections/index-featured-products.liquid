@@ -44,7 +44,7 @@
                 <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
               </h3>
               <p class="product-price">{{ product.price | money }}</p>
-              <a href="{{ product.url | within: collection }}" class="btn btn-secondary btn-sm shape-button">
+              <a href="{{ product.url | within: collection }}" class="btn btn-secondary btn-sm">
                 {{ section.settings.button_label | default: '[ANALYZE_ITEM]' }}
               </a>
             </div>
@@ -60,7 +60,7 @@
             <div class="product-info">
               <h3 class="product-name">EQUIPMENT_SLOT_{{ forloop.index }}</h3>
               <p class="product-price">€$ ---</p>
-              <button class="btn btn-secondary btn-sm shape-button disabled" disabled>[AWAITING_INVENTORY]</button>
+              <button class="btn btn-secondary btn-sm disabled" disabled>[AWAITING_INVENTORY]</button>
             </div>
           </div>
         {%- endfor -%}
@@ -69,7 +69,7 @@
 
     {%- if section.settings.show_view_all and collection.products_count > section.settings.products_to_show -%}
       <div class="section-footer text-center mt-xl">
-        <a href="{{ collection.url }}" class="btn btn-secondary shape-button">
+        <a href="{{ collection.url }}" class="btn btn-secondary">
           {{ 'sections.featured_collection.view_all' | t }}
         </a>
       </div>

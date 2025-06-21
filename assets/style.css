@@ -254,8 +254,14 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
   line-height: 1;
   /* Improve hover reliability */
   will-change: transform, box-shadow;
+  /* Cyberpunk clipped corners by default */
+  clip-path: var(--clip-path-button);
 }
-.btn.shape-button { clip-path: var(--clip-path-button); }
+
+/* Optional: Override for buttons that need standard corners */
+.btn.shape-standard { 
+  clip-path: none; 
+}
 
 /* --- Consistent Hover & Focus State for ALL Buttons --- */
 .btn:hover,
