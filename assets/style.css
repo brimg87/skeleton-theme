@@ -156,10 +156,10 @@ img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto
 .container-full { max-width: none; }
 
 /* --- Section Spacing (Shopify Best Practice) --- */
-/* Use Shopify's automatic section wrapper instead of custom classes */
+/* Shopify automatically wraps all sections with .shopify-section */
 .shopify-section {
-  padding-top: var(--space-xxl);
-  padding-bottom: var(--space-xxl);
+  padding-top: 80px;
+  padding-bottom: 80px;
 }
 /* Shopify automatically provides .shopify-section wrapper - use that for spacing */
 .shopify-section.no-top-spacing { padding-top: 0; }
