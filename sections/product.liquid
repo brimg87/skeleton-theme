@@ -18,10 +18,10 @@
   </div>
 </section>
 
-<section id="product-{{ section.id }}" class="product-interface-section section-wrapper section-wrapper-header-offset{% if section.settings.color_scheme != 'background-1' %} color-{{ section.settings.color_scheme }}{% endif %}" 
+<section id="product-{{ section.id }}" class="product-interface-section{% if section.settings.color_scheme != 'background-1' %} color-{{ section.settings.color_scheme }}{% endif %}" 
          itemscope itemtype="https://schema.org/Product">
   
-  <div class="{% if section.settings.full_width %}container-wide{% else %}container{% endif %}">
+  <div class="{% if section.settings.full_width %}container-wide{% else %}container{% endif %}" style="padding-top: 80px; padding-bottom: 80px;">
     <div class="product-layout" style="--product-media-width: {{ section.settings.media_width }}%;">
       
       <!-- Product Media Section -->

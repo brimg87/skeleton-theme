@@ -3,8 +3,8 @@
   assign products_per_page = section.settings.products_per_page
 -%}
 
-<section class="collection-interface-section section-wrapper section-wrapper-header-offset" style="--grid-desktop-columns: {{ section.settings.desktop_columns }}; --grid-tablet-columns: {{ section.settings.tablet_columns }}; --grid-mobile-columns: {{ section.settings.mobile_columns }}">
-  <div class="container">
+<section class="collection-interface-section" style="--grid-desktop-columns: {{ section.settings.desktop_columns }}; --grid-tablet-columns: {{ section.settings.tablet_columns }}; --grid-mobile-columns: {{ section.settings.mobile_columns }};">
+  <div class="container" style="padding-top: 80px; padding-bottom: 80px;">
     <header class="collection-header data-box">
       <div class="data-box-header">//: COLLECTION_DATABANK: {{ collection.title | upcase }} ://</div>
       <div class="collection-header-content">
