@@ -161,11 +161,17 @@ img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto
   padding-top: var(--space-xxl);
   padding-bottom: var(--space-xxl);
 }
-.section-wrapper-sm { padding-top: var(--space-lg); padding-bottom: var(--space-lg); }
-.section-wrapper-lg { padding-top: 4rem; padding-bottom: 4rem; }
-.section-wrapper-header-offset { padding-top: calc(var(--header-height) + var(--space-xl)); }
-.section-wrapper-no-top { padding-top: 0; }
-.section-wrapper-no-bottom { padding-bottom: 0; }
+/* Shopify automatically provides .shopify-section wrapper - use that for spacing */
+.shopify-section.no-top-spacing { padding-top: 0; }
+.shopify-section.no-bottom-spacing { padding-bottom: 0; }
+.shopify-section.small-spacing { 
+  padding-top: var(--space-lg); 
+  padding-bottom: var(--space-lg); 
+}
+.shopify-section.large-spacing { 
+  padding-top: 4rem; 
+  padding-bottom: 4rem; 
+}
 
 /* --- Product & Collection Grid --- */
 .product-grid {
