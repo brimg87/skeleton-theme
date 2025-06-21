@@ -158,8 +158,8 @@ img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto
 /* --- Section Spacing (Shopify Best Practice) --- */
 /* Shopify automatically wraps all sections with .shopify-section */
 .shopify-section {
-  padding-top: 80px; /* Temporarily increased for visibility */
-  padding-bottom: 80px; /* Temporarily increased for visibility */
+  padding-top: var(--space-xxl);
+  padding-bottom: var(--space-xxl);
 }
 
 /* Hero sections should not have automatic spacing but should still work properly */
