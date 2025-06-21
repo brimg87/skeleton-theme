@@ -120,18 +120,18 @@ TABLE OF CONTENTS:
 */
 html { box-sizing: border-box; font-size: 100%; scroll-behavior: smooth; }
 *, *::before, *::after { box-sizing: inherit; }
-/* Reset margins and padding for most elements, but NOT sections with section-wrapper */
-body, h1, h2, h3, h4, h5, h6, p, ol, ul, li, figure, figcaption, blockquote, dl, dd { margin: 0; padding: 0; }
+/* Reset margins and padding for most elements, but NOT sections or divs */
+h1, h2, h3, h4, h5, h6, p, ol, ul, li, figure, figcaption, blockquote, dl, dd { margin: 0; padding: 0; }
 body {
-  font-family: var(--font-family-body);
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-normal);
-  color: var(--color-text-primary);
-  background-color: var(--color-background-body);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  overflow-x: hidden;
-  position: relative;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    color: var(--color-text-primary);
+    background-color: var(--color-background-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    position: relative;
 }
 img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto; }
 ::selection { background-color: var(--color-accent-magenta); color: var(--color-primary-dark); }
