@@ -158,6 +158,9 @@ img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto
   width: 100%;
   padding-top: var(--space-xxl);
   padding-bottom: var(--space-xxl);
+  /* Temporary debug: Add visible border to confirm spacing is working */
+  border-top: 2px solid var(--color-accent-magenta);
+  border-bottom: 2px solid var(--color-accent-cyan);
 }
 .section-wrapper-sm { padding-top: var(--space-lg); padding-bottom: var(--space-lg); }
 .section-wrapper-lg { padding-top: 4rem; padding-bottom: 4rem; }
