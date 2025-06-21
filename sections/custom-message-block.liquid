@@ -4,19 +4,7 @@
   assign main_content = section.settings.content_text | default: section.settings.text
 -%}
 
-{%- style -%}
-  .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
-  }
-
-  @media screen and (min-width: 750px) {
-    .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
-    }
-  }
-{%- endstyle -%}
+{% comment %} Removed inline styles - using standardized .section-wrapper spacing {% endcomment %}
 
 <section class="section-wrapper"
   {% if section.settings.background_color != blank %}
@@ -114,26 +102,6 @@
         "id": "background_color",
         "label": "Section Background Color",
         "default": "#1a1a1a" /* Changed to secondary dark color */
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Top padding",
-      "default": 36
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Bottom padding",
-      "default": 36
     }
   ],
   "presets": [{
