@@ -1,6 +1,15 @@
 {% comment %} --- sections/index-hero-banner.liquid --- {% endcomment %}
 {%- assign bg_image = section.settings.background_image -%}
-<section class="hero-section section-wrapper section-wrapper-hero-offset" {% if bg_image != blank %}style="background-image: url('{{ bg_image | image_url: width: 1920, height: 1080 }}');"{% endif %}>
+{%- assign bg_video = section.settings.background_video -%}
+<section class="hero-section section-wrapper section-wrapper-hero-offset" {% if bg_image != blank and bg_video == blank %}style="background-image: url('{{ bg_image | image_url: width: 1920, height: 1080 }}');"{% endif %}>
+    
+    {% comment %} Video Background {% endcomment %}
+    {% if bg_video != blank %}
+        <div class="hero-video-background">
+            {{ bg_video | video_tag: autoplay: true, loop: true, muted: true, controls: false, class: 'hero-video' }}
+        </div>
+    {% endif %}
+
     <div class="container">
         <div id="hero-loader-overlay">
             <div class="loader-text-container">
@@ -38,7 +47,14 @@
     {
       "type": "image_picker",
       "id": "background_image",
-      "label": "Background Image"
+      "label": "Background Image",
+      "info": "Recommended: 1920x1080px for optimal display across devices. Will be overridden if video is selected."
+    },
+    {
+      "type": "video",
+      "id": "background_video",
+      "label": "Background Video (MP4)",
+      "info": "Upload an MP4 video for autoplay background. Video will override the background image if selected."
     },
     {
       "type": "text",
