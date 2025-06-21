@@ -133,6 +133,28 @@ body {
     overflow-x: hidden;
     position: relative;
 }
+
+/* Reset main element to remove any default browser spacing */
+main {
+    margin: 0;
+    padding: 0;
+}
+
+/* Skip to content link - accessibility */
+.skip-to-content-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: var(--color-accent-cyan);
+    color: var(--color-text-on-accent);
+    padding: 8px;
+    text-decoration: none;
+    z-index: var(--z-index-critical-overlay);
+}
+
+.skip-to-content-link:focus {
+    top: 6px;
+}
 img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto; }
 ::selection { background-color: var(--color-accent-magenta); color: var(--color-primary-dark); }
 
@@ -158,14 +180,24 @@ img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto
 /* --- Section Spacing (Shopify Best Practice) --- */
 /* Shopify automatically wraps all sections with .shopify-section */
 .shopify-section {
-  padding-top: var(--space-xxl);
-  padding-bottom: var(--space-xxl);
+  margin-bottom: var(--space-xxl);
+}
+
+/* First section shouldn't have top margin, last section shouldn't have bottom margin */
+.shopify-section:first-child {
+  margin-top: 0;
+}
+
+.shopify-section:last-child {
+  margin-bottom: 0;
 }
 
 /* Hero sections should not have automatic spacing but should still work properly */
-.shopify-section[id*="hero-banner"] {
-  padding-top: 0;
-  padding-bottom: 0;
+.shopify-section.section-hero-banner {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  background-color: transparent !important;
+  border: none !important;
 }
 /* Shopify automatically provides .shopify-section wrapper - use that for spacing */
 .shopify-section.no-top-spacing { padding-top: 0; }
@@ -730,8 +762,8 @@ body.search-active .search-interface,
   justify-content: center;
   text-align: center;
   position: relative;
-  padding: 0 var(--container-padding-x);
-  padding-top: var(--header-height); /* Start content below fixed header */
+  padding: var(--header-height) var(--container-padding-x) 0;
+  margin-top: calc(-1 * var(--header-height));
   background-repeat: no-repeat;
   background-position: top center;
   background-size: cover;
