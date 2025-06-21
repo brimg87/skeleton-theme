@@ -1,10 +1,7 @@
 {% comment %} --- sections/index-newsletter-signup.liquid --- {% endcomment %}
 
 
-{% comment %} Removed inline styles - using standardized .section-wrapper spacing {% endcomment %}
-
-<section class="section-newsletter-signup">
-  <div class="container">
+<div class="container" style="padding-top: 80px; padding-bottom: 80px;">
     {%- if section.settings.title != blank -%}
       <div class="section-header text-{{ section.settings.header_alignment }}">
         <h2 class="section-title" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
@@ -42,7 +39,6 @@
       </div>
     {%- endform -%}
   </div>
-</section>
 
 {% comment %} --- Add section schema if it doesn't exist or update it --- {% endcomment %}
 {% schema %}

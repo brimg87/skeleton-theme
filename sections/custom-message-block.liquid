@@ -4,14 +4,16 @@
   assign main_content = section.settings.content_text | default: section.settings.text
 -%}
 
-{% comment %} Removed inline styles - using standardized .section-wrapper spacing {% endcomment %}
+{% comment %} Apply background color to Shopify's automatic .shopify-section wrapper {% endcomment %}
+{% if section.settings.background_color != blank %}
+  <style>
+    #shopify-section-{{ section.id }} {
+      background-color: {{ section.settings.background_color }};
+    }
+  </style>
+{% endif %}
 
-<section
-  {% if section.settings.background_color != blank %}
-    style="background-color: {{ section.settings.background_color }};"
-  {% endif %}
->
-  <div class="container">
+<div class="container" style="padding-top: 80px; padding-bottom: 80px;">
     {%- if title_text != blank -%}
       <div class="section-header text-{{ section.settings.header_alignment }}">
         <h2 class="section-title" data-text="{{ title_text | escape }}">{{ title_text | escape }}</h2>
@@ -37,7 +39,7 @@
       </div>
     </div>
   </div>
-</section>
+</div>
 
 {% schema %}
 {

@@ -1,7 +1,16 @@
 {% comment %} --- sections/index-hero-banner.liquid --- {% endcomment %}
 {%- assign bg_image = section.settings.background_image -%}
 {%- assign bg_video = section.settings.background_video -%}
-<section class="hero-section" {% if bg_image != blank and bg_video == blank %}style="background-image: url('{{ bg_image | image_url: width: 1920, height: 1080 }}');"{% endif %}>
+{% comment %} Apply background image to Shopify's automatic .shopify-section wrapper {% endcomment %}
+{% if bg_image != blank and bg_video == blank %}
+  <style>
+    #shopify-section-{{ section.id }} {
+      background-image: url('{{ bg_image | image_url: width: 1920, height: 1080 }}');
+    }
+  </style>
+{% endif %}
+
+<div class="hero-section">
     
     {% comment %} Video Background {% endcomment %}
     {% if bg_video != blank %}
@@ -35,7 +44,7 @@
         {% endif %}
         </div>
     </div>
-</section>
+</div>
 
 {% comment %} Schema remains the same as before... {% endcomment %}
 {% schema %}
