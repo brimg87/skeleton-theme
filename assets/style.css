@@ -155,17 +155,11 @@ img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto
 .container-wide { max-width: calc(var(--container-max-width) * 1.25); }
 .container-full { max-width: none; }
 
-/* --- Section Spacing --- */
-.section-wrapper {
-  width: 100%;
-  /* Test with hard-coded values instead of CSS variables */
-  padding-top: 48px !important;
-  padding-bottom: 48px !important;
-  /* Temporary debug: Add visible border to confirm spacing is working */
-  border-top: 2px solid #ff00ff;
-  border-bottom: 2px solid #00ffff;
-  /* Additional debug: Add background to see the actual padding area */
-  background-color: rgba(255, 0, 255, 0.1) !important;
+/* --- Section Spacing (Shopify Best Practice) --- */
+/* Use Shopify's automatic section wrapper instead of custom classes */
+.shopify-section {
+  padding-top: var(--space-xxl);
+  padding-bottom: var(--space-xxl);
 }
 .section-wrapper-sm { padding-top: var(--space-lg); padding-bottom: var(--space-lg); }
 .section-wrapper-lg { padding-top: 4rem; padding-bottom: 4rem; }
