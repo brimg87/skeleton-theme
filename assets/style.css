@@ -751,6 +751,12 @@ body.search-active .search-interface,
 .section-header { margin-bottom: var(--space-xl); }
 .section-title { color: var(--color-accent-cyan); text-shadow: 0 0 3px var(--color-primary-dark), 0 0 5px var(--color-accent-cyan); margin-top: 0; margin-bottom: var(--space-md); }
 .section-description { margin-top: var(--space-sm); color: var(--color-text-secondary); max-width: 60ch; }
+/* --- Text Alignment Utilities --- */
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* --- Section Description Alignment --- */
 .text-center .section-description { margin-left: auto; margin-right: auto; }
 .text-left .section-description { margin-left: 0; }
 
