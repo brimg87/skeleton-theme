@@ -73,10 +73,18 @@
 - **JSON-LD structured data is OK** - this is the recommended approach
 
 ### Section File Standards
-- **Keep sections clean** - HTML/Liquid only
+- **Keep sections clean** - HTML/Liquid only, no manual wrapper elements
+- **Let Shopify handle section wrappers** - Shopify automatically wraps sections with `.shopify-section`
 - **Use data attributes** for dynamic values: `data-variants="{{ product.variants | json | escape }}"`
 - **External script references are OK**: `{{ 'product-zoom.js' | asset_url | script_tag }}`
 - **Schema settings should be comprehensive** and well-documented
+
+### Section Spacing (CRITICAL)
+- **NEVER add manual section wrapper classes** like `.section-wrapper`
+- **Shopify automatically wraps ALL sections** with `<div class="shopify-section">`
+- **CSS should target `.shopify-section`** for spacing between sections
+- **Section content should start with `.container`** for proper layout
+- **Don't fight Shopify's automatic section handling** - work with it
 
 ### Performance Requirements
 - **Single CSS file** for browser caching optimization
@@ -103,6 +111,9 @@ sections/
 - Don't skip testing navigation after CSS changes
 - **Don't add inline CSS or JavaScript to section files**
 - **Don't create multiple CSS/JS files** unless absolutely necessary
+- **Don't add manual section wrapper classes** - Shopify handles this automatically
+- **Don't add `<section>` wrapper elements** in section files
+- **Don't fight Shopify's automatic `.shopify-section` wrapper**
 
 ## ✅ Best Practices
 - Read existing code before making changes

@@ -182,36 +182,37 @@ grid-template-columns: 1fr;        /* Mobile Stack */
 
 ## 🎯 Section Organization
 
-### Standard Section Structure
+### Standard Section Structure (Shopify Best Practice)
 ```html
-<section class="[specific]-section section-padding">
-  <div class="container">
-    <!-- Breadcrumbs (if applicable) -->
-    <nav class="breadcrumbs">...</nav>
-    
-    <!-- Section Header -->
-    <header class="[section]-header">
-      <div class="data-box">
-        <div class="data-box-header">//: SECTION_NAME ://</div>
-        <!-- Header content -->
-      </div>
-    </header>
-    
-    <!-- Main Content -->
-    <div class="[section]-content">
-      <!-- Content grids, cards, etc. -->
+<!-- Shopify automatically wraps this in <div class="shopify-section"> -->
+<div class="container">
+  <!-- Breadcrumbs (if applicable) -->
+  <nav class="breadcrumbs">...</nav>
+  
+  <!-- Section Header -->
+  <header class="[section]-header">
+    <div class="data-box">
+      <div class="data-box-header">//: SECTION_NAME ://</div>
+      <!-- Header content -->
     </div>
-    
-    <!-- Navigation (if applicable) -->
-    <nav class="[section]-navigation">...</nav>
+  </header>
+  
+  <!-- Main Content -->
+  <div class="[section]-content">
+    <!-- Content grids, cards, etc. -->
   </div>
-</section>
+  
+  <!-- Navigation (if applicable) -->
+  <nav class="[section]-navigation">...</nav>
+</div>
 ```
 
-### Padding Standards
+### Section Spacing Standards (CRITICAL)
 ```css
-.section-padding {
-  padding: calc(var(--header-height) + var(--spacing-section)) 0 var(--spacing-section) 0;
+/* CORRECT: Shopify automatically provides .shopify-section wrapper */
+.shopify-section {
+  padding-top: var(--space-xxl);    /* 80px between sections */
+  padding-bottom: var(--space-xxl);
 }
 
 /* Internal component padding */
@@ -222,6 +223,13 @@ grid-template-columns: 1fr;        /* Mobile Stack */
 --space-xl: 2rem
 --space-xxl: 3rem
 ```
+
+**IMPORTANT**: 
+- ❌ **NEVER add manual section wrapper classes** like `.section-wrapper`
+- ❌ **NEVER add `<section>` wrapper elements** in section files
+- ✅ **Let Shopify handle section wrappers automatically**
+- ✅ **Start section content with `.container`**
+- ✅ **Target `.shopify-section` in CSS for spacing**
 
 ## 🔧 Form Styling
 
@@ -338,7 +346,8 @@ Status: [CURRENT_STATE] or [ACCESS_LEVEL]
 ### Most Used Classes
 ```css
 .data-box                    /* Primary content container */
-.section-padding             /* Standard section spacing */
+.shopify-section            /* Automatic section wrapper (CSS target only) */
+.container                  /* Section content wrapper */
 .btn-cta-primary            /* Green action buttons */
 .btn-cta                    /* Cyan secondary buttons */
 .terminal-green-glow        /* Glowing green text */

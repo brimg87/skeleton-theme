@@ -2,21 +2,27 @@
 
 ## 🎯 Overview
 
-The Starside Armory theme now uses a **standardized, semantic container system** that provides consistent layout patterns across all sections. This system separates concerns between **horizontal containment** (width + centering) and **vertical spacing** (padding/margins).
+The Starside Armory theme uses **Shopify's automatic section wrapper system** combined with a **standardized container system** for consistent layout patterns. This follows Shopify best practices and provides clean, maintainable code.
 
 ---
 
-## 🏗️ System Architecture
+## 🏗️ System Architecture (Shopify Best Practice)
+
+### **How Shopify Handles Sections**
+- **Shopify automatically wraps ALL sections** with `<div class="shopify-section">`
+- **Section files contain ONLY content** - no manual wrapper elements
+- **CSS targets `.shopify-section`** for spacing between sections
+- **Section content starts with `.container`** for proper layout
 
 ### **Separation of Concerns**
+- **Shopify Section Wrapper**: Handles vertical spacing between sections
 - **Container Classes**: Handle width, centering, and horizontal padding
-- **Section Classes**: Handle vertical spacing and header offsets
-- **Wrapper Classes**: Handle section-level layout concerns
+- **Content Classes**: Handle internal layout and styling
 
-### **Progressive Enhancement**
-- Mobile-first responsive design
+### **Clean Architecture**
+- No manual section wrapper classes needed
 - Semantic class names for clear intent
-- Backward compatibility with legacy patterns
+- Works with Shopify's automatic systems
 
 ---
 
@@ -62,124 +68,155 @@ max-width: none;
 
 ---
 
-## 📏 Section Classes
+## 📏 Section Spacing (Shopify Automatic)
 
-### **Standard Section Spacing**
+### **How Section Spacing Works**
 
-#### `.section-standard`
+#### `.shopify-section` (Automatic)
 ```css
-/* Default section spacing with header offset */
-padding-top: calc(header-height + 3rem);
-padding-bottom: 3rem;
+/* Shopify automatically applies this to ALL sections */
+.shopify-section {
+  padding-top: var(--space-xxl);    /* 80px */
+  padding-bottom: var(--space-xxl); /* 80px */
+}
 ```
-**Use for**: Most page sections
+**Applied by**: Shopify automatically - you don't add this class
+**Use for**: All sections get this spacing automatically
 
-#### `.section-compact`
+### **Section Spacing Modifiers**
+
+#### `.shopify-section.no-top-spacing`
 ```css
-/* Tighter spacing for content-dense areas */
-padding-top: calc(header-height + 2rem);
-padding-bottom: 2rem;
+/* Remove top spacing when needed */
+padding-top: 0;
+```
+**Use for**: Sections that should touch the header
+
+#### `.shopify-section.no-bottom-spacing`
+```css
+/* Remove bottom spacing when needed */
+padding-bottom: 0;
+```
+**Use for**: Sections that should touch the footer
+
+#### `.shopify-section.small-spacing`
+```css
+/* Reduced spacing for compact sections */
+padding-top: var(--space-lg);    /* 24px */
+padding-bottom: var(--space-lg);
 ```
 **Use for**: Form sections, compact content
 
-#### `.section-spacious`
+#### `.shopify-section.large-spacing`
 ```css
-/* More breathing room for important content */
-padding-top: calc(header-height + 4rem);
+/* Increased spacing for feature sections */
+padding-top: 4rem;    /* 64px */
 padding-bottom: 4rem;
 ```
-**Use for**: Feature highlights, testimonials
+**Use for**: Hero sections, feature highlights
 
-#### `.section-hero`
+### **⚠️ DEPRECATED Classes**
+
+#### `.section-*` classes ❌ REMOVED
 ```css
-/* Maximum spacing for hero/landing sections */
-padding-top: calc(header-height + 6rem);
-padding-bottom: 6rem;
-```
-**Use for**: Hero sections, landing page headers
-
-### **Legacy Support**
-
-#### `.section-padding` ⚠️ DEPRECATED
-```css
-/* Complex legacy system - use new .section-* classes instead */
+/* All manual section classes have been removed */
+/* Use Shopify's automatic .shopify-section instead */
 ```
 
 ---
 
-## 🔧 Section Wrapper System
+## 🔧 How to Apply Section Classes
 
-### **Flexible Spacing Control**
+### **Using Schema Classes**
 
-#### `.section-wrapper`
-```css
-/* Base wrapper - no spacing applied */
-width: 100%;
+Section classes are applied via the section schema, not in the HTML:
+
+```json
+{
+  "name": "Section Name",
+  "tag": "section",
+  "class": "small-spacing",
+  "settings": [...]
+}
 ```
 
-#### `.section-wrapper-sm|md|lg|xl`
-```css
-/* Vertical spacing variants without header offset */
-```
+### **Available Schema Classes**
 
-#### `.section-wrapper-header-offset`
-```css
-/* Adds header height to top padding */
-```
+#### `"class": "small-spacing"`
+- Applies `.shopify-section.small-spacing`
+- Reduces section spacing to 24px
 
-#### `.section-wrapper-no-top|bottom|spacing`
+#### `"class": "large-spacing"`
+- Applies `.shopify-section.large-spacing`  
+- Increases section spacing to 64px
+
+#### `"class": "no-top-spacing"`
+- Applies `.shopify-section.no-top-spacing`
+- Removes top padding
+
+#### `"class": "no-bottom-spacing"`
+- Applies `.shopify-section.no-bottom-spacing`
+- Removes bottom padding
+
+### **⚠️ DEPRECATED System**
+
+#### `.section-wrapper-*` classes ❌ REMOVED
 ```css
-/* Remove specific spacing as needed */
+/* All manual wrapper classes have been removed */
+/* Use schema class system instead */
 ```
 
 ---
 
-## 💡 Usage Patterns
+## 💡 Usage Patterns (Shopify Best Practice)
 
-### **Standard Page Section**
+### **Standard Section (Most Common)**
 ```html
-<section class="section-standard">
-  <div class="container">
-    <!-- Content -->
-  </div>
-</section>
+<!-- Shopify automatically wraps this in <div class="shopify-section"> -->
+<div class="container">
+  <!-- Section content -->
+</div>
 ```
+**Result**: Gets automatic 80px spacing above and below
 
-### **Hero Section**
+### **Hero Section (Full Width)**
 ```html
-<section class="section-hero">
-  <div class="container-full">
-    <!-- Full-width hero content -->
-  </div>
-</section>
+<!-- Shopify automatically wraps this in <div class="shopify-section"> -->
+<div class="container-full">
+  <!-- Full-width hero content -->
+</div>
 ```
+**Result**: Full width with automatic spacing
 
-### **Compact Form Section**
+### **Compact Section**
 ```html
-<section class="section-compact">
-  <div class="container-narrow">
-    <!-- Form content -->
-  </div>
-</section>
+<!-- Add small-spacing class to the Shopify wrapper via schema -->
+<div class="container-narrow">
+  <!-- Form content -->
+</div>
 ```
+**Schema setting**: `"class": "small-spacing"`
+**Result**: Gets reduced 24px spacing
 
-### **Product Showcase**
+### **Feature Section**
 ```html
-<section class="section-spacious">
-  <div class="container-wide">
-    <!-- Product grid -->
-  </div>
-</section>
+<!-- Add large-spacing class to the Shopify wrapper via schema -->
+<div class="container-wide">
+  <!-- Feature content -->
+</div>
 ```
+**Schema setting**: `"class": "large-spacing"`
+**Result**: Gets increased 64px spacing
 
-### **Custom Spacing Needs**
+### **Section Without Top Spacing**
 ```html
-<section class="section-wrapper-header-offset section-wrapper-lg">
-  <div class="container">
-    <!-- Custom spaced content -->
-  </div>
-</section>
+<!-- Add no-top-spacing class to the Shopify wrapper via schema -->
+<div class="container">
+  <!-- Content that should touch header -->
+</div>
 ```
+**Schema setting**: `"class": "no-top-spacing"`
+**Result**: No top spacing, normal bottom spacing
 
 ---
 
@@ -198,6 +235,51 @@ width: 100%;
 ---
 
 ## 🔄 Migration Guide
+
+### **From Manual Wrappers to Shopify Auto-Wrappers**
+
+#### ❌ **OLD WAY (Incorrect)**
+```html
+<section class="section-wrapper section-standard">
+  <div class="container">
+    <!-- Content -->
+  </div>
+</section>
+```
+
+#### ✅ **NEW WAY (Correct)**
+```html
+<!-- Shopify automatically wraps this -->
+<div class="container">
+  <!-- Content -->
+</div>
+```
+```json
+{
+  "name": "Section Name",
+  "tag": "section",
+  "class": "optional-modifier"
+}
+```
+
+### **Class Migration Map**
+
+| Old Class | New Approach |
+|-----------|--------------|
+| `.section-standard` | Default (no class needed) |
+| `.section-compact` | `"class": "small-spacing"` |
+| `.section-spacious` | `"class": "large-spacing"` |
+| `.section-hero` | `"class": "large-spacing"` |
+| `.section-wrapper` | Remove entirely |
+| `.section-padding` | Remove entirely |
+
+### **Benefits of New System**
+
+✅ **Cleaner HTML** - No manual wrapper elements  
+✅ **Shopify Compliance** - Works with Shopify's automatic systems  
+✅ **Easier Maintenance** - Less code to manage  
+✅ **Better Performance** - Leverages Shopify's optimizations  
+✅ **Theme Editor Compatible** - Works properly with section customization
 
 ### **From Legacy to New System**
 
