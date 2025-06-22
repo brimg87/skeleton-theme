@@ -100,18 +100,39 @@ class ProductZoom {
     const zoomSrc = mainImage.dataset.zoom || mainImage.src;
     console.log('ProductZoom: Using zoom image:', zoomSrc);
     
-    this.zoomImage.src = zoomSrc;
-    this.zoomImage.alt = mainImage.alt;
-    this.zoomModal.classList.add('active');
+    // Show modal with loading state
+    this.zoomModal.classList.add('active', 'loading');
     this.zoomModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    
+    // Load the zoom image
+    const tempImage = new Image();
+    tempImage.onload = () => {
+      this.zoomImage.src = zoomSrc;
+      this.zoomImage.alt = mainImage.alt;
+      this.zoomModal.classList.remove('loading');
+    };
+    tempImage.onerror = () => {
+      console.log('ProductZoom: Error loading zoom image');
+      this.zoomImage.src = mainImage.src; // Fallback to main image
+      this.zoomImage.alt = mainImage.alt;
+      this.zoomModal.classList.remove('loading');
+    };
+    tempImage.src = zoomSrc;
   }
   
   closeZoom() {
     console.log('ProductZoom: Closing zoom');
-    this.zoomModal.classList.remove('active');
+    this.zoomModal.classList.remove('active', 'loading');
     this.zoomModal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    
+    // Clear the zoom image to free memory
+    setTimeout(() => {
+      if (!this.zoomModal.classList.contains('active')) {
+        this.zoomImage.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E';
+      }
+    }, 400);
   }
 }
 

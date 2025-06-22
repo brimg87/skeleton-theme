@@ -464,11 +464,15 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.9);
+  background: linear-gradient(45deg, 
+    rgba(0, 0, 0, 0.95) 0%, 
+    rgba(10, 15, 31, 0.98) 50%, 
+    rgba(0, 0, 0, 0.95) 100%);
+  backdrop-filter: blur(8px);
   z-index: var(--z-index-critical-overlay);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition: all 0.4s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -485,33 +489,92 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-lg);
+  padding: var(--space-xl);
+  position: relative;
 }
 
 .zoom-modal-content {
   position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
+  max-width: 95vw;
+  max-height: 95vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-color: var(--color-background-data-box);
+  border: var(--border-width-medium) solid var(--color-border-primary);
+  clip-path: var(--clip-path-data-box);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.3),
+              0 0 60px rgba(0, 255, 255, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: zoomModalAppear 0.4s ease-out;
+}
+
+@keyframes zoomModalAppear {
+  0% {
+    transform: scale(0.8) translateY(50px);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.zoom-modal-header {
+  width: 100%;
+  background-color: rgba(10, 15, 31, 0.9);
+  border-bottom: var(--border-width-medium) solid var(--color-accent-cyan);
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.zoom-modal-header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--color-accent-cyan) 20%, 
+    var(--color-accent-cyan) 80%, 
+    transparent 100%);
+  box-shadow: 0 0 3px var(--color-accent-cyan);
+}
+
+.zoom-modal-title {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-sm);
+  color: var(--color-accent-cyan);
+  text-transform: uppercase;
+  text-shadow: 0 0 5px var(--color-accent-cyan);
+  margin: 0;
 }
 
 .zoom-close {
-  position: absolute;
-  top: -50px;
-  right: 0;
   background: none;
   border: none;
-  color: var(--color-text-highlight);
+  color: var(--color-text-secondary);
   cursor: pointer;
-  padding: var(--space-sm);
-  transition: color 0.2s ease;
-  z-index: 1;
+  padding: var(--space-xs);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 2px;
 }
 
 .zoom-close:hover {
-  color: var(--color-accent-cyan);
+  color: var(--color-accent-red);
+  background-color: rgba(255, 31, 31, 0.1);
+  text-shadow: 0 0 5px var(--color-accent-red);
 }
 
 .zoom-image-container {
@@ -520,15 +583,59 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
   justify-content: center;
   max-width: 100%;
   max-height: 100%;
+  padding: var(--space-lg);
+  position: relative;
 }
 
 .zoom-image {
   max-width: 100%;
-  max-height: 90vh;
+  max-height: 80vh;
   width: auto;
   height: auto;
   object-fit: contain;
   border: var(--border-width-thin) solid var(--color-border-primary);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.zoom-image:hover {
+  transform: scale(1.02);
+}
+
+/* Zoom Modal Instructions */
+.zoom-instructions {
+  position: absolute;
+  bottom: var(--space-md);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-align: center;
+  opacity: 0.7;
+  background-color: rgba(10, 15, 31, 0.8);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: 2px;
+  border: 1px solid var(--color-border-primary);
+}
+
+/* Loading state for zoom modal */
+.zoom-modal.loading .zoom-image-container::before {
+  content: 'LOADING_IMAGE_DATA...';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-family-secondary);
+  color: var(--color-accent-cyan);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
 .product-card .product-info { padding: var(--space-lg); flex-grow: 1; display: flex; flex-direction: column; }
 .product-card .product-name { font-size: var(--font-size-md); color: var(--color-accent-yellow); margin-bottom: var(--space-sm); margin-top: 0; }
