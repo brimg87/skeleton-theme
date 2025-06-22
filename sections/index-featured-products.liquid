@@ -23,31 +23,90 @@
 
       {%- if collection.products_count > 0 -%}
         {%- for product in collection.products limit: products_to_show -%}
-          <div class="product-card shape-card">
+          <article class="product-card shape-card{% if product.product_type == 'Transmission Log' %} transmission-log-card{% endif %}" itemscope itemtype="https://schema.org/Product">
             <div class="product-image">
-              <a href="{{ product.url | within: collection }}">
+              <a href="{{ product.url | within: collection }}" aria-label="View {{ product.title | escape }} details">
                 {%- if product.featured_image -%}
                   <img
                     src="{{ product.featured_image | image_url: width: 600 }}"
-                    alt="{{ product.featured_image.alt | escape }}"
+                    alt="{{ product.featured_image.alt | escape | default: product.title | escape }}"
                     loading="lazy"
                     width="600"
-                    height="{{ 600 | divided_by: product.featured_image.aspect_ratio | round }}">
+                    height="{{ 600 | divided_by: product.featured_image.aspect_ratio | round }}"
+                    itemprop="image">
                 {%- else -%}
                     {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
                 {%- endif -%}
+                
+                {%- comment -%} Product Status Badges {%- endcomment -%}
+                {% if product.product_type == 'Transmission Log' %}
+                  <div class="product-badge archive-badge">[ARCHIVE]</div>
+                  {% if product.metafields.transmission_log.entry_number %}
+                    <div class="product-badge entry-badge">[#{{ product.metafields.transmission_log.entry_number }}]</div>
+                  {% endif %}
+                {% elsif product.compare_at_price > product.price and section.settings.show_sale_badges %}
+                  <div class="product-badge sale-badge">[ON_SALE]</div>
+                {% elsif product.available == false %}
+                  <div class="product-badge sold-out-badge">[OUT_OF_STOCK]</div>
+                {% endif %}
               </a>
             </div>
             <div class="product-info">
-              <h3 class="product-name">
-                <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
-              </h3>
-              <p class="product-price">{{ product.price | money }}</p>
-              <a href="{{ product.url | within: collection }}" class="btn btn-secondary btn-sm">
-                {{ section.settings.button_label | default: '[ANALYZE_ITEM]' }}
-              </a>
+              <div class="product-content">
+                <h3 class="product-name" itemprop="name">
+                  <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
+                </h3>
+                
+                {% if product.product_type == 'Transmission Log' %}
+                  <div class="archive-info">
+                    {% if product.metafields.transmission_log.status %}
+                      <span class="archive-status status-{{ product.metafields.transmission_log.status | downcase }}">
+                        [{{ product.metafields.transmission_log.status | upcase }}]
+                      </span>
+                    {% endif %}
+                    {% if product.metafields.product_specs.rarity %}
+                      <span class="archive-rarity rarity-{{ product.metafields.product_specs.rarity | downcase }}">
+                        {{ product.metafields.product_specs.rarity | upcase }}
+                      </span>
+                    {% endif %}
+                    <span class="archive-notice">[REFERENCE_ONLY]</span>
+                  </div>
+                {% else %}
+                  <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                    <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
+                    <meta itemprop="price" content="{{ product.price | divided_by: 100.0 }}">
+                    {% if product.compare_at_price > product.price and section.settings.show_compare_prices %}
+                      <span class="visually-hidden">Regular price</span>
+                      <s class="product-price-compare">{{ product.compare_at_price | money }}</s>
+                      <span class="visually-hidden">Sale price</span>
+                    {% endif %}
+                    <span class="product-price-current">{{ product.price | money }}</span>
+                    {% if product.available %}
+                      <link itemprop="availability" href="https://schema.org/InStock">
+                    {% else %}
+                      <link itemprop="availability" href="https://schema.org/OutOfStock">
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </div>
+              
+              <div class="product-actions">
+                {% if product.product_type == 'Transmission Log' %}
+                  <a href="{{ product.url | within: collection }}" class="btn btn-secondary btn-sm">
+                    [ACCESS_ARCHIVE]
+                  </a>
+                {% elsif product.available %}
+                  <a href="{{ product.url | within: collection }}" class="btn btn-secondary btn-sm">
+                    {{ section.settings.button_label | default: '[ANALYZE_ITEM]' }}
+                  </a>
+                {% else %}
+                  <button class="btn btn-secondary btn-sm disabled" disabled>
+                    [OUT_OF_STOCK]
+                  </button>
+                {% endif %}
+              </div>
             </div>
-          </div>
+          </article>
         {%- endfor -%}
       {%- else -%}
         {%- comment -%} Onboarding placeholders for the Theme Editor {%- endcomment -%}
@@ -127,6 +186,24 @@
       "id": "button_label",
       "label": "Product card button label",
       "default": "[ANALYZE_ITEM]"
+    },
+    {
+      "type": "header",
+      "content": "Product Display Options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sale_badges",
+      "label": "Show sale badges",
+      "default": true,
+      "info": "Display [ON_SALE] badges on discounted products"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_compare_prices",
+      "label": "Show compare at prices",
+      "default": true,
+      "info": "Display crossed-out original prices for sale items"
     }
   ],
   "presets": [

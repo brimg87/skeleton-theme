@@ -3718,13 +3718,21 @@ body.search-active .search-interface,
 
 .maker-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: var(--space-md);
   margin-bottom: var(--space-xl);
 }
 
 .maker-stats-grid .stat-item {
   padding: var(--space-md);
+  text-align: center;
+}
+
+.maker-stats-grid .stat-label {
+  font-size: var(--font-size-xs);
+  line-height: 1.2;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .maker-quote {
