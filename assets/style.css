@@ -43,12 +43,12 @@ TABLE OF CONTENTS:
   --color-text-link-hover: var(--color-text-highlight);
   --color-text-on-accent: var(--color-primary-dark);
 
-  --color-border-primary: #595959; /* Client-specified dark gray */
+  --color-border-primary: #808080; /* Increased contrast - lighter gray */
   --color-border-accent: var(--color-accent-cyan);
 
   --color-background-body: #000000; /* Client-specified black */
   --color-background-overlay: rgba(10, 15, 31, 0.85);
-  --color-background-data-box: rgba(10, 15, 31, 0.3);
+  --color-background-data-box: rgba(26, 31, 46, 0.8); /* Increased opacity and brightness */
   --color-background-input: var(--color-primary-dark);
   --color-background-card: var(--color-secondary-dark);
 
@@ -537,20 +537,46 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 .product-card .product-price { font-family: var(--font-family-secondary); font-size: var(--font-size-lg); color: var(--color-accent-green); margin-top: auto; padding-top: var(--space-md); }
 
 /* --- Data Boxes --- */
-.data-box {
-  border: var(--border-width-thin) solid var(--color-border-primary);
+.data-box { 
+  border: var(--border-width-medium) solid var(--color-border-primary); 
   background-color: var(--color-background-data-box);
   margin-bottom: var(--space-lg);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.1), 
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  transition: all var(--transition-duration-normal) ease;
+}
+.data-box:hover {
+  border-color: var(--color-accent-cyan);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2), 
+              inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
 }
 .data-box.shape-data-box { clip-path: var(--clip-path-data-box); }
-.data-box-header {
-  font-family: var(--font-family-secondary);
-  font-size: var(--font-size-sm);
+.data-box-header { 
+  font-family: var(--font-family-secondary); 
+  font-size: var(--font-size-sm); 
   color: var(--color-accent-cyan);
-  background-color: rgba(26, 31, 46, 0.7);
+  background-color: rgba(10, 15, 31, 0.9);
   padding: var(--space-xs) var(--space-md);
-  border-bottom: var(--border-width-thin) solid var(--color-border-primary);
+  border-bottom: var(--border-width-medium) solid var(--color-accent-cyan);
   text-transform: uppercase;
+  text-shadow: 0 0 5px var(--color-accent-cyan);
+  position: relative;
+}
+.data-box-header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--color-accent-cyan) 20%, 
+    var(--color-accent-cyan) 80%, 
+    transparent 100%);
+  box-shadow: 0 0 3px var(--color-accent-cyan);
 }
 .data-box > :not(.data-box-header) { padding: var(--space-lg); }
 
