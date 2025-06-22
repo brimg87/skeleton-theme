@@ -1,20 +1,77 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "main": {
-      "type": "page",
+    "about-hero": {
+      "type": "about-hero",
       "settings": {}
+    },
+    "about-origin": {
+      "type": "about-origin",
+      "blocks": {
+        "timeline-1": {
+          "type": "timeline_entry",
+          "settings": {
+            "year": "2087",
+            "title": "THE_FOUNDING",
+            "description": "Established in the heart of Oregon with a vision to revolutionize tactical equipment manufacturing."
+          }
+        },
+        "timeline-2": {
+          "type": "timeline_entry",
+          "settings": {
+            "year": "2089",
+            "title": "FIRST_BREAKTHROUGH",
+            "description": "Development of our signature precision manufacturing process, setting new industry standards."
+          }
+        },
+        "principle-1": {
+          "type": "founding_principle",
+          "settings": {
+            "principle_text": "PRECISION_ABOVE_ALL"
+          }
+        },
+        "principle-2": {
+          "type": "founding_principle",
+          "settings": {
+            "principle_text": "INNOVATION_THROUGH_DEDICATION"
+          }
+        }
+      },
+      "block_order": [
+        "timeline-1",
+        "timeline-2",
+        "principle-1",
+        "principle-2"
+      ],
+      "settings": {}
+    },
+    "about-maker": {
+      "type": "about-maker",
+      "settings": {
+        "maker_name": "CURTIS LEE"
+      },
+      "blocks": {
+        "credential-1": {
+          "type": "credential",
+          "settings": {
+            "credential_text": "Certified Tactical Equipment Specialist"
+          }
+        },
+        "credential-2": {
+          "type": "credential",
+          "settings": {
+            "credential_text": "Advanced Materials Engineering"
+          }
+        }
+      },
+      "block_order": [
+        "credential-1",
+        "credential-2"
+      ]
     }
   },
   "order": [
-    "main"
+    "about-hero",
+    "about-origin",
+    "about-maker"
   ]
 }
