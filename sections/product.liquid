@@ -874,13 +874,7 @@
       "info": "Display cyberpunk-themed social sharing options",
       "default": true
     },
-    {
-      "type": "checkbox",
-      "id": "show_product_recommendations",
-      "label": "Show product recommendations",
-      "info": "AI-powered product recommendations based on this product",
-      "default": true
-    },
+
     {
       "type": "checkbox",
       "id": "show_pickup_availability",
@@ -978,7 +972,4 @@
   </div>
 {% endif %}
 
-{% comment %} Product recommendations section - only show if enabled {% endcomment %}
-{% if section.settings.show_product_recommendations %}
-  {% section 'product-recommendations' %}
-{% endif %}
+{% comment %} Product recommendations would need to be added to the product template, not within this section {% endcomment %}
