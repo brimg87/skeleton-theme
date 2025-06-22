@@ -58,9 +58,7 @@
     {% comment %} Email Share {% endcomment %}
     <a href="mailto:?subject={{ encoded_title }}&amp;body=Check this out: {{ encoded_url }}" 
        class="share-button share-email"
-       aria-label="Share via email"
-       title="Email: {{ encoded_title }} - {{ share_url }}"
-       onclick="debugEmailShare(event, this.href)">
+       aria-label="Share via email">
       <svg class="share-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
         <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
       </svg>
@@ -84,29 +82,10 @@
     <span class="url-value">{{ share_url }}</span>
   </div>
   
-  <!-- Debug: Simple mailto test -->
-  <div style="margin-top: var(--space-sm); padding: var(--space-sm); border: 1px dashed var(--color-accent-yellow); font-family: var(--font-family-secondary); font-size: var(--font-size-xs);">
-    <span style="color: var(--color-accent-yellow);">DEBUG TEST:</span>
-    <a href="mailto:test@example.com?subject=Test&body=This is a simple test" 
-       style="color: var(--color-accent-cyan); margin-left: var(--space-xs);">
-      [SIMPLE_MAILTO_TEST]
-    </a>
-  </div>
+
 </div>
 
 <script>
-  // Debug function for email share
-  function debugEmailShare(event, href) {
-    console.log('Email share clicked!');
-    console.log('Generated mailto URL:', href);
-    
-    // Show alert with the URL for debugging
-    alert('Email URL: ' + href + '\n\nIf this doesn\'t open your email client, you may not have one configured.');
-    
-    // Let the default action continue (don't prevent)
-    return true;
-  }
-
   // Copy link functionality
   document.addEventListener('DOMContentLoaded', function() {
     const copyButtons = document.querySelectorAll('.share-copy');
