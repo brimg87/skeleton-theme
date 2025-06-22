@@ -434,8 +434,28 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
   border-color: var(--color-accent-magenta);
   box-shadow: 0 0 15px var(--color-accent-magenta), 0 0 25px rgba(255, 0, 255, 0.3);
 }
-.product-card .product-image { height: 250px; background-color: var(--color-primary-dark); }
-.product-card .product-image img { width: 100%; height: 100%; object-fit: contain; }
+.product-card .product-image { 
+  height: 15.625rem; /* 250px at 16px base - original height */
+  background-color: var(--color-primary-dark); 
+  overflow: hidden;
+  position: relative;
+}
+.product-card .product-image img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  object-position: center;
+  transition: transform 0.3s ease;
+}
+.product-card:hover .product-image img {
+  transform: scale(1.05);
+}
+/* Fix for product-image-wrapper with inline padding-bottom */
+.product-card .product-image-wrapper {
+  height: 100% !important;
+  padding-bottom: 0 !important;
+  position: relative;
+}
 .product-card .product-info { padding: var(--space-lg); flex-grow: 1; display: flex; flex-direction: column; }
 .product-card .product-name { font-size: var(--font-size-md); color: var(--color-accent-yellow); margin-bottom: var(--space-sm); margin-top: 0; }
 .product-card .product-name a { color: inherit; text-decoration: none; }
@@ -1456,4 +1476,23 @@ body.search-active .search-interface,
   .signup-form-fields { flex-direction: column; gap: var(--space-xs); }
   .signup-form input[type="email"], .signup-form button { width: 100%;}
   .category-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  
+  /* Adjust product card image height for mobile */
+  .product-card .product-image { 
+    height: 12.5rem; /* 200px at 16px base - proportional to original */
+  }
+}
+
+/* Tablet and small desktop adjustments */
+@media (min-width: 769px) and (max-width: 1199px) {
+  .product-card .product-image { 
+    height: 14.375rem; /* 230px at 16px base - proportional to original */
+  }
+}
+
+/* Large desktop - slightly taller for better visual impact */
+@media (min-width: 1400px) {
+  .product-card .product-image { 
+    height: 17.5rem; /* 280px at 16px base - modest increase */
+  }
 }
