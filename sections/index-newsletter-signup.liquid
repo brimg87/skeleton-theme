@@ -1,7 +1,7 @@
 {% comment %} --- sections/index-newsletter-signup.liquid --- {% endcomment %}
 
 
-<div class="container" style="padding-top: 80px; padding-bottom: 80px;">
+<div class="container" style="padding-top: var(--space-xxxl); padding-bottom: var(--space-xxxl);">
     {%- if section.settings.title != blank -%}
       <div class="section-header text-{{ section.settings.header_alignment }}">
         <h2 class="section-title" data-text="{{ section.settings.title | escape }}">{{ section.settings.title | escape }}</h2>
