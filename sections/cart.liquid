@@ -20,7 +20,7 @@
           <div class="stat-item">
             <span class="stat-label">[STATUS]</span>
             <span class="stat-value status-{{ cart.item_count | plus: 0 | at_least: 1 }}">
-              {% if cart.item_count > 0 %}READY_FOR_CHECKOUT{% else %}INVENTORY_EMPTY{% endif %}
+              {% if cart.item_count > 0 %}READY{% else %}EMPTY{% endif %}
             </span>
           </div>
         </div>

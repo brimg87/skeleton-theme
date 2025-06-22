@@ -31,7 +31,18 @@
     }
   },
   "collections": {
-    "title": "Collections"
+    "title": "Collections",
+    "general": {
+      "item": "item",
+      "items": "items",
+      "no_products": "EMPTY",
+      "available": "AVAILABLE",
+      "view_all": "ACCESS_COLLECTION"
+    },
+    "catalog": {
+      "header": "CATALOG_ACCESS_TERMINAL",
+      "description": "Access authorized collections from the Starside Armory catalog database."
+    }
   },
   "general": {
     "meta": {
