@@ -557,24 +557,50 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
 }
 
 .zoom-close {
-  background: none;
-  border: none;
-  color: var(--color-text-secondary);
+  background-color: rgba(255, 31, 31, 0.1);
+  border: var(--border-width-medium) solid var(--color-accent-red);
+  color: var(--color-accent-red);
   cursor: pointer;
-  padding: var(--space-xs);
+  padding: var(--space-sm);
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 2px;
+  width: 48px;
+  height: 48px;
+  clip-path: var(--clip-path-button);
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  text-shadow: 0 0 5px var(--color-accent-red);
+  box-shadow: 0 0 10px rgba(255, 31, 31, 0.3);
+  position: relative;
+}
+
+.zoom-close::before {
+  content: '[CLOSE]';
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--font-size-xs);
+  color: var(--color-accent-red);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .zoom-close:hover {
-  color: var(--color-accent-red);
-  background-color: rgba(255, 31, 31, 0.1);
-  text-shadow: 0 0 5px var(--color-accent-red);
+  background-color: var(--color-accent-red);
+  color: var(--color-text-on-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(255, 31, 31, 0.5);
+  text-shadow: none;
+}
+
+.zoom-close:hover::before {
+  opacity: 1;
 }
 
 .zoom-image-container {
@@ -595,11 +621,6 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
   object-fit: contain;
   border: var(--border-width-thin) solid var(--color-border-primary);
   box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-  transition: transform 0.3s ease;
-}
-
-.zoom-image:hover {
-  transform: scale(1.02);
 }
 
 /* Zoom Modal Instructions */
