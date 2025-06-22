@@ -1315,6 +1315,76 @@ body.search-active .search-interface,
 .signup-form .form-success { color: var(--color-accent-green); font-family: var(--font-family-secondary); }
 .signup-form .form-errors { color: var(--color-accent-red); font-family: var(--font-family-secondary); margin-bottom: var(--space-md); }
 
+/* --- Product Recommendations --- */
+.product-recommendations {
+  margin-top: var(--space-xl);
+}
+
+.recommendations-title {
+  color: var(--color-accent-cyan);
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-lg);
+  text-transform: uppercase;
+  margin-bottom: var(--space-lg);
+  margin-top: 0;
+  text-align: center;
+}
+
+.recommendations-grid {
+  margin-top: var(--space-md);
+}
+
+.recommendation-card {
+  position: relative;
+}
+
+.product-badge {
+  position: absolute;
+  top: var(--space-sm);
+  left: var(--space-sm);
+  background-color: var(--color-accent-red);
+  color: var(--color-text-on-accent);
+  padding: var(--space-xs) var(--space-sm);
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  z-index: 2;
+  clip-path: var(--clip-path-button);
+}
+
+.sale-badge {
+  background-color: var(--color-accent-red);
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 5px var(--color-accent-red); 
+  }
+  50% { 
+    box-shadow: 0 0 15px var(--color-accent-red), 0 0 25px rgba(255, 31, 31, 0.3); 
+  }
+}
+
+.product-price-compare {
+  color: var(--color-text-secondary);
+  margin-right: var(--space-xs);
+}
+
+.product-price-current {
+  color: var(--color-accent-green);
+  font-weight: var(--font-weight-bold);
+}
+
+.product-actions {
+  margin-top: var(--space-md);
+}
+
+.product-actions .btn {
+  width: 100%;
+  font-size: var(--font-size-sm);
+}
+
 /* --- Social Sharing --- */
 .social-content {
   padding: var(--space-md);

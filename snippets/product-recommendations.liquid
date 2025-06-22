@@ -1,0 +1,106 @@
+{% comment %}
+  Product Recommendations Snippet - Starside Armory Theme
+  
+  Usage: {% render 'product-recommendations', product: product, products_to_show: 4, show_heading: true %}
+  
+  Parameters:
+  - product: The current product (required)
+  - products_to_show: Number of products to display (default: 4)
+  - show_heading: Whether to show the heading (default: true)
+  - heading: Custom heading text (default: 'RECOMMENDED_EQUIPMENT')
+  - show_compare_prices: Show compare at prices (default: true)
+  - show_sale_badges: Show sale badges (default: true)
+{% endcomment %}
+
+{%- assign products_to_show = products_to_show | default: 4 -%}
+{%- assign show_heading = show_heading | default: true -%}
+{%- assign heading = heading | default: 'RECOMMENDED_EQUIPMENT' -%}
+{%- assign show_compare_prices = show_compare_prices | default: true -%}
+{%- assign show_sale_badges = show_sale_badges | default: true -%}
+
+{%- if recommendations.performed and recommendations.products_count > 0 -%}
+  <div class="product-recommendations data-box" data-product-id="{{ product.id }}">
+    <div class="data-box-header">//: RELATED_INTEL_PROTOCOLS ://</div>
+    <div class="recommendations-content">
+      
+      {%- if show_heading -%}
+        <h2 class="recommendations-title">{{ heading }}</h2>
+      {%- endif -%}
+      
+      <div class="product-grid recommendations-grid">
+        {%- for recommended_product in recommendations.products limit: products_to_show -%}
+          <article class="product-card recommendation-card" 
+                   aria-labelledby="rec-product-title-{{ recommended_product.id }}" 
+                   itemscope itemtype="https://schema.org/Product">
+            
+            <div class="product-image">
+              <a href="{{ recommended_product.url }}" aria-label="View {{ recommended_product.title | escape }} details">
+                {% if recommended_product.featured_image %}
+                  <div class="product-image-wrapper">
+                    <img src="{{ recommended_product.featured_image | image_url: width: 400 }}" 
+                         alt="{{ recommended_product.featured_image.alt | escape | default: recommended_product.title | escape }}"
+                         loading="lazy"
+                         width="400" 
+                         height="{{ 400 | divided_by: recommended_product.featured_image.aspect_ratio | round }}"
+                         sizes="(min-width: 990px) {{ 1200 | divided_by: products_to_show }}px, (min-width: 750px) 50vw, 100vw"
+                         srcset="{{ recommended_product.featured_image | image_url: width: 200 }} 200w, 
+                                 {{ recommended_product.featured_image | image_url: width: 400 }} 400w, 
+                                 {{ recommended_product.featured_image | image_url: width: 600 }} 600w"
+                         itemprop="image">
+                  </div>
+                {% else %}
+                  <div class="product-image-placeholder">
+                    {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                  </div>
+                {% endif %}
+                
+                {% if recommended_product.compare_at_price > recommended_product.price and show_sale_badges %}
+                  <div class="product-badge sale-badge">[TACTICAL_DISCOUNT]</div>
+                {% endif %}
+              </a>
+            </div>
+            
+            <div class="product-info">
+              <div class="product-content">
+                <h3 class="product-name h4" id="rec-product-title-{{ recommended_product.id }}" itemprop="name">
+                  <a href="{{ recommended_product.url }}">{{ recommended_product.title }}</a>
+                </h3>
+                
+                <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                  <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
+                  <meta itemprop="price" content="{{ recommended_product.price | divided_by: 100.0 }}">
+                  
+                  {% if recommended_product.compare_at_price > recommended_product.price and show_compare_prices %}
+                    <span class="visually-hidden">Regular price</span>
+                    <s class="product-price-compare">{{ recommended_product.compare_at_price | money }}</s>
+                    <span class="visually-hidden">Sale price</span>
+                  {% endif %}
+                  
+                  <span class="product-price-current">{{ recommended_product.price | money }}</span>
+                  
+                  {% if recommended_product.available %}
+                    <link itemprop="availability" href="https://schema.org/InStock">
+                  {% else %}
+                    <link itemprop="availability" href="https://schema.org/OutOfStock">
+                  {% endif %}
+                </div>
+              </div>
+              
+              <div class="product-actions">
+                {% if recommended_product.available %}
+                  <a href="{{ recommended_product.url }}" class="btn btn-secondary" aria-describedby="rec-product-{{ recommended_product.id }}-price">
+                    [ANALYZE_EQUIPMENT]
+                  </a>
+                {% else %}
+                  <button class="btn btn-secondary disabled" disabled>
+                    [OUT_OF_STOCK]
+                  </button>
+                {% endif %}
+              </div>
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%} 

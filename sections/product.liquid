@@ -592,6 +592,14 @@
               </div>
             {% endif %}
 
+            {% if section.settings.show_product_recommendations %}
+              {% render 'product-recommendations', 
+                         product: product, 
+                         products_to_show: section.settings.recommendations_count,
+                         show_heading: section.settings.show_recommendations_heading,
+                         heading: section.settings.recommendations_heading %}
+            {% endif %}
+
             {% if section.settings.show_product_tabs %}
               <!-- Product Data Tabs -->
               <div class="product-data-tabs data-box">
@@ -873,6 +881,43 @@
       "label": "Show social sharing buttons",
       "info": "Display cyberpunk-themed social sharing options",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Product recommendations"
+    },
+    {
+      "type": "paragraph",
+      "content": "Dynamic recommendations change and improve with time. AI-powered suggestions based on the current product."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_recommendations",
+      "label": "Show product recommendations",
+      "info": "Display AI-powered product recommendations",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "recommendations_count",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "unit": "products",
+      "label": "Number of recommendations to show",
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "show_recommendations_heading",
+      "label": "Show recommendations heading",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "recommendations_heading",
+      "label": "Recommendations heading",
+      "default": "RECOMMENDED_EQUIPMENT"
     },
 
     {
