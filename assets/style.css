@@ -1105,15 +1105,16 @@ body.search-active .search-interface,
 
 .zoom-button {
   position: absolute;
-  top: var(--space-md);
+  bottom: var(--space-md);
   right: var(--space-md);
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.8);
   border: var(--border-width-thin) solid var(--color-accent-cyan);
   color: var(--color-accent-cyan);
   padding: var(--space-sm);
   cursor: pointer;
   transition: all 0.2s;
   clip-path: var(--clip-path-button);
+  z-index: 3;
 }
 
 .zoom-button:hover {
@@ -1514,6 +1515,12 @@ body.search-active .search-interface,
 .sale-badge {
   background-color: var(--color-accent-red);
   animation: pulse-glow 2s infinite;
+}
+
+.sold-out-badge {
+  background-color: var(--color-text-secondary);
+  color: var(--color-text-on-accent);
+  opacity: 0.8;
 }
 
 @keyframes pulse-glow {
@@ -3475,7 +3482,7 @@ body.search-active .search-interface,
 .image-overlay-data {
   position: absolute;
   top: var(--space-md);
-  right: var(--space-md);
+  left: var(--space-md);
   background-color: rgba(0, 0, 0, 0.8);
   color: var(--color-accent-red);
   padding: var(--space-xs) var(--space-sm);
@@ -3483,6 +3490,7 @@ body.search-active .search-interface,
   font-size: var(--font-size-xs);
   text-transform: uppercase;
   border: var(--border-width-thin) solid var(--color-accent-red);
+  z-index: 2;
 }
 
 /* About Origin Section */
