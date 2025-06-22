@@ -188,6 +188,102 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // --- Product Tabs Functionality ---
+    const tabLinks = document.querySelectorAll('.tab-link');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    if (tabLinks.length > 0 && tabContents.length > 0) {
+        console.log('Product tabs found, initializing tab functionality');
+        
+        function switchTab(activeLink) {
+            const targetTabId = activeLink.getAttribute('data-tab');
+            const targetTab = document.getElementById(targetTabId);
+            
+            if (!targetTab) return;
+            
+            // Remove active class from all tab links and set aria attributes
+            tabLinks.forEach(tabLink => {
+                tabLink.classList.remove('active');
+                tabLink.setAttribute('aria-selected', 'false');
+                tabLink.setAttribute('tabindex', '-1');
+            });
+            
+            // Remove active class from all tab contents
+            tabContents.forEach(tabContent => {
+                tabContent.classList.remove('active');
+                tabContent.setAttribute('aria-hidden', 'true');
+            });
+            
+            // Add active class to clicked tab link
+            activeLink.classList.add('active');
+            activeLink.setAttribute('aria-selected', 'true');
+            activeLink.setAttribute('tabindex', '0');
+            
+            // Add active class to target tab content
+            targetTab.classList.add('active');
+            targetTab.setAttribute('aria-hidden', 'false');
+            
+            console.log(`Switched to tab: ${targetTabId}`);
+        }
+        
+        // Initialize ARIA attributes
+        tabLinks.forEach((link, index) => {
+            link.setAttribute('role', 'tab');
+            link.setAttribute('aria-selected', link.classList.contains('active') ? 'true' : 'false');
+            link.setAttribute('tabindex', link.classList.contains('active') ? '0' : '-1');
+        });
+        
+        tabContents.forEach(content => {
+            content.setAttribute('role', 'tabpanel');
+            content.setAttribute('aria-hidden', content.classList.contains('active') ? 'false' : 'true');
+        });
+        
+        tabLinks.forEach(link => {
+            // Click handler
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                switchTab(this);
+            });
+            
+            // Keyboard navigation
+            link.addEventListener('keydown', function(e) {
+                const currentIndex = Array.from(tabLinks).indexOf(this);
+                let newIndex;
+                
+                switch(e.key) {
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        newIndex = currentIndex + 1 >= tabLinks.length ? 0 : currentIndex + 1;
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        newIndex = currentIndex - 1 < 0 ? tabLinks.length - 1 : currentIndex - 1;
+                        break;
+                    case 'Home':
+                        e.preventDefault();
+                        newIndex = 0;
+                        break;
+                    case 'End':
+                        e.preventDefault();
+                        newIndex = tabLinks.length - 1;
+                        break;
+                    case 'Enter':
+                    case ' ':
+                        e.preventDefault();
+                        switchTab(this);
+                        return;
+                    default:
+                        return;
+                }
+                
+                if (newIndex !== undefined) {
+                    switchTab(tabLinks[newIndex]);
+                    tabLinks[newIndex].focus();
+                }
+            });
+        });
+    }
+
     // Desktop Dropdown Hover Functionality (Dawn style)
     const dropdownItems = document.querySelectorAll('.has-dropdown');
     dropdownItems.forEach(item => {

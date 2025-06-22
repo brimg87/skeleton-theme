@@ -569,7 +569,7 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
   gap: var(--space-xs);
   height: 36px;
   min-width: 80px;
-  clip-path: var(--clip-path-button);
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
   font-family: var(--font-family-secondary);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
@@ -578,6 +578,26 @@ hr { border: 0; border-top: var(--border-width-thin) solid var(--color-border-pr
   position: relative;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+.zoom-close svg {
+  flex-shrink: 0;
+}
+
+.zoom-close .close-text {
+  color: var(--color-accent-red) !important;
+  font-size: 14px !important;
+  font-family: var(--font-family-secondary) !important;
+  font-weight: var(--font-weight-bold) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  text-shadow: 0 0 5px var(--color-accent-red) !important;
+  background-color: yellow !important; /* Debug - this should make text area visible */
+  padding: 2px !important;
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
 }
 
 .zoom-close:hover {

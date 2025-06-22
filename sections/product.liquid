@@ -604,14 +604,16 @@
               <!-- Product Data Tabs -->
               <div class="product-data-tabs data-box">
                 <div class="data-box-header">//:DATA_ARCHIVE://</div>
-              <div class="tab-headers">
-                <button class="tab-link active" data-tab="tab-specifications">SPECIFICATIONS</button>
-                <button class="tab-link" data-tab="tab-feedback">FEEDBACK</button>
-                <button class="tab-link" data-tab="tab-acquisition">ACQUISITION</button>
+              <div class="tab-headers" role="tablist" aria-label="Product information tabs">
+                <button class="tab-link active" data-tab="tab-specifications" role="tab" aria-controls="tab-specifications" id="tab-specifications-btn">SPECIFICATIONS</button>
+                {% if product.metafields.reviews.rating %}
+                  <button class="tab-link" data-tab="tab-feedback" role="tab" aria-controls="tab-feedback" id="tab-feedback-btn">FEEDBACK</button>
+                {% endif %}
+                <button class="tab-link" data-tab="tab-acquisition" role="tab" aria-controls="tab-acquisition" id="tab-acquisition-btn">ACQUISITION</button>
               </div>
               
               <!-- Specifications Tab -->
-              <div id="tab-specifications" class="tab-content active">
+              <div id="tab-specifications" class="tab-content active" role="tabpanel" aria-labelledby="tab-specifications-btn">
                 {% if product.metafields.product_specs.class or product.metafields.product_specs.rarity or product.metafields.product_specs.materials or product.metafields.product_specs.dimensions_detailed %}
                   <ul>
                     {% if product.metafields.product_specs.class %}
@@ -638,37 +640,20 @@
                 {% endif %}
               </div>
               
-              <!-- Feedback Tab (Reviews) -->
-              <div id="tab-feedback" class="tab-content">
-                {% if product.metafields.reviews.data %}
-                  {{ product.metafields.reviews.data }}
-                {% else %}
-                  <div class="feedback-entry">
-                    <div class="feedback-meta">
-                      <span class="user-id">AGENT_ALPHA_01</span>
-                      <span class="timestamp">2157.03.15</span>
-                    </div>
-                    <div class="feedback-text">
-                      Quality construction and reliable performance. Exceeded operational parameters during field testing.
-                    </div>
-                    <div class="feedback-rating">OPERATIONAL_RATING: 9.2/10</div>
-                  </div>
-                  
-                  <div class="feedback-entry">
-                    <div class="feedback-meta">
-                      <span class="user-id">BETA_OPERATIVE_07</span>
-                      <span class="timestamp">2157.02.28</span>
-                    </div>
-                    <div class="feedback-text">
-                      Excellent addition to the armory. Deployment was seamless and integration with existing systems was flawless.
-                    </div>
-                    <div class="feedback-rating">OPERATIONAL_RATING: 9.8/10</div>
-                  </div>
-                {% endif %}
-              </div>
+              <!-- Feedback Tab (Reviews) - Only show if reviews app is installed -->
+              {% if product.metafields.reviews.rating %}
+                <div id="tab-feedback" class="tab-content" role="tabpanel" aria-labelledby="tab-feedback-btn">
+                  {% if product.metafields.reviews.data %}
+                    {{ product.metafields.reviews.data }}
+                  {% else %}
+                    <!-- If reviews app is installed but no reviews yet -->
+                    <p>No operational feedback available for this item yet. Be the first to submit a field report.</p>
+                  {% endif %}
+                </div>
+              {% endif %}
               
-              <!-- Acquisition Tab -->
-              <div id="tab-acquisition" class="tab-content">
+                              <!-- Acquisition Tab -->
+                <div id="tab-acquisition" class="tab-content" role="tabpanel" aria-labelledby="tab-acquisition-btn">
                 <div class="protocol-title">ACQUISITION PROTOCOLS</div>
                 <ul class="protocol-list">
                   <li><strong>SHIPPING:</strong> Standard delivery within 5-7 operational cycles</li>
@@ -1009,7 +994,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7A.996.996 0 105.7 7.11L10.59 12 5.7 16.89a.996.996 0 101.41 1.41L12 13.41l4.89 4.89a.996.996 0 101.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/>
             </svg>
-            <span>Close</span>
+            <span class="close-text">CLOSE</span>
           </button>
         </div>
         <div class="zoom-image-container">
